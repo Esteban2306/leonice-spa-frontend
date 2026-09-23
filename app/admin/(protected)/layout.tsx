@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
+import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
+
+import AdminSidebar from "@/src/features/admin/components/admin-app-sidebar";
 import { useSession } from "@/src/features/auth/hooks/use-auth";
 
 export default function ProtectedLayout({
@@ -20,20 +23,14 @@ export default function ProtectedLayout({
     process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === "true";
 
   useEffect(() => {
-    if (devAuthBypass) {
-      return;
-    }
+    if (devAuthBypass) return;
 
     if (session.isError) {
       router.replace(`/admin/login?redirect=${encodeURIComponent(pathname)}`);
     }
   }, [devAuthBypass, pathname, router, session.isError]);
 
-  if (devAuthBypass) {
-    return <>{children}</>;
-  }
-
-  if (session.isPending) {
+  if (!devAuthBypass && session.isPending) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background">
         <p className="font-sans text-sm text-foreground/70">
@@ -43,9 +40,15 @@ export default function ProtectedLayout({
     );
   }
 
-  if (session.isError || !session.data) {
+  if (!devAuthBypass && (session.isError || !session.data)) {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <SidebarProvider defaultOpen>
+      <AdminSidebar />
+
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
+  );
 }

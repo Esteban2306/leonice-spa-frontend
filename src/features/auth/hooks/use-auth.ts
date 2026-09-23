@@ -48,10 +48,8 @@ export function useLogout() {
   return useMutation({
     mutationFn: authApi.logout,
 
-    onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: authKeys.all,
-      });
+    onSettled: () => {
+      queryClient.clear();
     },
   });
 }

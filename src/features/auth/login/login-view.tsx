@@ -2,8 +2,7 @@ import type { UseFormReturn } from "react-hook-form";
 
 import type { LoginFormValues } from "../schemas/login.schema";
 import Image from "next/image";
-import leoniceLogo from "../../../../public/leonice_arenas_logo.png";
-import InputInsetLabelDemo from "@/src/components/shadcn-studio/input/input-25";
+import leoniceLogo from "../../../../public/leonice-logo-b.png";
 import { InputFloatingLabel } from "@/src/components/shadcn-studio/input/input-24";
 import { GradientButton } from "@/src/components/shadcn-studio/button/button-11";
 
