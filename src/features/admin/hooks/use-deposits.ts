@@ -1,0 +1,163 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { depositsApi } from "../api/deposits.api";
+import { adminQueryKeys } from "./query-keys";
+
+import type {
+  ApproveDepositRequest,
+  FindDepositsParams,
+  FindPendingDepositsParams,
+  RejectDepositRequest,
+  SubmitAutomaticDepositRequest,
+} from "../types/deposits.types";
+
+import type { SubmitDepositProofData } from "../api/deposits.api";
+
+const DEPOSITS_STALE_TIME = 15 * 1000;
+
+export function useDeposits(params?: FindDepositsParams) {
+  return useQuery({
+    queryKey: adminQueryKeys.deposits.list(params),
+    queryFn: () => depositsApi.findMany(params),
+    staleTime: DEPOSITS_STALE_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+}
+
+export function usePendingDeposits(params: FindPendingDepositsParams) {
+  return useQuery({
+    queryKey: adminQueryKeys.deposits.pending(params),
+    queryFn: () => depositsApi.findPending(params),
+    enabled: Boolean(params.phone),
+    staleTime: DEPOSITS_STALE_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+}
+
+export function useReservationDeposits(reservationId: string) {
+  return useQuery({
+    queryKey: adminQueryKeys.deposits.byReservation(reservationId),
+    queryFn: () => depositsApi.findByReservation(reservationId),
+    enabled: Boolean(reservationId),
+    staleTime: DEPOSITS_STALE_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+}
+
+function invalidateDepositQueries(
+  queryClient: ReturnType<typeof useQueryClient>,
+  reservationId?: string,
+) {
+  queryClient.invalidateQueries({
+    queryKey: adminQueryKeys.deposits.lists(),
+  });
+
+  if (reservationId) {
+    queryClient.invalidateQueries({
+      queryKey: adminQueryKeys.deposits.byReservation(reservationId),
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: adminQueryKeys.reservations.detail(reservationId),
+    });
+  }
+
+  queryClient.invalidateQueries({
+    queryKey: adminQueryKeys.reservations.lists(),
+  });
+
+  queryClient.invalidateQueries({
+    queryKey: adminQueryKeys.dashboard.summary(),
+  });
+}
+
+export function useSubmitDepositProof() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "deposits", "submit-proof"],
+    mutationFn: ({
+      reservationId,
+      data,
+    }: {
+      reservationId: string;
+      data: SubmitDepositProofData;
+    }) => depositsApi.submitProof(reservationId, data),
+    onSuccess: (_data, variables) => {
+      invalidateDepositQueries(queryClient, variables.reservationId);
+    },
+  });
+}
+
+export function useSubmitAutomaticDeposit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "deposits", "submit-automatic"],
+    mutationFn: (data: SubmitAutomaticDepositRequest) =>
+      depositsApi.submitAutomatic(data),
+    onSuccess: (_data, variables) => {
+      invalidateDepositQueries(queryClient, variables.reservationId);
+    },
+  });
+}
+
+export function useSubmitAutomaticDepositForReservation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "deposits", "submit-automatic-reservation"],
+    mutationFn: ({
+      reservationId,
+      data,
+    }: {
+      reservationId: string;
+      data: SubmitAutomaticDepositRequest;
+    }) => depositsApi.submitAutomaticForReservation(reservationId, data),
+    onSuccess: (_data, variables) => {
+      invalidateDepositQueries(queryClient, variables.reservationId);
+    },
+  });
+}
+
+export function useApproveDeposit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "deposits", "approve"],
+    mutationFn: ({
+      reservationId,
+      data,
+    }: {
+      reservationId: string;
+      data: ApproveDepositRequest;
+    }) => depositsApi.approve(reservationId, data),
+    onSuccess: (_data, variables) => {
+      invalidateDepositQueries(queryClient, variables.reservationId);
+    },
+  });
+}
+
+export function useRejectDeposit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "deposits", "reject"],
+    mutationFn: ({
+      reservationId,
+      data,
+    }: {
+      reservationId: string;
+      data: RejectDepositRequest;
+    }) => depositsApi.reject(reservationId, data),
+    onSuccess: (_data, variables) => {
+      invalidateDepositQueries(queryClient, variables.reservationId);
+    },
+  });
+}

@@ -1,0 +1,90 @@
+import { httpClient } from "@/src/lib/api/client";
+import type {
+  AdminCancelReservationRequest,
+  AdminRescheduleReservationRequest,
+  CancelReservationRequest,
+  ConfirmValoracionRequest,
+  CreateReservationRequest,
+  FindReservationsParams,
+  GetAvailabilityParams,
+  RescheduleReservationRequest,
+} from "../types/reservations.types";
+
+export const reservationsApi = {
+  findMany(params?: FindReservationsParams) {
+    return httpClient.request("/reservations", "GET", {
+      params,
+    });
+  },
+
+  getAvailability(params: GetAvailabilityParams) {
+    return httpClient.request("/reservations/availability", "GET", {
+      params,
+    });
+  },
+
+  findOne(reservationId: string) {
+    return httpClient.request(`/reservations/${reservationId}`, "GET");
+  },
+
+  create(data: CreateReservationRequest) {
+    return httpClient.request("/reservations", "POST", data);
+  },
+
+  cancel(reservationId: string, data: CancelReservationRequest) {
+    return httpClient.request(
+      `/reservations/${reservationId}/cancel`,
+      "PATCH",
+      data,
+    );
+  },
+
+  adminCancel(reservationId: string, data: AdminCancelReservationRequest) {
+    return httpClient.request(
+      `/reservations/${reservationId}/admin-cancel`,
+      "PATCH",
+      data,
+    );
+  },
+
+  reschedule(reservationId: string, data: RescheduleReservationRequest) {
+    return httpClient.request(
+      `/reservations/${reservationId}/reschedule`,
+      "PATCH",
+      data,
+    );
+  },
+
+  adminReschedule(
+    reservationId: string,
+    data: AdminRescheduleReservationRequest,
+  ) {
+    return httpClient.request(
+      `/reservations/${reservationId}/admin-reschedule`,
+      "PATCH",
+      data,
+    );
+  },
+
+  checkIn(reservationId: string) {
+    return httpClient.request(
+      `/reservations/${reservationId}/check-in`,
+      "PATCH",
+    );
+  },
+
+  complete(reservationId: string) {
+    return httpClient.request(
+      `/reservations/${reservationId}/complete`,
+      "PATCH",
+    );
+  },
+
+  confirmValoracion(reservationId: string, data: ConfirmValoracionRequest) {
+    return httpClient.request(
+      `/reservations/${reservationId}/confirm-valoracion`,
+      "PATCH",
+      data,
+    );
+  },
+};
