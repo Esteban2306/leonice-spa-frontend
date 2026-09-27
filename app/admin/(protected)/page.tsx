@@ -1,5 +1,5 @@
-import { AdminPreview } from "@/src/features/admin/components/admin-preview";
+import { DashboardContainer } from "@/src/features/admin/main/dashboardContainer";
 
 export default function AdminPage() {
-  return <AdminPreview />;
+  return <DashboardContainer />;
 }
