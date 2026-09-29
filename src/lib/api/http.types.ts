@@ -4,12 +4,13 @@ export interface HttpClientConfig {
   baseUrl: string;
   defaultHeaders?: Record<string, string>;
   refreshEndpoint?: string;
+  onSessionExpired?: () => void;
 }
 
 export interface RequestOptions {
   auth?: boolean;
   retryOnUnauthorized?: boolean;
   headers?: Record<string, string>;
-  params?: Record<string, string | number | boolean | undefined>;
+  params?: object;
   signal?: AbortSignal;
 }

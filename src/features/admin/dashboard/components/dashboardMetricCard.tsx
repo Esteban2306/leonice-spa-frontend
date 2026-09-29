@@ -1,10 +1,4 @@
-import {
-  ArrowUpRight,
-  CalendarCheck,
-  Clock3,
-  Coins,
-  LucideIcon,
-} from "lucide-react";
+import { ArrowUpRight, LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 type DashboardMetricCardVariant = "default" | "featured";

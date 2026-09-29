@@ -14,13 +14,11 @@ export interface SubmitDepositProofData {
 
 export const depositsApi = {
   findMany(params?: FindDepositsParams) {
-    return httpClient.request("/deposits", "GET", {
-      params,
-    });
+    return httpClient.request("/deposits", "GET", undefined, { params });
   },
 
   findPending(params: FindPendingDepositsParams) {
-    return httpClient.request("/deposits/pending", "GET", {
+    return httpClient.request("/deposits/pending", "GET", undefined, {
       params,
     });
   },

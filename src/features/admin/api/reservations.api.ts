@@ -7,18 +7,22 @@ import type {
   CreateReservationRequest,
   FindReservationsParams,
   GetAvailabilityParams,
+  PaginatedGroupedReservations,
   RescheduleReservationRequest,
 } from "../types/reservations.types";
 
 export const reservationsApi = {
   findMany(params?: FindReservationsParams) {
-    return httpClient.request("/reservations", "GET", {
-      params,
-    });
+    return httpClient.request<PaginatedGroupedReservations>(
+      "/reservations",
+      "GET",
+      undefined,
+      { params },
+    );
   },
 
   getAvailability(params: GetAvailabilityParams) {
-    return httpClient.request("/reservations/availability", "GET", {
+    return httpClient.request("/reservations/availability", "GET", undefined, {
       params,
     });
   },

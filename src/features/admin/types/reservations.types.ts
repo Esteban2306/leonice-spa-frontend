@@ -1,6 +1,11 @@
-import type { ReservationChannel, ReservationStatus } from "../types/enums";
+import type {
+  DepositCoverage,
+  DepositStatus,
+  ReservationChannel,
+  ReservationStatus,
+} from "../types/enums";
 
-export interface FindReservationsParams {
+export type FindReservationsParams = {
   date?: string;
   status?: ReservationStatus;
   categoryId?: string;
@@ -8,12 +13,12 @@ export interface FindReservationsParams {
   hasUnresolvedDeposit?: boolean;
   page?: number;
   pageSize?: number;
-}
+};
 
-export interface GetAvailabilityParams {
+export type GetAvailabilityParams = {
   treatmentId: string;
   date: string;
-}
+};
 
 export interface RescheduleReservationRequest {
   phone: string;
@@ -59,4 +64,42 @@ export interface AdminRescheduleReservationRequest {
 export interface AdminCancelReservationRequest {
   reason?: string;
   notifyClient?: boolean;
+}
+
+export interface LatestDepositSummary {
+  status: DepositStatus;
+  coverage: DepositCoverage | null;
+  imageUrl: string | null;
+}
+
+export interface GroupedReservationItem {
+  reservationId: string;
+  treatment: { id: string; name: string };
+  category: { id: string; name: string };
+  status: ReservationStatus;
+  scheduledStart: string;
+  scheduledEnd: string;
+  finalPrice: string;
+  latestDeposit: LatestDepositSummary | null;
+  hasUnresolvedDeposit: boolean;
+  depositExpiresAt: string | null;
+}
+
+export interface GroupedReservation {
+  isCombo: boolean;
+  comboGroupId: string | null;
+  client: { id: string; name: string; phone: string };
+  items: GroupedReservationItem[];
+}
+
+export interface ReservationsPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface PaginatedGroupedReservations {
+  data: GroupedReservation[];
+  pagination: ReservationsPagination;
 }

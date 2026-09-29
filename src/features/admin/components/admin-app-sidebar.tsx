@@ -88,8 +88,6 @@ export default function AdminSidebar() {
               <Image
                 src={LogoW}
                 alt="Leonice Arenas"
-                width={120}
-                height={50}
                 priority
                 className="h-auto w-30 object-contain"
               />

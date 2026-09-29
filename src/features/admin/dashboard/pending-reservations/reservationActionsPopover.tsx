@@ -19,21 +19,25 @@ interface ReservationActionsPopoverProps {
   reservationId: string;
   clientId: string;
   clientName: string;
+  clientPhone: string;
 
   onReschedule: (reservationId: string) => void;
-  onContactClient: (clientId: string) => void;
+  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancel: (reservationId: string) => void;
+  isCancelling: boolean;
 }
 
 export function ReservationActionsPopover({
   reservationId,
   clientId,
   clientName,
+  clientPhone,
   onReschedule,
   onContactClient,
   onViewClient,
   onCancel,
+  isCancelling,
 }: ReservationActionsPopoverProps) {
   return (
     <Popover>
@@ -94,9 +98,10 @@ export function ReservationActionsPopover({
           Reagendar
         </button>
 
-        <button
-          type="button"
-          onClick={() => onContactClient(clientId)}
+        <a
+          href={`https://wa.me/${clientPhone.replace(/\D/g, "")}`}
+          target="_blank"
+          rel="noopener noreferrer"
           className="
             flex
             w-full
@@ -121,7 +126,7 @@ export function ReservationActionsPopover({
           </span>
 
           <span className="text-sm text-green-800">WhatsApp</span>
-        </button>
+        </a>
 
         <button
           type="button"
@@ -152,6 +157,7 @@ export function ReservationActionsPopover({
         <button
           type="button"
           onClick={() => onCancel(reservationId)}
+          disabled={isCancelling}
           className="
             flex
             w-full
@@ -167,10 +173,12 @@ export function ReservationActionsPopover({
             text-red-700
             transition-colors
             hover:bg-red-50
+            disabled:pointer-events-none
+            disabled:opacity-50
           "
         >
           <X className="size-5" strokeWidth={1.8} />
-          Cancelar reserva
+          {isCancelling ? "Cancelando..." : "Cancelar reserva"}
         </button>
       </PopoverContent>
     </Popover>

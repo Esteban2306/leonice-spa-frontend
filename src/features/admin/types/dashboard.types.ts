@@ -1,3 +1,5 @@
+import { DepositCoverage } from "./enums";
+
 export interface DashboardSummary {
   todayAppointments: number;
   pendingConfirmations: number;
@@ -7,6 +9,11 @@ export interface DashboardHeaderData {
   locationName: string;
   summary: DashboardSummary;
 }
+
+export type AcceptReservationHandler = (
+  reservationId: string,
+  coverage: DepositCoverage,
+) => Promise<void>;
 
 export interface DashboardHeaderActions {
   onViewNotifications: () => void;
@@ -40,33 +47,26 @@ export interface DashboardMetricsData {
   };
 }
 
-export type ReservationStatus = "PENDING_CONFIRMATION";
+export interface PendingReservationItem {
+  reservationId: string;
+  treatmentName: string;
+  categoryLabel: string;
+  durationMinutes: number;
+  timeLabel: string;
+  totalPrice: number;
+  proofUrl: string | null;
+  verified: boolean;
+  depositExpiresAt: string | null;
+}
 
 export interface PendingReservation {
-  reservationId: string;
   clientId: string;
-
   client: {
     name: string;
     phone: string;
-    avatarUrl?: string;
   };
-
-  appointment: {
-    dateLabel: string;
-    timeLabel: string;
-    treatmentName: string;
-    durationMinutes: number;
-    roomLabel: string;
-  };
-
-  deposit: {
-    amount: number;
-    proofUrl: string;
-    verified: boolean;
-  };
-
-  status: ReservationStatus;
+  dateLabel: string;
+  items: PendingReservationItem[];
 }
 
 export interface PendingReservationsData {

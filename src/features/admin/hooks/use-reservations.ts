@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { reservationsApi } from "../api/reservations.api";
 import { adminQueryKeys } from "./query-keys";
@@ -11,13 +16,32 @@ import type {
   CreateReservationRequest,
   FindReservationsParams,
   GetAvailabilityParams,
+  GroupedReservation,
+  GroupedReservationItem,
   RescheduleReservationRequest,
 } from "../types/reservations.types";
+import {
+  PendingReservation,
+  PendingReservationItem,
+  PendingReservationsData,
+} from "../types/dashboard.types";
+import { useMemo } from "react";
+import { ReservationStatus } from "../types/enums";
 
 const RESERVATIONS_STALE_TIME = 30 * 1000;
 const AVAILABILITY_STALE_TIME = 15 * 1000;
 
-export function useReservations(params?: FindReservationsParams) {
+const PENDING_DEPOSIT_STATUS: ReservationStatus = "PENDIENTE_DEPOSITO";
+
+interface UseReservationsOptions {
+  keepPreviousData?: boolean;
+  refetchIntervalMs?: number;
+}
+
+export function useReservations(
+  params?: FindReservationsParams,
+  options?: UseReservationsOptions,
+) {
   return useQuery({
     queryKey: adminQueryKeys.reservations.list(params),
     queryFn: () => reservationsApi.findMany(params),
@@ -25,9 +49,110 @@ export function useReservations(params?: FindReservationsParams) {
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    placeholderData: options?.keepPreviousData ? keepPreviousData : undefined,
+    refetchInterval: options?.refetchIntervalMs,
   });
 }
 
+const PENDING_REFETCH_INTERVAL_MS = 60 * 1000;
+
+const DAY_FORMATTER = new Intl.DateTimeFormat("es-CO", {
+  weekday: "short",
+  day: "numeric",
+  month: "short",
+});
+
+const TIME_FORMATTER = new Intl.DateTimeFormat("es-CO", {
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+
+function isSameCalendarDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function formatDateLabel(date: Date): string {
+  const dayPart = DAY_FORMATTER.format(date).replace(".", "");
+  const now = new Date();
+
+  if (isSameCalendarDay(date, now)) return `Hoy · ${dayPart}`;
+
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  if (isSameCalendarDay(date, tomorrow)) return `Mañana · ${dayPart}`;
+
+  return dayPart;
+}
+
+function toPendingReservationItem(
+  item: GroupedReservationItem,
+): PendingReservationItem {
+  const start = new Date(item.scheduledStart);
+  const end = new Date(item.scheduledEnd);
+
+  return {
+    reservationId: item.reservationId,
+    treatmentName: item.treatment.name,
+    categoryLabel: item.category.name,
+    durationMinutes: Math.round((end.getTime() - start.getTime()) / 60_000),
+    timeLabel: TIME_FORMATTER.format(start),
+    totalPrice: Number(item.finalPrice),
+    proofUrl: item.latestDeposit?.imageUrl ?? null,
+    verified: item.latestDeposit?.status === "CONFIRMADO",
+    depositExpiresAt: item.depositExpiresAt,
+  };
+}
+
+export function toPendingReservation(
+  group: GroupedReservation,
+): PendingReservation {
+  return {
+    clientId: group.client.id,
+    client: {
+      name: group.client.name,
+      phone: group.client.phone,
+    },
+    dateLabel: formatDateLabel(new Date(group.items[0].scheduledStart)),
+    items: group.items.map(toPendingReservationItem),
+  };
+}
+
+interface UsePendingReservationsParams {
+  page: number;
+  pageSize: number;
+}
+
+export function usePendingReservations({
+  page,
+  pageSize,
+}: UsePendingReservationsParams) {
+  const query = useReservations(
+    { status: PENDING_DEPOSIT_STATUS, page, pageSize },
+    { keepPreviousData: true, refetchIntervalMs: PENDING_REFETCH_INTERVAL_MS },
+  );
+
+  const data = useMemo<PendingReservationsData | undefined>(() => {
+    if (!query.data) return undefined;
+
+    return {
+      reservations: query.data.data.map(toPendingReservation),
+      pagination: query.data.pagination,
+    };
+  }, [query.data]);
+
+  return {
+    data,
+    isLoading: query.isLoading,
+    isPlaceholderData: query.isPlaceholderData,
+    isError: query.isError,
+    refetch: query.refetch,
+  };
+}
 export function useReservation(reservationId: string) {
   return useQuery({
     queryKey: adminQueryKeys.reservations.detail(reservationId),

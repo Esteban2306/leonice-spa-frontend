@@ -1,27 +1,40 @@
-import { DashboardHeader } from "./components/dashboardHeader";
-import { DashboardMetrics } from "./components/dashboardMetrics";
+import { DashboardHeader } from "../components/dashboardHeader";
+import { DashboardMetrics } from "../components/dashboardMetrics";
 
 import type {
   DashboardHeaderActions,
   DashboardData,
+  AcceptReservationHandler,
 } from "@/src/features/admin/types/dashboard.types";
-import { PendingReservations } from "./components/pendingReservations";
+import { PendingReservations } from "../pending-reservations/pendingReservations";
 
 interface DashboardViewProps extends DashboardHeaderActions {
   data: DashboardData;
 
-  onAcceptReservation: (reservationId: string) => void;
+  isPendingReservationsLoading: boolean;
+  isPendingReservationsError: boolean;
+  onRetryPendingReservations: () => void;
+
+  onAcceptReservation: AcceptReservationHandler;
   onRescheduleReservation: (reservationId: string) => void;
-  onContactClient: (clientId: string) => void;
+  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancelReservation: (reservationId: string) => void;
   onViewProof: (reservationId: string, proofUrl: string) => void;
+
+  isCancellingReservation: boolean;
+  cancellingReservationId: string | null;
 
   onPendingReservationsPageChange: (page: number) => void;
 }
 
 export function DashboardView({
   data,
+  isPendingReservationsLoading,
+  isPendingReservationsError,
+  isCancellingReservation,
+  cancellingReservationId,
+  onRetryPendingReservations,
   onViewNotifications,
   onCreateReservation,
   onAcceptReservation,
@@ -47,6 +60,9 @@ export function DashboardView({
         <PendingReservations
           reservations={data.pendingReservations.reservations}
           pagination={data.pendingReservations.pagination}
+          isLoading={isPendingReservationsLoading}
+          isError={isPendingReservationsError}
+          onRetry={onRetryPendingReservations}
           onAccept={onAcceptReservation}
           onReschedule={onRescheduleReservation}
           onContactClient={onContactClient}
@@ -54,6 +70,8 @@ export function DashboardView({
           onCancel={onCancelReservation}
           onViewProof={onViewProof}
           onPageChange={onPendingReservationsPageChange}
+          isCancellingReservation={isCancellingReservation}
+          cancellingReservationId={cancellingReservationId}
         />
       </div>
     </main>

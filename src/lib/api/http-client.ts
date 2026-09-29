@@ -7,10 +7,12 @@ export class HttpClient {
   private readonly baseUrl: string;
   private readonly defaultHeaders: Record<string, string>;
   private readonly refreshEndpoint: string;
+  private readonly onSessionExpired?: () => void;
 
   constructor(config: HttpClientConfig) {
     this.baseUrl = config.baseUrl;
     this.refreshEndpoint = config.refreshEndpoint ?? "/auth/refresh";
+    this.onSessionExpired = config.onSessionExpired;
 
     this.defaultHeaders = {
       "Content-Type": "application/json",
@@ -27,7 +29,7 @@ export class HttpClient {
     try {
       const response = await this.rawRequest(path, method, body, options);
 
-      return this.handleResponse<T>(response);
+      return await this.handleResponse<T>(response);
     } catch (error) {
       if (
         error instanceof HttpError &&
@@ -75,9 +77,20 @@ export class HttpClient {
     }
 
     if (!refreshPromise) {
-      refreshPromise = this.refreshToken().finally(() => {
-        refreshPromise = null;
-      });
+      refreshPromise = this.refreshToken()
+        .catch((error: unknown) => {
+          if (
+            error instanceof HttpError &&
+            (error.status === 401 || error.status === 403)
+          ) {
+            this.onSessionExpired?.();
+          }
+
+          throw error;
+        })
+        .finally(() => {
+          refreshPromise = null;
+        });
     }
 
     try {
@@ -95,11 +108,11 @@ export class HttpClient {
     const response = await fetch(this.buildUrl(this.refreshEndpoint), {
       method: "POST",
       credentials: "include",
-      headers: this.buildCsrfHeaders(),
+      headers: this.buildCsrfHeaders("POST"),
     });
 
     if (!response.ok) {
-      throw new HttpError(401, "SESSION_EXPIRED");
+      throw new HttpError(response.status, "REFRESH_FAILED");
     }
   }
 
@@ -155,11 +168,24 @@ export class HttpClient {
     );
 
     if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          url.searchParams.append(key, String(value));
+      for (const [key, value] of Object.entries(params) as [
+        string,
+        unknown,
+      ][]) {
+        if (value === undefined || value === null) continue;
+
+        if (
+          typeof value !== "string" &&
+          typeof value !== "number" &&
+          typeof value !== "boolean"
+        ) {
+          throw new TypeError(
+            `El query param "${key}" debe ser string, number o boolean.`,
+          );
         }
-      });
+
+        url.searchParams.append(key, String(value));
+      }
     }
 
     return url.toString();
