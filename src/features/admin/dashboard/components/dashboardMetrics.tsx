@@ -20,42 +20,20 @@ export function DashboardMetrics({ data }: DashboardMetricsProps) {
         value={data.completedReservations.value}
         badge="Hoy"
         variant="featured"
-        footer={
-          <>
-            <span className="text-quaternary">
-              {data.completedReservations.comparison}
-            </span>
-
-            <span aria-hidden="true">·</span>
-
-            <span>
-              {data.completedReservations.todayInProgress} en sala hoy
-            </span>
-          </>
-        }
       />
 
       <DashboardMetricCard
         icon={Clock3}
         label="Reservas pendientes"
         value={data.pendingReservations.value}
-        description={data.pendingReservations.description}
-        footer={
-          <>
-            Tiempo medio de espera:{" "}
-            <span className="text-tertiary">
-              {data.pendingReservations.averageWaitMinutes} min
-            </span>
-          </>
-        }
+        description="Pendientes de depósito"
       />
 
       <DashboardMetricCard
         icon={Coins}
         label="Ganancias del día"
         value={data.dailyEarnings.value}
-        description={data.dailyEarnings.description}
-        footer={data.dailyEarnings.comparison}
+        description="Reservas completadas"
         format="currency"
       />
     </section>

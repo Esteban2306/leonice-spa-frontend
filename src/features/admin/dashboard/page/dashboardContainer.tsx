@@ -13,35 +13,9 @@ import type {
   AcceptReservationHandler,
   DashboardData,
 } from "@/src/features/admin/types/dashboard.types";
+import { useDashboardSummary } from "../../hooks/use-dashboard";
 
 const PAGE_SIZE = 3;
-
-const DASHBOARD_MOCK_SECTIONS: Omit<DashboardData, "pendingReservations"> = {
-  header: {
-    locationName: "Sede principal",
-    summary: {
-      todayAppointments: 8,
-      pendingConfirmations: 3,
-    },
-  },
-  metrics: {
-    completedReservations: {
-      value: 18,
-      comparison: "+4 frente a ayer",
-      todayInProgress: 6,
-    },
-    pendingReservations: {
-      value: 3,
-      description: "Necesitan tu confirmación",
-      averageWaitMinutes: 25,
-    },
-    dailyEarnings: {
-      value: 1_840_000,
-      comparison: "+12% vs. promedio semanal",
-      description: "Incluye adelantos confirmados",
-    },
-  },
-};
 
 function parsePage(raw: string | null): number {
   const parsed = Number(raw);
@@ -140,10 +114,42 @@ export function DashboardContainer() {
     console.log("Ver comprobante:", { reservationId, proofUrl }); // TODO
   };
 
+  const {
+    data: dashboardSummary,
+    isLoading: isDashboardSummaryLoading,
+    isError: isDashboardSummaryError,
+    refetch: refetchDashboardSummary,
+  } = useDashboardSummary();
+
+  const metrics: DashboardData["metrics"] = {
+    completedReservations: {
+      value: dashboardSummary?.metrics.completedReservations.value ?? 0,
+    },
+
+    pendingReservations: {
+      value: dashboardSummary?.metrics.pendingReservations.value ?? 0,
+    },
+
+    dailyEarnings: {
+      value: Number(dashboardSummary?.metrics.dailyEarnings.value ?? 0),
+      currency: dashboardSummary?.metrics.dailyEarnings.currency ?? "COP",
+    },
+  };
+
+  const dashboardHeader: DashboardData["header"] = {
+    locationName: "Sede principal",
+    summary: {
+      todayAppointments: dashboardSummary?.header.todayAppointments ?? 0,
+
+      pendingConfirmations: dashboardSummary?.header.pendingConfirmations ?? 0,
+    },
+  };
+
   return (
     <DashboardView
       data={{
-        ...DASHBOARD_MOCK_SECTIONS,
+        header: dashboardHeader,
+        metrics,
         pendingReservations: {
           reservations: pendingData?.reservations ?? [],
           pagination: pendingData?.pagination ?? {

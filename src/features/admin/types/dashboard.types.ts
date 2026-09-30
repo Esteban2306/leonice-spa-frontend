@@ -30,23 +30,17 @@ export interface PendingReservationsPagination {
 export interface DashboardMetricsData {
   completedReservations: {
     value: number;
-    comparison: string;
-    todayInProgress: number;
   };
 
   pendingReservations: {
     value: number;
-    description: string;
-    averageWaitMinutes: number;
   };
 
   dailyEarnings: {
     value: number;
-    comparison: string;
-    description: string;
+    currency: string;
   };
 }
-
 export interface PendingReservationItem {
   reservationId: string;
   treatmentName: string;
