@@ -1,6 +1,6 @@
 "use client";
 
-import { Timer } from "lucide-react";
+import { FileCheck, Timer } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 const URGENT_THRESHOLD_MS = 30 * 60 * 1000;
@@ -14,6 +14,7 @@ function subscribe(listener: () => void) {
 
   if (listeners.size === 1) {
     currentNow = Date.now();
+
     timer = setInterval(() => {
       currentNow = Date.now();
       listeners.forEach((notify) => notify());
@@ -48,11 +49,32 @@ function formatRemaining(ms: number): string {
 
 interface DepositCountdownProps {
   expiresAt: string | null;
+  proofUrl: string | null;
+  proofUnderReview?: boolean;
 }
 
-export function DepositCountdown({ expiresAt }: DepositCountdownProps) {
+export function DepositCountdown({
+  expiresAt,
+  proofUrl,
+  proofUnderReview = false,
+}: DepositCountdownProps) {
   const now = useNow();
 
+  // Cualquier comprobante enviado elimina el contador.
+  if (proofUrl) {
+    if (proofUnderReview) {
+      return (
+        <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-tertiary/20 px-3 py-1 font-sans text-xs font-medium text-secondary">
+          <FileCheck className="size-3.5" strokeWidth={1.8} />
+          Comprobante en revisión
+        </span>
+      );
+    }
+
+    return null;
+  }
+
+  // Sin comprobante: el contador sí aplica.
   if (!expiresAt) return null;
 
   const remainingMs = new Date(expiresAt).getTime() - now;

@@ -19,6 +19,7 @@ import { AcceptReservationButton } from "./acceptReservationButton";
 import { ClientAvatar } from "./clientAvatar";
 import { DepositCountdown } from "./depositCountdown";
 import { ReservationActionsPopover } from "./reservationActionsPopover";
+import { DepositProofViewer } from "./depositProofViewer";
 
 interface PendingReservationMobileProps {
   reservation: PendingReservation;
@@ -119,15 +120,17 @@ export function PendingReservationMobile({
                             {dateLabel}
                           </span>
                         </div>
-
                         <div className="flex items-center gap-2">
                           <Clock3 className="size-4 text-secondary" />
                           <span className="font-sans text-sm text-secondary">
                             {item.timeLabel}
                           </span>
                         </div>
-
-                        <DepositCountdown expiresAt={item.depositExpiresAt} />
+                        <DepositCountdown
+                          expiresAt={item.depositExpiresAt}
+                          proofUrl={item.proofUrl}
+                          proofUnderReview={item.proofUnderReview}
+                        />
                       </div>
                     </div>
 
@@ -165,24 +168,10 @@ export function PendingReservationMobile({
                     </div>
 
                     {proofUrl ? (
-                      <button
-                        type="button"
-                        aria-label={`Ver comprobante de ${client.name}`}
-                        onClick={() => onViewProof(reservationId, proofUrl)}
-                        className="group relative size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg border border-tertiary/30 bg-white"
-                      >
-                        <Image
-                          src={proofUrl}
-                          alt="Comprobante de pago"
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
-
-                        <span className="absolute inset-0 flex items-center justify-center bg-secondary/0 text-primary opacity-0 transition-all group-hover:bg-secondary/60 group-hover:opacity-100">
-                          <Eye className="size-5" />
-                        </span>
-                      </button>
+                      <DepositProofViewer
+                        proofUrl={proofUrl}
+                        clientName={client.name}
+                      />
                     ) : (
                       <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-dashed border-tertiary/40 p-1 text-center font-sans text-[10px] leading-tight text-secondary/50">
                         Sin comprobante
@@ -195,22 +184,21 @@ export function PendingReservationMobile({
                       reservationId={reservationId}
                       hasProof={Boolean(proofUrl)}
                       onAccept={onAccept}
-                      className="h-12 rounded-xl bg-secondary font-sans text-sm text-primary hover:bg-secondary/90"
+                      className="h-12 rounded-xl bg-secondary font-sans text-base text-primary hover:bg-secondary/90"
                     />
 
                     <ReservationActionsPopover
-                      reservationId={reservation.items[0].reservationId}
-                      clientId={reservation.clientId}
-                      clientName={reservation.client.name}
-                      clientPhone={reservation.client.phone}
+                      reservationId={reservationId}
+                      clientId={clientId}
+                      clientName={client.name}
+                      clientPhone={client.phone}
                       onReschedule={onReschedule}
                       onContactClient={onContactClient}
                       onViewClient={onViewClient}
                       onCancel={onCancel}
                       isCancelling={
                         isCancellingReservation &&
-                        cancellingReservationId ===
-                          reservation.items[0].reservationId
+                        cancellingReservationId === reservationId
                       }
                     />
                   </div>

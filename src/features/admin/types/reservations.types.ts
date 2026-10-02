@@ -82,6 +82,7 @@ export interface GroupedReservationItem {
   finalPrice: string;
   latestDeposit: LatestDepositSummary | null;
   hasUnresolvedDeposit: boolean;
+  isProofUnderReview: boolean;
   depositExpiresAt: string | null;
 }
 

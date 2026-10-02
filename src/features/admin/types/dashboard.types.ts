@@ -50,6 +50,7 @@ export interface PendingReservationItem {
   totalPrice: number;
   proofUrl: string | null;
   verified: boolean;
+  proofUnderReview: boolean;
   depositExpiresAt: string | null;
 }
 

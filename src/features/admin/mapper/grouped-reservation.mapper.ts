@@ -20,6 +20,7 @@ interface ApiGroupedReservationItem {
   depositExpiresAt: string | null;
   latestDeposit: ApiLatestDeposit | null;
   hasUnresolvedDeposit: boolean;
+  isProofUnderReview: boolean;
 }
 
 export interface ApiGroupedReservation {
@@ -81,6 +82,7 @@ function mapItem(item: ApiGroupedReservationItem): PendingReservationItem {
     totalPrice: Number(item.finalPrice),
     proofUrl: item.latestDeposit?.imageUrl ?? null,
     verified: item.latestDeposit?.status === "CONFIRMADO",
+    proofUnderReview: item.isProofUnderReview,
     depositExpiresAt: item.depositExpiresAt,
   };
 }
