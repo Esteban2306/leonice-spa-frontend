@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { depositsApi } from "../api/deposits.api";
+import { invalidateReservationDomain } from "./invalidate-reservation-domain";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
@@ -50,33 +51,6 @@ export function useReservationDeposits(reservationId: string) {
   });
 }
 
-function invalidateDepositQueries(
-  queryClient: ReturnType<typeof useQueryClient>,
-  reservationId?: string,
-) {
-  queryClient.invalidateQueries({
-    queryKey: adminQueryKeys.deposits.lists(),
-  });
-
-  if (reservationId) {
-    queryClient.invalidateQueries({
-      queryKey: adminQueryKeys.deposits.byReservation(reservationId),
-    });
-
-    queryClient.invalidateQueries({
-      queryKey: adminQueryKeys.reservations.detail(reservationId),
-    });
-  }
-
-  queryClient.invalidateQueries({
-    queryKey: adminQueryKeys.reservations.lists(),
-  });
-
-  queryClient.invalidateQueries({
-    queryKey: adminQueryKeys.dashboard.summary(),
-  });
-}
-
 export function useSubmitDepositProof() {
   const queryClient = useQueryClient();
 
@@ -89,9 +63,7 @@ export function useSubmitDepositProof() {
       reservationId: string;
       data: SubmitDepositProofData;
     }) => depositsApi.submitProof(reservationId, data),
-    onSuccess: (_data, variables) => {
-      invalidateDepositQueries(queryClient, variables.reservationId);
-    },
+    onSuccess: () => invalidateReservationDomain(queryClient),
   });
 }
 
@@ -102,9 +74,7 @@ export function useSubmitAutomaticDeposit() {
     mutationKey: ["admin", "deposits", "submit-automatic"],
     mutationFn: (data: SubmitAutomaticDepositRequest) =>
       depositsApi.submitAutomatic(data),
-    onSuccess: (_data, variables) => {
-      invalidateDepositQueries(queryClient, variables.reservationId);
-    },
+    onSuccess: () => invalidateReservationDomain(queryClient),
   });
 }
 
@@ -120,9 +90,7 @@ export function useSubmitAutomaticDepositForReservation() {
       reservationId: string;
       data: SubmitAutomaticDepositRequest;
     }) => depositsApi.submitAutomaticForReservation(reservationId, data),
-    onSuccess: (_data, variables) => {
-      invalidateDepositQueries(queryClient, variables.reservationId);
-    },
+    onSuccess: () => invalidateReservationDomain(queryClient),
   });
 }
 
@@ -138,9 +106,7 @@ export function useApproveDeposit() {
       reservationId: string;
       data: ApproveDepositRequest;
     }) => depositsApi.approve(reservationId, data),
-    onSuccess: (_data, variables) => {
-      invalidateDepositQueries(queryClient, variables.reservationId);
-    },
+    onSuccess: () => invalidateReservationDomain(queryClient),
   });
 }
 
@@ -156,8 +122,6 @@ export function useRejectDeposit() {
       reservationId: string;
       data: RejectDepositRequest;
     }) => depositsApi.reject(reservationId, data),
-    onSuccess: (_data, variables) => {
-      invalidateDepositQueries(queryClient, variables.reservationId);
-    },
+    onSuccess: () => invalidateReservationDomain(queryClient),
   });
 }
