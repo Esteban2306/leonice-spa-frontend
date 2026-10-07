@@ -1,49 +1,41 @@
-import { useMemo } from "react";
-import { useReservations } from "./use-reservations";
-import { mapGroupedReservationToPendingReservation } from "../mapper/grouped-reservation.mapper";
-import type { ApiGroupedReservation } from "../mapper/grouped-reservation.mapper";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-const PENDING_DEPOSIT_STATUS = "PENDIENTE_DEPOSITO" as const;
+import { mapGroupedReservationToPendingReservation } from "../mapper/grouped-reservation.mapper";
+import { reservationsListOptions } from "./use-reservations";
+
+import type { PendingReservationsData } from "../types/dashboard.types";
+import type { ReservationStatus } from "../types/enums";
+import type { PaginatedGroupedReservations } from "../types/reservations.types";
+
+const PENDING_DEPOSIT_STATUS: ReservationStatus = "PENDIENTE_DEPOSITO";
+const PENDING_REFETCH_INTERVAL_MS = 60 * 1000;
+
+function selectPendingReservations(
+  response: PaginatedGroupedReservations,
+): PendingReservationsData {
+  return {
+    reservations: response.data.map(mapGroupedReservationToPendingReservation),
+    pagination: response.pagination,
+  };
+}
 
 interface UsePendingReservationsParams {
   page: number;
   pageSize: number;
 }
 
-interface PendingReservationsApiResponse {
-  data: ApiGroupedReservation[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
 export function usePendingReservations({
   page,
   pageSize,
 }: UsePendingReservationsParams) {
-  const query = useReservations({
-    status: PENDING_DEPOSIT_STATUS,
-    page,
-    pageSize,
+  return useQuery({
+    ...reservationsListOptions({
+      status: PENDING_DEPOSIT_STATUS,
+      page,
+      pageSize,
+    }),
+    select: selectPendingReservations,
+    placeholderData: keepPreviousData,
+    refetchInterval: PENDING_REFETCH_INTERVAL_MS,
   });
-
-  const mapped = useMemo(() => {
-    const response = query.data as PendingReservationsApiResponse | undefined;
-    if (!response) return undefined;
-
-    return {
-      reservations: response.data.map(
-        mapGroupedReservationToPendingReservation,
-      ),
-      pagination: response.pagination,
-    };
-  }, [query.data]);
-
-  return {
-    ...query,
-    data: mapped,
-  };
 }

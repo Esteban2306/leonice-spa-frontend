@@ -1,4 +1,4 @@
-import { DepositCoverage } from "./enums";
+import type { DepositCoverage } from "./enums";
 
 export interface DashboardSummary {
   todayAppointments: number;
@@ -41,6 +41,9 @@ export interface DashboardMetricsData {
     currency: string;
   };
 }
+
+export type ProofStatus = "NONE" | "UNDER_REVIEW" | "REJECTED" | "VERIFIED";
+
 export interface PendingReservationItem {
   reservationId: string;
   treatmentName: string;
@@ -49,8 +52,7 @@ export interface PendingReservationItem {
   timeLabel: string;
   totalPrice: number;
   proofUrl: string | null;
-  verified: boolean;
-  proofUnderReview: boolean;
+  proofStatus: ProofStatus;
   depositExpiresAt: string | null;
 }
 
