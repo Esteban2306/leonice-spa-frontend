@@ -5,10 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { DashboardView } from "../page/dashboardView";
 import { useApproveDeposit } from "@/src/features/admin/hooks/use-deposits";
-import {
-  useAdminCancelReservation,
-  usePendingReservations,
-} from "@/src/features/admin/hooks/use-reservations";
+import { useAdminCancelReservation } from "@/src/features/admin/hooks/use-reservations";
+import { usePendingReservations } from "@/src/features/admin/hooks/use-pending-reservations";
 import type {
   AcceptReservationHandler,
   DashboardData,
@@ -89,16 +87,6 @@ export function DashboardContainer() {
     router.push(`/admin/calendar?reservationId=${reservationId}`);
   };
 
-  const handleContactClient = (phone: string) => {
-    const whatsappPhone = phone.replace(/\D/g, "");
-
-    window.open(
-      `https://wa.me/${whatsappPhone}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
-  };
-
   const handleViewClient = (clientId: string) => {
     router.push(`/admin/clients/${clientId}`);
   };
@@ -108,10 +96,6 @@ export function DashboardContainer() {
       reservationId,
       data: {},
     });
-  };
-
-  const handleViewProof = (reservationId: string, proofUrl: string) => {
-    console.log("Ver comprobante:", { reservationId, proofUrl }); // TODO
   };
 
   const {
@@ -145,6 +129,11 @@ export function DashboardContainer() {
     },
   };
 
+  // Se conservan a propósito hasta la entrega 1.2 (loading/error de métricas).
+  void isDashboardSummaryLoading;
+  void isDashboardSummaryError;
+  void refetchDashboardSummary;
+
   return (
     <DashboardView
       data={{
@@ -169,10 +158,8 @@ export function DashboardContainer() {
       onCreateReservation={handleCreateReservation}
       onAcceptReservation={handleAcceptReservation}
       onRescheduleReservation={handleRescheduleReservation}
-      onContactClient={handleContactClient}
       onViewClient={handleViewClient}
       onCancelReservation={handleCancelReservation}
-      onViewProof={handleViewProof}
       onPendingReservationsPageChange={goToPage}
       isCancellingReservation={cancelReservation.isPending}
       cancellingReservationId={

@@ -1,17 +1,22 @@
 "use client";
 
+import { CalendarDays, Clock3, Phone } from "lucide-react";
+
 import type {
   AcceptReservationHandler,
   PendingReservation,
 } from "@/src/features/admin/types/dashboard.types";
-import { CalendarDays, Clock3, Eye, Phone, ShieldCheck } from "lucide-react";
-import Image from "next/image";
 
 import { AcceptReservationButton } from "./acceptReservationButton";
 import { ClientAvatar } from "./clientAvatar";
 import { DepositCountdown } from "./depositCountdown";
-import { ReservationActionsPopover } from "./reservationActionsPopover";
 import { DepositProofViewer } from "./depositProofViewer";
+import {
+  PendingReservationStatusBadge,
+  ProofStatusNote,
+  getGroupProofStatus,
+} from "./pendingReservationStatusBadge";
+import { ReservationActionsPopover } from "./reservationActionsPopover";
 
 interface PendingReservationDesktopProps {
   reservation: PendingReservation;
@@ -21,10 +26,8 @@ interface PendingReservationDesktopProps {
 
   onAccept: AcceptReservationHandler;
   onReschedule: (reservationId: string) => void;
-  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancel: (reservationId: string) => void;
-  onViewProof: (reservationId: string, proofUrl: string) => void;
 }
 
 const COP_FORMATTER = new Intl.NumberFormat("es-CO", {
@@ -39,10 +42,8 @@ export function PendingReservationDesktop({
   isCancellingReservation,
   cancellingReservationId,
   onReschedule,
-  onContactClient,
   onViewClient,
   onCancel,
-  onViewProof,
 }: PendingReservationDesktopProps) {
   const { clientId, client, dateLabel, items } = reservation;
 
@@ -55,10 +56,11 @@ export function PendingReservationDesktop({
           <div className="min-w-0">
             <h3 className="font-sans text-2xl text-secondary">{client.name}</h3>
 
-            <span className="mt-2 inline-flex rounded-full border border-tertiary/40 bg-quaternary/30 px-3 py-1 font-sans text-xs font-medium text-secondary">
-              <span className="mr-2 size-1.5 self-center rounded-full bg-tertiary" />
-              Por confirmar
-            </span>
+            <div className="mt-2">
+              <PendingReservationStatusBadge
+                status={getGroupProofStatus(items)}
+              />
+            </div>
           </div>
         </div>
 
@@ -81,7 +83,7 @@ export function PendingReservationDesktop({
 
       <div className="flex flex-col divide-y divide-tertiary/25">
         {items.map((item) => {
-          const { reservationId, proofUrl } = item;
+          const { reservationId, proofUrl, proofStatus } = item;
 
           return (
             <div
@@ -116,9 +118,8 @@ export function PendingReservationDesktop({
                   </div>
                   <DepositCountdown
                     expiresAt={item.depositExpiresAt}
-                    proofUrl={item.proofUrl}
-                    proofUnderReview={item.proofUnderReview}
-                  />{" "}
+                    proofStatus={proofStatus}
+                  />
                 </div>
               </section>
 
@@ -137,14 +138,20 @@ export function PendingReservationDesktop({
 
                 <div className="mt-2">
                   <span className="font-sans text-xs uppercase tracking-[0.18em] text-secondary/50">
-                    Adelanto
+                    Precio
+                  </span>
+
+                  <p className="mt-2 font-sans text-xl text-secondary">
+                    {COP_FORMATTER.format(item.totalPrice)}
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <span className="font-sans text-xs uppercase tracking-[0.18em] text-secondary/50">
+                    Comprobante
                   </span>
 
                   <div className="mt-2 flex items-center gap-4">
-                    <span className="font-sans text-xl text-secondary">
-                      {COP_FORMATTER.format(item.totalPrice)}
-                    </span>
-
                     {proofUrl ? (
                       <DepositProofViewer
                         proofUrl={proofUrl}
@@ -155,21 +162,16 @@ export function PendingReservationDesktop({
                         Sin comprobante
                       </div>
                     )}
-                  </div>
 
-                  {item.verified && (
-                    <div className="mt-2 flex items-center gap-2 font-sans text-sm text-green-800">
-                      <ShieldCheck className="size-4" strokeWidth={1.8} />
-                      Comprobante verificado
-                    </div>
-                  )}
+                    <ProofStatusNote status={proofStatus} />
+                  </div>
                 </div>
               </section>
 
               <section className="flex flex-col justify-center gap-3 p-4 sm:p-3">
                 <AcceptReservationButton
                   reservationId={reservationId}
-                  hasProof={Boolean(proofUrl)}
+                  proofStatus={proofStatus}
                   onAccept={onAccept}
                   className="h-12 rounded-xl bg-secondary font-sans text-base text-primary hover:bg-secondary/90"
                 />
@@ -180,7 +182,6 @@ export function PendingReservationDesktop({
                   clientName={client.name}
                   clientPhone={client.phone}
                   onReschedule={onReschedule}
-                  onContactClient={onContactClient}
                   onViewClient={onViewClient}
                   onCancel={onCancel}
                   isCancelling={

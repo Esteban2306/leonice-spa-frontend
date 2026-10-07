@@ -34,20 +34,18 @@ interface PendingReservationsProps {
 
   onAccept: AcceptReservationHandler;
   onReschedule: (reservationId: string) => void;
-  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancel: (reservationId: string) => void;
-  onViewProof: (reservationId: string, proofUrl: string) => void;
 
   onPageChange: (page: number) => void;
 }
 
-type PaginationItem = number | "ellipsis";
+type PageToken = number | "ellipsis";
 
 function getPaginationItems(
   currentPage: number,
   totalPages: number,
-): PaginationItem[] {
+): PageToken[] {
   if (totalPages <= 5) {
     return Array.from({ length: totalPages }, (_, index) => index + 1);
   }
@@ -86,10 +84,8 @@ export function PendingReservations({
   onRetry,
   onAccept,
   onReschedule,
-  onContactClient,
   onViewClient,
   onCancel,
-  onViewProof,
   onPageChange,
   isCancellingReservation,
   cancellingReservationId,
@@ -177,10 +173,8 @@ export function PendingReservations({
             reservation={reservation}
             onAccept={onAccept}
             onReschedule={onReschedule}
-            onContactClient={onContactClient}
             onViewClient={onViewClient}
             onCancel={onCancel}
-            onViewProof={onViewProof}
             isCancellingReservation={isCancellingReservation}
             cancellingReservationId={cancellingReservationId}
           />

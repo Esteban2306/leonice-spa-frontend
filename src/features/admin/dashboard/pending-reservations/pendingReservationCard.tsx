@@ -16,10 +16,8 @@ interface PendingReservationCardProps {
 
   onAccept: AcceptReservationHandler;
   onReschedule: (reservationId: string) => void;
-  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancel: (reservationId: string) => void;
-  onViewProof: (reservationId: string, proofUrl: string) => void;
 }
 
 export function PendingReservationCard({
@@ -28,10 +26,8 @@ export function PendingReservationCard({
   onReschedule,
   isCancellingReservation,
   cancellingReservationId,
-  onContactClient,
   onViewClient,
   onCancel,
-  onViewProof,
 }: PendingReservationCardProps) {
   return (
     <article className="overflow-hidden rounded-[1.5rem] border border-tertiary/30 bg-[#FCF6EB]">
@@ -40,10 +36,8 @@ export function PendingReservationCard({
           reservation={reservation}
           onAccept={onAccept}
           onReschedule={onReschedule}
-          onContactClient={onContactClient}
           onViewClient={onViewClient}
           onCancel={onCancel}
-          onViewProof={onViewProof}
           isCancellingReservation={isCancellingReservation}
           cancellingReservationId={cancellingReservationId}
         />
@@ -53,10 +47,8 @@ export function PendingReservationCard({
           reservation={reservation}
           onAccept={onAccept}
           onReschedule={onReschedule}
-          onContactClient={onContactClient}
           onViewClient={onViewClient}
           onCancel={onCancel}
-          onViewProof={onViewProof}
           isCancellingReservation={isCancellingReservation}
           cancellingReservationId={cancellingReservationId}
         />

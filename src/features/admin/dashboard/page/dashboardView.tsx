@@ -17,10 +17,8 @@ interface DashboardViewProps extends DashboardHeaderActions {
 
   onAcceptReservation: AcceptReservationHandler;
   onRescheduleReservation: (reservationId: string) => void;
-  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancelReservation: (reservationId: string) => void;
-  onViewProof: (reservationId: string, proofUrl: string) => void;
 
   isCancellingReservation: boolean;
   cancellingReservationId: string | null;
@@ -39,10 +37,8 @@ export function DashboardView({
   onCreateReservation,
   onAcceptReservation,
   onRescheduleReservation,
-  onContactClient,
   onViewClient,
   onCancelReservation,
-  onViewProof,
   onPendingReservationsPageChange,
 }: DashboardViewProps) {
   return (
@@ -65,10 +61,8 @@ export function DashboardView({
           onRetry={onRetryPendingReservations}
           onAccept={onAcceptReservation}
           onReschedule={onRescheduleReservation}
-          onContactClient={onContactClient}
           onViewClient={onViewClient}
           onCancel={onCancelReservation}
-          onViewProof={onViewProof}
           onPageChange={onPendingReservationsPageChange}
           isCancellingReservation={isCancellingReservation}
           cancellingReservationId={cancellingReservationId}

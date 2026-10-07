@@ -22,7 +22,6 @@ interface ReservationActionsPopoverProps {
   clientPhone: string;
 
   onReschedule: (reservationId: string) => void;
-  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancel: (reservationId: string) => void;
   isCancelling: boolean;
@@ -34,7 +33,6 @@ export function ReservationActionsPopover({
   clientName,
   clientPhone,
   onReschedule,
-  onContactClient,
   onViewClient,
   onCancel,
   isCancelling,

@@ -4,12 +4,15 @@ import { Check } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/src/components/ui/button";
-import type { AcceptReservationHandler } from "@/src/features/admin/types/dashboard.types";
+import type {
+  AcceptReservationHandler,
+  ProofStatus,
+} from "@/src/features/admin/types/dashboard.types";
 import type { DepositCoverage } from "@/src/features/admin/types/enums";
 
 interface AcceptReservationButtonProps {
   reservationId: string;
-  hasProof: boolean;
+  proofStatus: ProofStatus;
   onAccept: AcceptReservationHandler;
   className: string;
 }
@@ -22,9 +25,16 @@ const COVERAGE_OPTIONS: ReadonlyArray<{
   { value: "PAGO_COMPLETO", label: "Pago completo" },
 ];
 
+const PROMPT_BY_PROOF_STATUS: Record<ProofStatus, string> = {
+  UNDER_REVIEW: "¿Qué cubre el pago?",
+  VERIFIED: "¿Qué cubre el pago?",
+  REJECTED: "El último comprobante fue rechazado. ¿Qué cubre el pago recibido?",
+  NONE: "Sin comprobante adjunto. ¿Qué cubre el pago recibido?",
+};
+
 export function AcceptReservationButton({
   reservationId,
-  hasProof,
+  proofStatus,
   onAccept,
   className,
 }: AcceptReservationButtonProps) {
@@ -66,9 +76,7 @@ export function AcceptReservationButton({
   return (
     <div className="flex flex-col gap-2">
       <p className="font-sans text-xs text-secondary/60">
-        {hasProof
-          ? "¿Qué cubre el pago?"
-          : "Sin comprobante adjunto. ¿Qué cubre el pago recibido?"}
+        {PROMPT_BY_PROOF_STATUS[proofStatus]}
       </p>
 
       {COVERAGE_OPTIONS.map((option) => (

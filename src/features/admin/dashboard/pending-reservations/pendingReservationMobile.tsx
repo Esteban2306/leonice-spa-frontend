@@ -1,7 +1,6 @@
 "use client";
 
-import { CalendarDays, Clock3, Eye, Phone, ShieldCheck } from "lucide-react";
-import Image from "next/image";
+import { CalendarDays, Clock3, Phone } from "lucide-react";
 
 import {
   Accordion,
@@ -18,8 +17,13 @@ import type {
 import { AcceptReservationButton } from "./acceptReservationButton";
 import { ClientAvatar } from "./clientAvatar";
 import { DepositCountdown } from "./depositCountdown";
-import { ReservationActionsPopover } from "./reservationActionsPopover";
 import { DepositProofViewer } from "./depositProofViewer";
+import {
+  PendingReservationStatusBadge,
+  ProofStatusNote,
+  getGroupProofStatus,
+} from "./pendingReservationStatusBadge";
+import { ReservationActionsPopover } from "./reservationActionsPopover";
 
 interface PendingReservationMobileProps {
   reservation: PendingReservation;
@@ -29,10 +33,8 @@ interface PendingReservationMobileProps {
 
   onAccept: AcceptReservationHandler;
   onReschedule: (reservationId: string) => void;
-  onContactClient: (phone: string) => void;
   onViewClient: (clientId: string) => void;
   onCancel: (reservationId: string) => void;
-  onViewProof: (reservationId: string, proofUrl: string) => void;
 }
 
 const COP_FORMATTER = new Intl.NumberFormat("es-CO", {
@@ -45,10 +47,8 @@ export function PendingReservationMobile({
   reservation,
   onAccept,
   onReschedule,
-  onContactClient,
   onViewClient,
   onCancel,
-  onViewProof,
   cancellingReservationId,
   isCancellingReservation,
 }: PendingReservationMobileProps) {
@@ -74,31 +74,33 @@ export function PendingReservationMobile({
                 {client.name}
               </h3>
 
-              <div className="mt-1 flex items-center gap-2">
-                <span className="size-1.5 shrink-0 rounded-full bg-tertiary" />
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <PendingReservationStatusBadge
+                  status={getGroupProofStatus(items)}
+                />
 
-                <span className="font-sans text-xs text-secondary/65">
-                  Por confirmar
-                  {items.length > 1 && ` · ${items.length} tratamientos`}
-                </span>
+                {items.length > 1 && (
+                  <span className="font-sans text-xs text-secondary/65">
+                    {items.length} tratamientos
+                  </span>
+                )}
               </div>
-
-              <a
-                href={`tel:${client.phone}`}
-                onClick={(event) => event.stopPropagation()}
-                className="mt-1 flex items-center gap-1.5 truncate font-sans text-xs text-secondary/60"
-              >
-                <Phone className="size-3.5 shrink-0" />
-                {client.phone}
-              </a>
             </div>
           </div>
         </AccordionTrigger>
 
         <AccordionContent className="px-4 sm:px-5">
           <div className="flex flex-col gap-5 border-t border-tertiary/25 pt-4">
+            <a
+              href={`tel:${client.phone}`}
+              className="flex w-fit items-center gap-2 font-sans text-sm text-secondary/70"
+            >
+              <Phone className="size-4 shrink-0" />
+              {client.phone}
+            </a>
+
             {items.map((item, index) => {
-              const { reservationId, proofUrl } = item;
+              const { reservationId, proofUrl, proofStatus } = item;
 
               return (
                 <div
@@ -128,8 +130,7 @@ export function PendingReservationMobile({
                         </div>
                         <DepositCountdown
                           expiresAt={item.depositExpiresAt}
-                          proofUrl={item.proofUrl}
-                          proofUnderReview={item.proofUnderReview}
+                          proofStatus={proofStatus}
                         />
                       </div>
                     </div>
@@ -150,21 +151,18 @@ export function PendingReservationMobile({
                   </div>
 
                   <div className="flex items-center justify-between gap-4 rounded-xl bg-quaternary/20 p-3">
-                    <div>
-                      <span className="font-sans text-xs uppercase tracking-[0.15em] text-secondary/50">
-                        Adelanto
-                      </span>
+                    <div className="flex min-w-0 flex-col gap-2">
+                      <div>
+                        <span className="font-sans text-xs uppercase tracking-[0.15em] text-secondary/50">
+                          Precio
+                        </span>
 
-                      <p className="mt-1 font-sans text-lg text-secondary">
-                        {COP_FORMATTER.format(item.totalPrice)}
-                      </p>
+                        <p className="mt-1 font-sans text-lg text-secondary">
+                          {COP_FORMATTER.format(item.totalPrice)}
+                        </p>
+                      </div>
 
-                      {item.verified && (
-                        <div className="mt-1 flex items-center gap-1.5 font-sans text-xs text-green-800">
-                          <ShieldCheck className="size-3.5" />
-                          Verificado
-                        </div>
-                      )}
+                      <ProofStatusNote status={proofStatus} />
                     </div>
 
                     {proofUrl ? (
@@ -182,7 +180,7 @@ export function PendingReservationMobile({
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <AcceptReservationButton
                       reservationId={reservationId}
-                      hasProof={Boolean(proofUrl)}
+                      proofStatus={proofStatus}
                       onAccept={onAccept}
                       className="h-12 rounded-xl bg-secondary font-sans text-base text-primary hover:bg-secondary/90"
                     />
@@ -193,7 +191,6 @@ export function PendingReservationMobile({
                       clientName={client.name}
                       clientPhone={client.phone}
                       onReschedule={onReschedule}
-                      onContactClient={onContactClient}
                       onViewClient={onViewClient}
                       onCancel={onCancel}
                       isCancelling={
