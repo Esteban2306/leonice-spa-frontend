@@ -1,5 +1,13 @@
 import { HttpClientConfig, HttpMethod, RequestOptions } from "./http.types";
-import { HttpError } from "./http-error";
+import { HttpError, type HttpErrorInit } from "./http-error";
+
+const MUTATING_METHODS: readonly HttpMethod[] = [
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+];
+const IDEMPOTENCY_HEADER = "Idempotency-Key";
 
 let refreshPromise: Promise<void> | null = null;
 
@@ -24,8 +32,10 @@ export class HttpClient {
     path: string,
     method: HttpMethod,
     body?: unknown,
-    options: RequestOptions = {},
+    requestOptions: RequestOptions = {},
   ): Promise<T> {
+    const options = this.withIdempotencyKey(method, requestOptions);
+
     try {
       const response = await this.rawRequest(path, method, body, options);
 
@@ -42,6 +52,25 @@ export class HttpClient {
 
       throw error;
     }
+  }
+
+  private withIdempotencyKey(
+    method: HttpMethod,
+    options: RequestOptions,
+  ): RequestOptions {
+    if (!MUTATING_METHODS.includes(method)) return options;
+    if (options.headers?.[IDEMPOTENCY_HEADER]) return options;
+    if (typeof crypto === "undefined" || !("randomUUID" in crypto)) {
+      return options;
+    }
+
+    return {
+      ...options,
+      headers: {
+        [IDEMPOTENCY_HEADER]: crypto.randomUUID(),
+        ...options.headers,
+      },
+    };
   }
 
   private async rawRequest(
@@ -193,9 +222,9 @@ export class HttpClient {
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
-      const message = await this.extractErrorMessage(response);
+      const { message, ...init } = await this.extractError(response);
 
-      throw new HttpError(response.status, message);
+      throw new HttpError(response.status, message, init);
     }
 
     if (response.status === 204) {
@@ -211,22 +240,29 @@ export class HttpClient {
     return JSON.parse(text) as T;
   }
 
-  private async extractErrorMessage(response: Response): Promise<string> {
+  private async extractError(
+    response: Response,
+  ): Promise<HttpErrorInit & { message: string }> {
+    const fallback = `HTTP Error ${response.status}`;
+
     try {
       const data: unknown = await response.json();
 
-      if (
-        typeof data === "object" &&
-        data !== null &&
-        "message" in data &&
-        typeof data.message === "string"
-      ) {
-        return data.message;
+      if (typeof data !== "object" || data === null) {
+        return { message: fallback };
       }
 
-      return `HTTP Error ${response.status}`;
+      const body = data as Record<string, unknown>;
+
+      return {
+        message: typeof body.message === "string" ? body.message : fallback,
+        code: typeof body.code === "string" ? body.code : null,
+        details: body.details,
+        correlationId:
+          typeof body.correlationId === "string" ? body.correlationId : null,
+      };
     } catch {
-      return `HTTP Error ${response.status}`;
+      return { message: fallback };
     }
   }
 }
