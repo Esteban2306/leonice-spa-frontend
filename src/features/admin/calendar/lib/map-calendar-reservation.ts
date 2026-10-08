@@ -18,6 +18,7 @@ export function mapCalendarReservation(
     clientId: reservation.client.id,
     clientName: reservation.client.name,
     phone: reservation.client.phone,
+    treatmentId: reservation.treatment.id,
     treatmentName: reservation.treatment.name,
     categoryId: reservation.category.id,
     categoryName: reservation.category.name,

@@ -36,6 +36,7 @@ interface ReservationActionsProps {
   belongsToCombo: boolean;
   actions: ReservationActionsApi;
   onViewClient: (clientId: string) => void;
+  onReschedule: (reservationId: string) => void;
 }
 
 const PRIMARY =
@@ -82,6 +83,7 @@ export function ReservationActions({
   belongsToCombo,
   actions,
   onViewClient,
+  onReschedule,
 }: ReservationActionsProps) {
   const [cancelOpen, setCancelOpen] = useState(false);
   const isBusy = actions.busyReservationId === reservation.id;
@@ -150,7 +152,9 @@ export function ReservationActions({
           onClick={() => void actions.checkIn(reservation.id)}
         >
           <LogIn className="size-4" />
-          {status === "NO_SHOW" ? "Registrar llegada tarde" : "Registrar llegada"}
+          {status === "NO_SHOW"
+            ? "Registrar llegada tarde"
+            : "Registrar llegada"}
         </button>
       )}
 
@@ -205,9 +209,10 @@ export function ReservationActions({
           <SecondaryButton
             icon={CalendarClock}
             label="Reagendar"
-            disabled
-            title="Reagendar desde el calendario llegará en la próxima entrega"
+            disabled={isBusy}
+            title="Elige un nuevo día y horario en el calendario"
             className="col-span-2"
+            onClick={() => onReschedule(reservation.id)}
           />
         )}
 

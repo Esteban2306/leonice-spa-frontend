@@ -32,6 +32,7 @@ import type {
 } from "../types/calendar.types";
 import type { ScheduleDialogMode } from "../components/schedule/schedule-exception-dialog";
 import { CalendarView } from "./calendar-view";
+import { useCalendarBooking } from "./use-calendar-booking";
 
 const NO_RESERVATIONS: readonly CalendarReservation[] = [];
 
@@ -64,6 +65,11 @@ export function CalendarContainer() {
   const [hasFocused, setHasFocused] = useState(false);
   const [scheduleDialog, setScheduleDialog] =
     useState<ScheduleDialogMode | null>(null);
+  const [bookingParams] = useState(() => ({
+    initialSetupOpen: searchParams.get("new") === "true",
+    presetClientId: searchParams.get("clientId"),
+    rescheduleReservationId: searchParams.get("reschedule"),
+  }));
 
   const range = getVisibleRange(cursor, viewMode);
   const selectedKey = toDateKey(selectedDate);
@@ -101,6 +107,24 @@ export function CalendarContainer() {
     setSelectedReservationId(focused.id);
   }
 
+  const booking = useCalendarBooking({
+    ...bookingParams,
+    range,
+    selectedKey,
+    reservations: calendarQuery.data ?? NO_RESERVATIONS,
+    onFocusDate: (date) => {
+      setSelectedDate(date);
+      setCursor(date);
+      setSelectedReservationId(null);
+    },
+    onFinished: (date, reservationId) => {
+      setSelectedDate(date);
+      setCursor(date);
+      setSelectedReservationId(reservationId);
+      syncUrl(date, viewMode, reservationId);
+    },
+  });
+
   const availableFilters = useMemo(
     () => buildCalendarFilters(categoriesQuery.data ?? []),
     [categoriesQuery.data],
@@ -132,7 +156,12 @@ export function CalendarContainer() {
   }
 
   function handleSelectDate(date: Date) {
-    selectDate(date);
+    if (booking.booking) {
+      setSelectedDate(date);
+      booking.clearSlot();
+    } else {
+      selectDate(date);
+    }
 
     if (viewMode === "month" && date.getMonth() !== cursor.getMonth()) {
       setCursor(date);
@@ -214,6 +243,11 @@ export function CalendarContainer() {
       onClearFilters={handleClearFilters}
       onSearchChange={setSearchQuery}
       onViewClient={(clientId) => router.push(`/admin/clients/${clientId}`)}
+      booking={booking}
+      onReschedule={(reservationId) => {
+        booking.startReschedule(reservationId);
+        setSelectedReservationId(null);
+      }}
     />
   );
 }

@@ -15,6 +15,7 @@ export interface CalendarReservation {
   clientId: string;
   clientName: string;
   phone: string;
+  treatmentId: string;
   treatmentName: string;
   categoryId: string;
   categoryName: string;
@@ -50,6 +51,34 @@ export interface ReservationGroup {
 export interface DayScheduleSummary {
   isClosed: boolean;
   hasExceptions: boolean;
+}
+
+export interface BookingService {
+  treatmentId: string;
+  name: string;
+  categoryName: string;
+  durationMinutes: number;
+}
+
+export interface BookingClient {
+  id: string | null;
+  name: string;
+  phone: string;
+}
+
+export interface BookingReservation {
+  id: string;
+  clientName: string;
+  scheduledStart: string;
+}
+
+export type BookingMode = "create" | "reschedule";
+
+export interface BookingSetup {
+  mode: BookingMode;
+  services: BookingService[];
+  reservation: BookingReservation | null;
+  client: BookingClient | null;
 }
 
 export interface ScheduleActionHandlers {

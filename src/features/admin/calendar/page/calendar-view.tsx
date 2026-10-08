@@ -11,6 +11,9 @@ import {
   type ScheduleDialogMode,
 } from "../components/schedule/schedule-exception-dialog";
 import { CalendarToolbar } from "../components/toolbar/calendar-toolbar";
+import { BookingPanel } from "../components/booking/booking-panel";
+import { BookingSetupDialog } from "../components/booking/booking-setup-dialog";
+import type { CalendarBooking } from "./use-calendar-booking";
 import type {
   CalendarFilter,
   CalendarReservation,
@@ -58,6 +61,8 @@ interface CalendarViewProps {
   onClearFilters: () => void;
   onSearchChange: (query: string) => void;
   onViewClient: (clientId: string) => void;
+  onReschedule: (reservationId: string) => void;
+  booking: CalendarBooking;
 }
 
 export function CalendarView({
@@ -95,7 +100,11 @@ export function CalendarView({
   onClearFilters,
   onSearchChange,
   onViewClient,
+  onReschedule,
+  booking,
 }: CalendarViewProps) {
+  const activeBooking = booking.booking;
+
   return (
     <div className="grid h-auto min-h-0 grid-cols-1 gap-3 p-2 sm:p-4 md:h-full md:gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
       <CalendarSurface
@@ -109,6 +118,11 @@ export function CalendarView({
             availableFilters={availableFilters}
             activeFilterIds={activeFilterIds}
             searchQuery={searchQuery}
+            booking={activeBooking}
+            isBookingLoading={booking.isAvailabilityLoading}
+            onCreateReservation={booking.openSetup}
+            onChangeBookingServices={booking.openSetup}
+            onExitBooking={booking.exit}
             onToday={onToday}
             onPrevious={onPrevious}
             onNext={onNext}
@@ -129,24 +143,59 @@ export function CalendarView({
           selectedDate={selectedDate}
           reservationsByDate={reservationsByDate}
           scheduleByDate={scheduleByDate}
+          booking={
+            activeBooking
+              ? {
+                  availabilityByDate: booking.availabilityByDate,
+                  isLoading: booking.isAvailabilityLoading,
+                }
+              : null
+          }
           onSelectDate={onSelectDate}
         />
       </CalendarSurface>
 
-      <DayDetailPanel
-        date={selectedDate}
-        todayKey={todayKey}
-        nowMs={nowMs}
-        reservations={selectedDayReservations}
-        selectedReservationId={selectedReservationId}
-        scheduleDay={scheduleDay}
-        isScheduleLoading={isScheduleDayLoading}
-        isSavingSchedule={scheduleActions.isSaving}
-        actions={reservationActions}
-        onSelectReservation={onSelectReservation}
-        onRemoveException={scheduleActions.removeException}
-        onViewClient={onViewClient}
-      />
+      {activeBooking ? (
+        <BookingPanel
+          key={`${activeBooking.mode}-${booking.slotIso ?? "none"}`}
+          booking={activeBooking}
+          date={selectedDate}
+          day={booking.selectedDay}
+          selectedSlotIso={booking.slotIso}
+          clientSearch={booking.clientSearch}
+          isSubmitting={booking.isSubmitting}
+          onSelectSlot={booking.selectSlot}
+          onCreate={(client, values) => void booking.create(client, values)}
+          onReschedule={(notify) => void booking.reschedule(notify)}
+        />
+      ) : (
+        <DayDetailPanel
+          date={selectedDate}
+          todayKey={todayKey}
+          nowMs={nowMs}
+          reservations={selectedDayReservations}
+          selectedReservationId={selectedReservationId}
+          scheduleDay={scheduleDay}
+          isScheduleLoading={isScheduleDayLoading}
+          isSavingSchedule={scheduleActions.isSaving}
+          actions={reservationActions}
+          onSelectReservation={onSelectReservation}
+          onRemoveException={scheduleActions.removeException}
+          onViewClient={onViewClient}
+          onReschedule={onReschedule}
+        />
+      )}
+
+      {booking.isSetupOpen && (
+        <BookingSetupDialog
+          categories={categories}
+          treatments={booking.treatments}
+          isLoadingCatalog={booking.isCatalogLoading}
+          client={booking.presetClient}
+          onClose={booking.closeSetup}
+          onConfirm={booking.startCreate}
+        />
+      )}
 
       {scheduleDialog && (
         <ScheduleExceptionDialog

@@ -5,4 +5,5 @@ export interface DayPanelHandlers {
   nowMs: number;
   actions: ReservationActions;
   onViewClient: (clientId: string) => void;
+  onReschedule: (reservationId: string) => void;
 }

@@ -10,6 +10,7 @@ const base: CalendarReservation = {
   clientId: "c1",
   clientName: "Ana Pérez",
   phone: "+573001234567",
+  treatmentId: "t1",
   treatmentName: "Pedespa",
   categoryId: "cat-nails",
   categoryName: "Uñas",
@@ -30,7 +31,10 @@ const base: CalendarReservation = {
   cancellationReason: null,
 };
 
-const row = (overrides: Partial<CalendarReservation>) => ({ ...base, ...overrides });
+const row = (overrides: Partial<CalendarReservation>) => ({
+  ...base,
+  ...overrides,
+});
 
 describe("buildCalendarFilters", () => {
   it("incluye estados, categorías reales y filtros de atención", () => {
@@ -56,20 +60,31 @@ describe("matchesFilters", () => {
   });
 
   it("OR dentro del grupo y AND entre grupos", () => {
-    const filters = ["status:CONFIRMADA", "status:COMPLETADA", "category:cat-hair"];
+    const filters = [
+      "status:CONFIRMADA",
+      "status:COMPLETADA",
+      "category:cat-hair",
+    ];
     expect(matchesFilters(row({}), filters)).toBe(false);
     expect(matchesFilters(row({ categoryId: "cat-hair" }), filters)).toBe(true);
     expect(
-      matchesFilters(row({ categoryId: "cat-hair", status: "COMPLETADA" }), filters),
+      matchesFilters(
+        row({ categoryId: "cat-hair", status: "COMPLETADA" }),
+        filters,
+      ),
     ).toBe(true);
   });
 
   it("filtros de atención: comprobante por revisar y combos", () => {
     expect(matchesFilters(row({}), ["attention:proof-review"])).toBe(false);
     expect(
-      matchesFilters(row({ isProofUnderReview: true }), ["attention:proof-review"]),
+      matchesFilters(row({ isProofUnderReview: true }), [
+        "attention:proof-review",
+      ]),
     ).toBe(true);
-    expect(matchesFilters(row({ comboGroupId: "g1" }), ["attention:combo"])).toBe(true);
+    expect(
+      matchesFilters(row({ comboGroupId: "g1" }), ["attention:combo"]),
+    ).toBe(true);
   });
 
   it("la búsqueda encuentra por nombre, tratamiento o dígitos del teléfono", () => {
