@@ -1,71 +1,85 @@
-import { DashboardHeader } from "../components/dashboardHeader";
-import { DashboardMetrics } from "../components/dashboardMetrics";
-
 import type {
   DashboardHeaderActions,
-  DashboardData,
-  AcceptReservationHandler,
+  DashboardHeaderData,
+  DashboardMetricsData,
+  DashboardPagination,
+  DashboardReservation,
+  DashboardView as DashboardViewId,
 } from "@/src/features/admin/types/dashboard.types";
-import { PendingReservations } from "../pending-reservations/pendingReservations";
 
-interface DashboardViewProps extends DashboardHeaderActions {
-  data: DashboardData;
+import { DashboardHeader } from "../components/dashboardHeader";
+import { DashboardMetrics } from "../components/dashboardMetrics";
+import type { ReservationPanelHandlers } from "../reservations-panel/panelHandlers";
+import { ReservationsPanel } from "../reservations-panel/reservationsPanel";
 
-  isPendingReservationsLoading: boolean;
-  isPendingReservationsError: boolean;
-  onRetryPendingReservations: () => void;
+interface DashboardViewProps
+  extends DashboardHeaderActions,
+    ReservationPanelHandlers {
+  header: DashboardHeaderData;
+  metrics: DashboardMetricsData;
+  isSummaryLoading: boolean;
+  isSummaryError: boolean;
+  onRetrySummary: () => void;
 
-  onAcceptReservation: AcceptReservationHandler;
-  onRescheduleReservation: (reservationId: string) => void;
-  onViewClient: (clientId: string) => void;
-  onCancelReservation: (reservationId: string) => void;
-
-  isCancellingReservation: boolean;
-  cancellingReservationId: string | null;
-
-  onPendingReservationsPageChange: (page: number) => void;
+  view: DashboardViewId;
+  onViewChange: (view: DashboardViewId) => void;
+  reservations: DashboardReservation[];
+  pagination: DashboardPagination;
+  isReservationsLoading: boolean;
+  isReservationsError: boolean;
+  onRetryReservations: () => void;
+  onPageChange: (page: number) => void;
 }
 
 export function DashboardView({
-  data,
-  isPendingReservationsLoading,
-  isPendingReservationsError,
-  isCancellingReservation,
-  cancellingReservationId,
-  onRetryPendingReservations,
+  header,
+  metrics,
+  isSummaryLoading,
+  isSummaryError,
+  onRetrySummary,
+  view,
+  onViewChange,
+  reservations,
+  pagination,
+  isReservationsLoading,
+  isReservationsError,
+  onRetryReservations,
+  onPageChange,
+  actions,
+  onOpenInCalendar,
+  onViewClient,
   onViewNotifications,
   onCreateReservation,
-  onAcceptReservation,
-  onRescheduleReservation,
-  onViewClient,
-  onCancelReservation,
-  onPendingReservationsPageChange,
 }: DashboardViewProps) {
   return (
     <main className="min-h-full bg-primary">
       <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6 p-5 sm:p-6 lg:p-8">
         <DashboardHeader
-          locationName={data.header.locationName}
-          summary={data.header.summary}
+          locationName={header.locationName}
+          summary={header.summary}
           onViewNotifications={onViewNotifications}
           onCreateReservation={onCreateReservation}
         />
 
-        <DashboardMetrics data={data.metrics} />
+        <DashboardMetrics
+          data={metrics}
+          isLoading={isSummaryLoading}
+          isError={isSummaryError}
+          onRetry={onRetrySummary}
+        />
 
-        <PendingReservations
-          reservations={data.pendingReservations.reservations}
-          pagination={data.pendingReservations.pagination}
-          isLoading={isPendingReservationsLoading}
-          isError={isPendingReservationsError}
-          onRetry={onRetryPendingReservations}
-          onAccept={onAcceptReservation}
-          onReschedule={onRescheduleReservation}
+        <ReservationsPanel
+          view={view}
+          onViewChange={onViewChange}
+          reservations={reservations}
+          pagination={pagination}
+          isLoading={isReservationsLoading}
+          isError={isReservationsError}
+          onRetry={onRetryReservations}
+          onPageChange={onPageChange}
+          actions={actions}
+          onOpenInCalendar={onOpenInCalendar}
           onViewClient={onViewClient}
-          onCancel={onCancelReservation}
-          onPageChange={onPendingReservationsPageChange}
-          isCancellingReservation={isCancellingReservation}
-          cancellingReservationId={cancellingReservationId}
         />
       </div>
     </main>

@@ -11,6 +11,10 @@ export type ReservationStatus =
 
 export type ReservationChannel = "WEB" | "WHATSAPP";
 
+export type CancellationSource = "CLIENT" | "ADMIN" | "TIMEOUT";
+
+export type ScheduleExceptionType = "BLOCK" | "OPEN";
+
 export type DepositStatus =
   | "PENDIENTE"
   | "CONFIRMADO"

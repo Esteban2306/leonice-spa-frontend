@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
+import { Toaster } from "@/src/components/ui/toast";
 
 import AdminSidebar from "@/src/features/admin/components/admin-app-sidebar";
+import { AdminSignalsWatcher } from "@/src/features/admin/feedback/admin-signals-watcher";
 import { useSession } from "@/src/features/auth/hooks/use-auth";
 
 export default function ProtectedLayout({
@@ -45,10 +47,14 @@ export default function ProtectedLayout({
   }
 
   return (
-    <SidebarProvider defaultOpen>
-      <AdminSidebar />
+    <Toaster limit={4}>
+      <AdminSignalsWatcher />
 
-      <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
+      <SidebarProvider defaultOpen>
+        <AdminSidebar />
+
+        <SidebarInset>{children}</SidebarInset>
+      </SidebarProvider>
+    </Toaster>
   );
 }

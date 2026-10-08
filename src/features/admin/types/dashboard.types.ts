@@ -1,4 +1,4 @@
-import type { DepositCoverage } from "./enums";
+import type { CancellationSource, ReservationStatus } from "./enums";
 
 export interface DashboardSummary {
   todayAppointments: number;
@@ -10,21 +10,9 @@ export interface DashboardHeaderData {
   summary: DashboardSummary;
 }
 
-export type AcceptReservationHandler = (
-  reservationId: string,
-  coverage: DepositCoverage,
-) => Promise<void>;
-
 export interface DashboardHeaderActions {
   onViewNotifications: () => void;
   onCreateReservation: () => void;
-}
-
-export interface PendingReservationsPagination {
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
 }
 
 export interface DashboardMetricsData {
@@ -44,35 +32,46 @@ export interface DashboardMetricsData {
 
 export type ProofStatus = "NONE" | "UNDER_REVIEW" | "REJECTED" | "VERIFIED";
 
-export interface PendingReservationItem {
+export type DashboardView = "pending" | "confirmed" | "completed" | "cancelled";
+
+export interface DashboardReservationItem {
   reservationId: string;
+  status: ReservationStatus;
   treatmentName: string;
   categoryLabel: string;
   durationMinutes: number;
+  scheduledStart: string;
+  isToday: boolean;
+  isUpcoming: boolean;
   timeLabel: string;
-  totalPrice: number;
+  priceThousands: number;
   proofUrl: string | null;
   proofStatus: ProofStatus;
   depositExpiresAt: string | null;
+  cancellationSource: CancellationSource | null;
+  cancellationReason: string | null;
 }
 
-export interface PendingReservation {
+export interface DashboardReservation {
+  groupKey: string;
   clientId: string;
   client: {
     name: string;
     phone: string;
   };
   dateLabel: string;
-  items: PendingReservationItem[];
+  isCombo: boolean;
+  items: DashboardReservationItem[];
 }
 
-export interface PendingReservationsData {
-  reservations: PendingReservation[];
-  pagination: PendingReservationsPagination;
+export interface DashboardPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
 }
 
-export interface DashboardData {
-  header: DashboardHeaderData;
-  metrics: DashboardMetricsData;
-  pendingReservations: PendingReservationsData;
+export interface DashboardReservationsData {
+  reservations: DashboardReservation[];
+  pagination: DashboardPagination;
 }

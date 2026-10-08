@@ -140,7 +140,17 @@ export const adminQueryKeys = {
 
   calendar: {
     all: () => [...adminQueryKeys.all, "calendar"] as const,
+    range: (params: unknown) =>
+      [...adminQueryKeys.calendar.all(), "range", params] as const,
     byDate: (params: unknown) =>
       [...adminQueryKeys.calendar.all(), params] as const,
+  },
+
+  schedule: {
+    all: () => [...adminQueryKeys.all, "schedule"] as const,
+    day: (date: string) =>
+      [...adminQueryKeys.schedule.all(), "day", date] as const,
+    exceptions: (params: unknown) =>
+      [...adminQueryKeys.schedule.all(), "exceptions", params] as const,
   },
 };

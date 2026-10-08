@@ -1,9 +1,13 @@
 import type {
-  AcceptReservationHandler,
-  PendingReservation,
+  DashboardPagination,
+  DashboardReservation,
+  DashboardView,
 } from "@/src/features/admin/types/dashboard.types";
 
-import { PendingReservationCard } from "./pendingReservationCard";
+import { getDashboardViewConfig } from "../lib/dashboard-views";
+import type { ReservationPanelHandlers } from "./panelHandlers";
+import { ReservationPanelCard } from "./reservationPanelCard";
+import { ReservationsViewToggle } from "./reservationsViewToggle";
 
 import {
   Pagination,
@@ -15,28 +19,16 @@ import {
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
 
-interface PendingReservationsProps {
-  reservations: PendingReservation[];
+export const RESERVATIONS_PANEL_ID = "reservations-panel";
 
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-
+interface ReservationsPanelProps extends ReservationPanelHandlers {
+  view: DashboardView;
+  onViewChange: (view: DashboardView) => void;
+  reservations: DashboardReservation[];
+  pagination: DashboardPagination;
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
-
-  isCancellingReservation: boolean;
-  cancellingReservationId: string | null;
-
-  onAccept: AcceptReservationHandler;
-  onReschedule: (reservationId: string) => void;
-  onViewClient: (clientId: string) => void;
-  onCancel: (reservationId: string) => void;
-
   onPageChange: (page: number) => void;
 }
 
@@ -76,20 +68,20 @@ function getPaginationItems(
   ];
 }
 
-export function PendingReservations({
+export function ReservationsPanel({
+  view,
+  onViewChange,
   reservations,
   pagination,
   isLoading,
   isError,
   onRetry,
-  onAccept,
-  onReschedule,
-  onViewClient,
-  onCancel,
   onPageChange,
-  isCancellingReservation,
-  cancellingReservationId,
-}: PendingReservationsProps) {
+  actions,
+  onOpenInCalendar,
+  onViewClient,
+}: ReservationsPanelProps) {
+  const config = getDashboardViewConfig(view);
   const { page, total, totalPages, pageSize } = pagination;
 
   const firstItem = total === 0 ? 0 : (page - 1) * pageSize + 1;
@@ -105,17 +97,18 @@ export function PendingReservations({
 
   return (
     <section
-      aria-labelledby="pending-reservations-title"
-      className="flex flex-col gap-5 bg-[#F7F1E3] p-4 rounded-2xl"
+      id={RESERVATIONS_PANEL_ID}
+      aria-labelledby="reservations-panel-title"
+      className="flex scroll-mt-6 flex-col gap-5 rounded-2xl bg-[#F7F1E3] p-4"
     >
-      <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <header className="flex flex-col gap-4">
         <div>
           <div className="flex items-center gap-3">
             <h2
-              id="pending-reservations-title"
+              id="reservations-panel-title"
               className="font-heading text-4xl text-secondary"
             >
-              Reservas pendientes
+              {config.title}
             </h2>
 
             <span className="flex size-9 items-center justify-center rounded-full bg-secondary font-sans text-sm text-primary">
@@ -123,11 +116,12 @@ export function PendingReservations({
             </span>
           </div>
 
-          <p className="mt-2 font-sans text-lg text-secondary/60">
-            Revisa el comprobante, acepta o gestiona cada reserva desde
-            Opciones.
+          <p className="mt-2 max-w-2xl font-sans text-lg text-secondary/60">
+            {config.description}
           </p>
         </div>
+
+        <ReservationsViewToggle view={view} onViewChange={onViewChange} />
       </header>
 
       <div
@@ -141,7 +135,7 @@ export function PendingReservations({
             role="status"
             className="py-10 text-center font-sans text-secondary/60"
           >
-            Cargando reservas pendientes…
+            Cargando reservas…
           </p>
         )}
 
@@ -150,7 +144,7 @@ export function PendingReservations({
             role="alert"
             className="flex flex-col items-center gap-3 py-10 text-center font-sans text-secondary"
           >
-            <p>No se pudieron cargar las reservas pendientes.</p>
+            <p>No se pudieron cargar las reservas. Revisa tu conexión.</p>
             <button
               type="button"
               onClick={onRetry}
@@ -163,20 +157,17 @@ export function PendingReservations({
 
         {isEmpty && (
           <p className="py-10 text-center font-sans text-secondary/60">
-            No hay reservas pendientes por confirmar.
+            {config.emptyMessage}
           </p>
         )}
 
         {reservations.map((reservation) => (
-          <PendingReservationCard
-            key={reservation.items[0].reservationId}
+          <ReservationPanelCard
+            key={reservation.groupKey}
             reservation={reservation}
-            onAccept={onAccept}
-            onReschedule={onReschedule}
+            actions={actions}
+            onOpenInCalendar={onOpenInCalendar}
             onViewClient={onViewClient}
-            onCancel={onCancel}
-            isCancellingReservation={isCancellingReservation}
-            cancellingReservationId={cancellingReservationId}
           />
         ))}
       </div>
@@ -184,7 +175,8 @@ export function PendingReservations({
       {total > 0 && (
         <footer className="flex flex-col gap-5 border-t border-tertiary/30 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-sans text-sm text-secondary/60">
-            Mostrando {firstItem}–{lastItem} de {total} reservas
+            Mostrando {firstItem}–{lastItem} de {total}{" "}
+            {total === 1 ? "cliente" : "clientes"}
           </p>
 
           <Pagination className="mx-0 w-auto justify-start sm:justify-end">

@@ -7,9 +7,7 @@ import type {
 
 export const clientsApi = {
   search(params: FindClientsParams) {
-    return httpClient.request("/clients", "GET", {
-      params,
-    });
+    return httpClient.request("/clients", "GET", undefined, { params });
   },
 
   findOne(clientId: string) {

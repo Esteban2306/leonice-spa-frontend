@@ -1,6 +1,8 @@
 import { ArrowUpRight, LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { formatCopFromThousands } from "@/src/lib/money/cop";
+
 type DashboardMetricCardVariant = "default" | "featured";
 type DashboardMetricCardFormat = "number" | "currency";
 
@@ -8,6 +10,7 @@ interface DashboardMetricCardProps {
   icon: LucideIcon;
   label: string;
   value: number;
+  isLoading?: boolean;
   description?: string;
   footer?: ReactNode;
   badge?: string;
@@ -20,11 +23,7 @@ function formatMetricValue(
   format: DashboardMetricCardFormat,
 ): string {
   if (format === "currency") {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(value);
+    return formatCopFromThousands(value);
   }
 
   return new Intl.NumberFormat("es-CO").format(value);
@@ -34,13 +33,14 @@ export function DashboardMetricCard({
   icon: Icon,
   label,
   value,
+  isLoading = false,
   description,
   footer,
   badge,
   variant = "default",
   format = "number",
 }: DashboardMetricCardProps) {
-  const formattedValue = formatMetricValue(value, format);
+  const formattedValue = isLoading ? "—" : formatMetricValue(value, format);
 
   const isFeatured = variant === "featured";
 
@@ -118,8 +118,10 @@ export function DashboardMetricCard({
 
       <div className="relative mt-2 flex flex-col gap-3">
         <p
+          aria-busy={isLoading}
           className={[
             "font-sans text-4xl leading-none tracking-tight sm:text-5xl",
+            isLoading ? "animate-pulse opacity-50" : "",
             isFeatured ? "text-primary" : "text-secondary",
           ].join(" ")}
         >

@@ -7,7 +7,10 @@ import type {
   CreateReservationRequest,
   FindReservationsParams,
   GetAvailabilityParams,
+  IssueCancellationLinkRequest,
+  IssuedCancellationLink,
   PaginatedGroupedReservations,
+  ReservationDetail,
   RescheduleReservationRequest,
 } from "../types/reservations.types";
 
@@ -28,7 +31,10 @@ export const reservationsApi = {
   },
 
   findOne(reservationId: string) {
-    return httpClient.request(`/reservations/${reservationId}`, "GET");
+    return httpClient.request<ReservationDetail>(
+      `/reservations/${reservationId}`,
+      "GET",
+    );
   },
 
   create(data: CreateReservationRequest) {
@@ -66,6 +72,24 @@ export const reservationsApi = {
     return httpClient.request(
       `/reservations/${reservationId}/admin-reschedule`,
       "PATCH",
+      data,
+    );
+  },
+
+  revive(reservationId: string) {
+    return httpClient.request(
+      `/reservations/${reservationId}/revive`,
+      "PATCH",
+    );
+  },
+
+  issueCancellationLink(
+    reservationId: string,
+    data: IssueCancellationLinkRequest,
+  ) {
+    return httpClient.request<IssuedCancellationLink>(
+      `/reservations/${reservationId}/cancellation-link`,
+      "POST",
       data,
     );
   },

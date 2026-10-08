@@ -1,12 +1,13 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
+  Category,
   CreateCategoryRequest,
   UpdateCategoryRequest,
 } from "../types/categories.types";
 
 export const categoriesApi = {
   findMany() {
-    return httpClient.request("/categories", "GET");
+    return httpClient.request<Category[]>("/categories", "GET");
   },
 
   findOne(categoryId: string) {

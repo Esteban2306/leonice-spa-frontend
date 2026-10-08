@@ -18,6 +18,7 @@ import type {
   CreateReservationRequest,
   FindReservationsParams,
   GetAvailabilityParams,
+  IssueCancellationLinkRequest,
   RescheduleReservationRequest,
 } from "../types/reservations.types";
 
@@ -51,10 +52,10 @@ export function useReservations(
   });
 }
 
-export function useReservation(reservationId: string) {
+export function useReservation(reservationId: string | null) {
   return useQuery({
-    queryKey: adminQueryKeys.reservations.detail(reservationId),
-    queryFn: () => reservationsApi.findOne(reservationId),
+    queryKey: adminQueryKeys.reservations.detail(reservationId ?? ""),
+    queryFn: () => reservationsApi.findOne(reservationId ?? ""),
     enabled: Boolean(reservationId),
     staleTime: RESERVATIONS_STALE_TIME,
     refetchOnWindowFocus: false,
@@ -147,6 +148,29 @@ export function useAdminRescheduleReservation() {
       data: AdminRescheduleReservationRequest;
     }) => reservationsApi.adminReschedule(reservationId, data),
     onSuccess: () => invalidateReservationDomain(queryClient),
+  });
+}
+
+export function useReviveReservation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "reservations", "revive"],
+    mutationFn: (reservationId: string) => reservationsApi.revive(reservationId),
+    onSuccess: () => invalidateReservationDomain(queryClient),
+  });
+}
+
+export function useIssueCancellationLink() {
+  return useMutation({
+    mutationKey: ["admin", "reservations", "cancellation-link"],
+    mutationFn: ({
+      reservationId,
+      data,
+    }: {
+      reservationId: string;
+      data: IssueCancellationLinkRequest;
+    }) => reservationsApi.issueCancellationLink(reservationId, data),
   });
 }
 

@@ -2,7 +2,7 @@ import { Clock3, FileCheck, FileX, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import type {
-  PendingReservationItem,
+  DashboardReservationItem,
   ProofStatus,
 } from "@/src/features/admin/types/dashboard.types";
 
@@ -43,20 +43,18 @@ const BADGE_BY_STATUS: Record<ProofStatus, BadgePresentation> = {
 };
 
 export function getGroupProofStatus(
-  items: readonly PendingReservationItem[],
+  items: readonly DashboardReservationItem[],
 ): ProofStatus {
   const present = new Set(items.map((item) => item.proofStatus));
 
   return PROOF_STATUS_PRIORITY.find((status) => present.has(status)) ?? "NONE";
 }
 
-interface PendingReservationStatusBadgeProps {
+interface ProofStatusBadgeProps {
   status: ProofStatus;
 }
 
-export function PendingReservationStatusBadge({
-  status,
-}: PendingReservationStatusBadgeProps) {
+export function ProofStatusBadge({ status }: ProofStatusBadgeProps) {
   const { label, Icon, className } = BADGE_BY_STATUS[status];
 
   return (

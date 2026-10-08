@@ -3,15 +3,23 @@
 import { useCallback, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { DashboardView } from "../page/dashboardView";
-import { useApproveDeposit } from "@/src/features/admin/hooks/use-deposits";
-import { useAdminCancelReservation } from "@/src/features/admin/hooks/use-reservations";
-import { usePendingReservations } from "@/src/features/admin/hooks/use-pending-reservations";
-import type {
-  AcceptReservationHandler,
-  DashboardData,
-} from "@/src/features/admin/types/dashboard.types";
+import { getBogotaDayKey } from "@/src/lib/date/bogota";
+import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
+
 import { useDashboardSummary } from "../../hooks/use-dashboard";
+import { useDashboardReservations } from "../../hooks/use-dashboard-reservations";
+import { useReservationActions } from "../../hooks/use-reservation-actions";
+import type {
+  DashboardHeaderData,
+  DashboardMetricsData,
+  DashboardView as DashboardViewId,
+} from "../../types/dashboard.types";
+import {
+  DEFAULT_DASHBOARD_VIEW,
+  isDashboardView,
+} from "../lib/dashboard-views";
+import { RESERVATIONS_PANEL_ID } from "../reservations-panel/reservationsPanel";
+import { DashboardView } from "./dashboardView";
 
 const PAGE_SIZE = 3;
 
@@ -25,16 +33,21 @@ export function DashboardContainer() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const rawView = searchParams.get("view");
+  const view: DashboardViewId = isDashboardView(rawView)
+    ? rawView
+    : DEFAULT_DASHBOARD_VIEW;
   const currentPage = parsePage(searchParams.get("page"));
+  const nowMs = useMinuteClock();
+  const todayKey = getBogotaDayKey(new Date(nowMs));
 
-  const goToPage = useCallback(
-    (page: number) => {
+  const replaceQuery = useCallback(
+    (updates: Record<string, string | null>) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (page <= 1) {
-        params.delete("page");
-      } else {
-        params.set("page", String(page));
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === null) params.delete(key);
+        else params.set(key, value);
       }
 
       const query = params.toString();
@@ -45,45 +58,52 @@ export function DashboardContainer() {
     [pathname, router, searchParams],
   );
 
-  const {
-    data: pendingData,
-    isLoading: isPendingInitialLoading,
-    isPlaceholderData: isPendingPageTransition,
-    isError: isPendingError,
-    refetch: refetchPending,
-  } = usePendingReservations({ page: currentPage, pageSize: PAGE_SIZE });
+  const goToPage = useCallback(
+    (page: number) => replaceQuery({ page: page <= 1 ? null : String(page) }),
+    [replaceQuery],
+  );
 
-  const approveDeposit = useApproveDeposit();
-  const cancelReservation = useAdminCancelReservation();
+  const changeView = useCallback(
+    (next: DashboardViewId) =>
+      replaceQuery({
+        view: next === DEFAULT_DASHBOARD_VIEW ? null : next,
+        page: null,
+      }),
+    [replaceQuery],
+  );
+
+  const reservationsQuery = useDashboardReservations({
+    view,
+    page: currentPage,
+    pageSize: PAGE_SIZE,
+    todayKey,
+  });
+  const summaryQuery = useDashboardSummary();
+  const actions = useReservationActions();
+
+  const { data: reservationsData } = reservationsQuery;
 
   useEffect(() => {
-    if (!pendingData) return;
+    if (!reservationsData) return;
 
-    const lastPage = Math.max(pendingData.pagination.totalPages, 1);
+    const lastPage = Math.max(reservationsData.pagination.totalPages, 1);
     if (currentPage > lastPage) {
       goToPage(lastPage);
     }
-  }, [pendingData, currentPage, goToPage]);
+  }, [reservationsData, currentPage, goToPage]);
 
   const handleViewNotifications = () => {
-    router.push("/admin/notifications");
+    changeView("pending");
+    document
+      .getElementById(RESERVATIONS_PANEL_ID)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleCreateReservation = () => {
     router.push("/admin/calendar?new=true");
   };
 
-  const handleAcceptReservation: AcceptReservationHandler = async (
-    reservationId,
-    coverage,
-  ) => {
-    await approveDeposit.mutateAsync({
-      reservationId,
-      data: { coverage },
-    });
-  };
-
-  const handleRescheduleReservation = (reservationId: string) => {
+  const handleOpenInCalendar = (reservationId: string) => {
     router.push(`/admin/calendar?reservationId=${reservationId}`);
   };
 
@@ -91,80 +111,58 @@ export function DashboardContainer() {
     router.push(`/admin/clients/${clientId}`);
   };
 
-  const handleCancelReservation = async (reservationId: string) => {
-    await cancelReservation.mutateAsync({
-      reservationId,
-      data: {},
-    });
-  };
+  const summary = summaryQuery.data;
 
-  const {
-    data: dashboardSummary,
-    isLoading: isDashboardSummaryLoading,
-    isError: isDashboardSummaryError,
-    refetch: refetchDashboardSummary,
-  } = useDashboardSummary();
-
-  const metrics: DashboardData["metrics"] = {
+  const metrics: DashboardMetricsData = {
     completedReservations: {
-      value: dashboardSummary?.metrics.completedReservations.value ?? 0,
+      value: summary?.metrics.completedReservations.value ?? 0,
     },
-
     pendingReservations: {
-      value: dashboardSummary?.metrics.pendingReservations.value ?? 0,
+      value: summary?.metrics.pendingReservations.value ?? 0,
     },
-
     dailyEarnings: {
-      value: Number(dashboardSummary?.metrics.dailyEarnings.value ?? 0),
-      currency: dashboardSummary?.metrics.dailyEarnings.currency ?? "COP",
+      value: Number(summary?.metrics.dailyEarnings.value ?? 0),
+      currency: summary?.metrics.dailyEarnings.currency ?? "COP",
     },
   };
 
-  const dashboardHeader: DashboardData["header"] = {
+  const header: DashboardHeaderData = {
     locationName: "Sede principal",
     summary: {
-      todayAppointments: dashboardSummary?.header.todayAppointments ?? 0,
-
-      pendingConfirmations: dashboardSummary?.header.pendingConfirmations ?? 0,
+      todayAppointments: summary?.header.todayAppointments ?? 0,
+      pendingConfirmations: summary?.header.pendingConfirmations ?? 0,
     },
   };
-
-  // Se conservan a propósito hasta la entrega 1.2 (loading/error de métricas).
-  void isDashboardSummaryLoading;
-  void isDashboardSummaryError;
-  void refetchDashboardSummary;
 
   return (
     <DashboardView
-      data={{
-        header: dashboardHeader,
-        metrics,
-        pendingReservations: {
-          reservations: pendingData?.reservations ?? [],
-          pagination: pendingData?.pagination ?? {
-            page: currentPage,
-            pageSize: PAGE_SIZE,
-            total: 0,
-            totalPages: 0,
-          },
-        },
-      }}
-      isPendingReservationsLoading={
-        isPendingInitialLoading || isPendingPageTransition
+      header={header}
+      metrics={metrics}
+      isSummaryLoading={summaryQuery.isLoading}
+      isSummaryError={summaryQuery.isError && !summary}
+      onRetrySummary={() => void summaryQuery.refetch()}
+      view={view}
+      onViewChange={changeView}
+      reservations={reservationsData?.reservations ?? []}
+      pagination={
+        reservationsData?.pagination ?? {
+          page: currentPage,
+          pageSize: PAGE_SIZE,
+          total: 0,
+          totalPages: 0,
+        }
       }
-      isPendingReservationsError={isPendingError}
-      onRetryPendingReservations={() => void refetchPending()}
+      isReservationsLoading={
+        reservationsQuery.isLoading || reservationsQuery.isPlaceholderData
+      }
+      isReservationsError={reservationsQuery.isError}
+      onRetryReservations={() => void reservationsQuery.refetch()}
+      onPageChange={goToPage}
+      actions={actions}
+      onOpenInCalendar={handleOpenInCalendar}
+      onViewClient={handleViewClient}
       onViewNotifications={handleViewNotifications}
       onCreateReservation={handleCreateReservation}
-      onAcceptReservation={handleAcceptReservation}
-      onRescheduleReservation={handleRescheduleReservation}
-      onViewClient={handleViewClient}
-      onCancelReservation={handleCancelReservation}
-      onPendingReservationsPageChange={goToPage}
-      isCancellingReservation={cancelReservation.isPending}
-      cancellingReservationId={
-        cancelReservation.variables?.reservationId ?? null
-      }
     />
   );
 }

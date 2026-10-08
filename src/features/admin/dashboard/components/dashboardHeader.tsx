@@ -2,6 +2,8 @@
 
 import { Bell, CalendarPlus, Moon, Sunrise, Sun, Sunset } from "lucide-react";
 
+import { BUSINESS_TIME_ZONE } from "@/src/lib/date/bogota";
+
 import type {
   DashboardHeaderActions,
   DashboardHeaderData,
@@ -43,12 +45,25 @@ function getTimePresentation(hour: number): TimePresentation {
   };
 }
 
+const BUSINESS_DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", {
+  timeZone: BUSINESS_TIME_ZONE,
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
+
+const BUSINESS_HOUR_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  timeZone: BUSINESS_TIME_ZONE,
+  hour: "numeric",
+  hourCycle: "h23",
+});
+
 function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("es-CO", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(date);
+  return BUSINESS_DATE_FORMATTER.format(date);
+}
+
+function getBusinessHour(date: Date): number {
+  return Number(BUSINESS_HOUR_FORMATTER.format(date));
 }
 
 export function DashboardHeader({
@@ -59,7 +74,7 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
   const now = new Date();
 
-  const { greeting, Icon } = getTimePresentation(now.getHours());
+  const { greeting, Icon } = getTimePresentation(getBusinessHour(now));
 
   const formattedDate = formatDate(now);
 

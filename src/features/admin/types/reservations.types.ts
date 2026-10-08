@@ -1,4 +1,5 @@
 import type {
+  CancellationSource,
   DepositCoverage,
   DepositStatus,
   ReservationChannel,
@@ -7,7 +8,10 @@ import type {
 
 export type FindReservationsParams = {
   date?: string;
+  from?: string;
+  to?: string;
   status?: ReservationStatus;
+  cancellationSources?: string;
   categoryId?: string;
   clientId?: string;
   hasUnresolvedDeposit?: boolean;
@@ -66,10 +70,29 @@ export interface AdminCancelReservationRequest {
   notifyClient?: boolean;
 }
 
+export interface IssueCancellationLinkRequest {
+  send: boolean;
+}
+
+export interface IssuedCancellationLink {
+  reservationId: string;
+  url: string;
+  expiresAt: string;
+  sent: boolean;
+}
+
+export interface ReservationDetail {
+  id: string;
+  status: ReservationStatus;
+  scheduledStart: string;
+  scheduledEnd: string;
+}
+
 export interface LatestDepositSummary {
   status: DepositStatus;
   coverage: DepositCoverage | null;
   imageUrl: string | null;
+  amount: string | null;
 }
 
 export interface GroupedReservationItem {
@@ -84,6 +107,10 @@ export interface GroupedReservationItem {
   hasUnresolvedDeposit: boolean;
   isProofUnderReview: boolean;
   depositExpiresAt: string | null;
+  cancellationSource: CancellationSource | null;
+  cancellationReason: string | null;
+  cancelledAt: string | null;
+  checkedInAt: string | null;
 }
 
 export interface GroupedReservation {

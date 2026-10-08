@@ -13,8 +13,12 @@ export interface FindDepositsParams {
   pageSize?: number;
 }
 
+export type ApproveDepositScope = "GROUP" | "SINGLE";
+
 export interface ApproveDepositRequest {
   coverage: DepositCoverage;
+  amount: number;
+  scope?: ApproveDepositScope;
 }
 
 export interface RejectDepositRequest {
