@@ -2,6 +2,7 @@ import { httpClient } from "@/src/lib/api/client";
 import type {
   CreateTreatmentRequest,
   FindTreatmentsParams,
+  Treatment,
   SetHairColorSurchargesRequest,
   SetHairLengthPricingRequest,
   UpdateTreatmentRequest,
@@ -9,7 +10,7 @@ import type {
 
 export const treatmentsApi = {
   findMany(params?: FindTreatmentsParams) {
-    return httpClient.request("/treatments", "GET", {
+    return httpClient.request<Treatment[]>("/treatments", "GET", undefined, {
       params,
     });
   },

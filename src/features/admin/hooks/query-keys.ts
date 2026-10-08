@@ -16,6 +16,12 @@ export const adminQueryKeys = {
       [...adminQueryKeys.reservations.details(), reservationId] as const,
     availability: (params: unknown) =>
       [...adminQueryKeys.reservations.all(), "availability", params] as const,
+    availabilityCalendar: (params: unknown) =>
+      [
+        ...adminQueryKeys.reservations.all(),
+        "availability-calendar",
+        params,
+      ] as const,
   },
 
   deposits: {
@@ -27,6 +33,8 @@ export const adminQueryKeys = {
       [...adminQueryKeys.deposits.all(), "pending", params] as const,
     byReservation: (reservationId: string) =>
       [...adminQueryKeys.deposits.all(), "reservation", reservationId] as const,
+    credits: (clientId: string) =>
+      [...adminQueryKeys.deposits.all(), "credits", clientId] as const,
   },
 
   clients: {

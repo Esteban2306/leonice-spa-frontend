@@ -3,6 +3,7 @@ import type { ReservationActions } from "@/src/features/admin/hooks/use-reservat
 export interface ReservationPanelHandlers {
   actions: ReservationActions;
   onOpenInCalendar: (reservationId: string) => void;
+  onReschedule: (reservationId: string) => void;
   onViewClient: (clientId: string) => void;
 }
 

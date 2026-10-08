@@ -18,5 +18,8 @@ export async function invalidateReservationDomain(
     queryClient.invalidateQueries({
       queryKey: adminQueryKeys.dashboard.summary(),
     }),
+    queryClient.invalidateQueries({
+      queryKey: adminQueryKeys.clients.all(),
+    }),
   ]);
 }

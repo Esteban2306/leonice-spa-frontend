@@ -19,6 +19,7 @@ export function ReservationPanelDesktop({
   reservation,
   actions,
   onOpenInCalendar,
+  onReschedule,
   onViewClient,
 }: ReservationPanelDesktopProps) {
   const { clientId, client, dateLabel, items, isCombo } = reservation;
@@ -85,6 +86,7 @@ export function ReservationPanelDesktop({
                 client={panelClient}
                 actions={actions}
                 onOpenInCalendar={onOpenInCalendar}
+                onReschedule={onReschedule}
                 onViewClient={onViewClient}
               />
             </section>

@@ -25,6 +25,7 @@ export function ReservationPanelMobile({
   reservation,
   actions,
   onOpenInCalendar,
+  onReschedule,
   onViewClient,
 }: ReservationPanelMobileProps) {
   const { clientId, client, dateLabel, items, isCombo } = reservation;
@@ -77,6 +78,7 @@ export function ReservationPanelMobile({
                   client={panelClient}
                   actions={actions}
                   onOpenInCalendar={onOpenInCalendar}
+                  onReschedule={onReschedule}
                   onViewClient={onViewClient}
                 />
               </div>

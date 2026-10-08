@@ -47,6 +47,7 @@ export function DashboardView({
   onPageChange,
   actions,
   onOpenInCalendar,
+  onReschedule,
   onViewClient,
   onViewNotifications,
   onCreateReservation,
@@ -79,6 +80,7 @@ export function DashboardView({
           onPageChange={onPageChange}
           actions={actions}
           onOpenInCalendar={onOpenInCalendar}
+          onReschedule={onReschedule}
           onViewClient={onViewClient}
         />
       </div>

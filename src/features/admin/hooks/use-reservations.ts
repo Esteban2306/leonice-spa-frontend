@@ -13,6 +13,7 @@ import { adminQueryKeys } from "./query-keys";
 import type {
   AdminCancelReservationRequest,
   AdminRescheduleReservationRequest,
+  AvailabilityCalendarParams,
   CancelReservationRequest,
   ConfirmValoracionRequest,
   CreateReservationRequest,
@@ -61,6 +62,19 @@ export function useReservation(reservationId: string | null) {
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,
+  });
+}
+
+export function useAvailabilityCalendar(
+  params: AvailabilityCalendarParams | null,
+) {
+  return useQuery({
+    queryKey: adminQueryKeys.reservations.availabilityCalendar(params),
+    queryFn: () => reservationsApi.getAvailabilityCalendar(params!),
+    enabled: params !== null,
+    staleTime: AVAILABILITY_STALE_TIME,
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
   });
 }
 

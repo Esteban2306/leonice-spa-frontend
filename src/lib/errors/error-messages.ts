@@ -35,4 +35,9 @@ export const FRIENDLY_ERROR_MESSAGES: Readonly<Record<string, string>> = {
   SCHEDULE_EXCEPTION_INVALID_RANGE:
     "La hora de inicio debe ser anterior a la hora de fin.",
   DATE_RANGE_INVALID: "El rango de fechas no es válido.",
+  CLIENT_ALREADY_EXISTS:
+    "Ya existe un cliente con ese teléfono. Búscalo en el directorio.",
+  CLIENT_HEALTH_CONSENT_REQUIRED:
+    "Registra el consentimiento de datos de salud antes de guardar alergias o embarazo.",
+  CLIENT_SEARCH_TOO_SHORT: "Escribe al menos 2 letras o 4 dígitos para buscar.",
 };

@@ -1,6 +1,8 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
   ApproveDepositRequest,
+  ClientCreditSummary,
+  PaginatedDeposits,
   FindDepositsParams,
   FindPendingDepositsParams,
   RejectDepositRequest,
@@ -14,7 +16,18 @@ export interface SubmitDepositProofData {
 
 export const depositsApi = {
   findMany(params?: FindDepositsParams) {
-    return httpClient.request("/deposits", "GET", undefined, { params });
+    return httpClient.request<PaginatedDeposits>("/deposits", "GET", undefined, {
+      params,
+    });
+  },
+
+  findClientCredits(clientId: string) {
+    return httpClient.request<ClientCreditSummary>(
+      "/deposits/credits",
+      "GET",
+      undefined,
+      { params: { clientId } },
+    );
   },
 
   findPending(params: FindPendingDepositsParams) {

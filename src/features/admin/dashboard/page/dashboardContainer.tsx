@@ -107,6 +107,10 @@ export function DashboardContainer() {
     router.push(`/admin/calendar?reservationId=${reservationId}`);
   };
 
+  const handleReschedule = (reservationId: string) => {
+    router.push(`/admin/calendar?reschedule=${reservationId}`);
+  };
+
   const handleViewClient = (clientId: string) => {
     router.push(`/admin/clients/${clientId}`);
   };
@@ -160,6 +164,7 @@ export function DashboardContainer() {
       onPageChange={goToPage}
       actions={actions}
       onOpenInCalendar={handleOpenInCalendar}
+      onReschedule={handleReschedule}
       onViewClient={handleViewClient}
       onViewNotifications={handleViewNotifications}
       onCreateReservation={handleCreateReservation}

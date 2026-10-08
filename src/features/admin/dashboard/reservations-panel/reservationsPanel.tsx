@@ -79,6 +79,7 @@ export function ReservationsPanel({
   onPageChange,
   actions,
   onOpenInCalendar,
+  onReschedule,
   onViewClient,
 }: ReservationsPanelProps) {
   const config = getDashboardViewConfig(view);
@@ -167,6 +168,7 @@ export function ReservationsPanel({
             reservation={reservation}
             actions={actions}
             onOpenInCalendar={onOpenInCalendar}
+            onReschedule={onReschedule}
             onViewClient={onViewClient}
           />
         ))}

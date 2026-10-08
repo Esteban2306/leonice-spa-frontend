@@ -86,6 +86,47 @@ export interface ReservationDetail {
   status: ReservationStatus;
   scheduledStart: string;
   scheduledEnd: string;
+  comboGroupId: string | null;
+  client: { id: string; name: string; phone: string };
+  treatment: { id: string; name: string };
+}
+
+export type AvailabilityPurpose = "CREATE" | "RESCHEDULE";
+
+export type AvailabilityDayReason =
+  | "OUT_OF_RANGE"
+  | "TOO_SOON"
+  | "CLOSED"
+  | "FULL";
+
+export interface AvailabilitySlot {
+  iso: string;
+  localTime: string;
+}
+
+export interface AvailabilityDay {
+  date: string;
+  available: boolean;
+  reason: AvailabilityDayReason | null;
+  slots: AvailabilitySlot[];
+}
+
+export interface AvailabilityCalendarResponse {
+  treatmentIds: string[];
+  days: AvailabilityDay[];
+}
+
+export interface AvailabilityCalendarParams {
+  treatmentIds: string;
+  from: string;
+  to: string;
+  purpose: AvailabilityPurpose;
+}
+
+export interface CreatedReservations {
+  reservations: Array<{ id: string; scheduledStart: string }>;
+  summary: string;
+  creditAppliedReservationIds: string[];
 }
 
 export interface LatestDepositSummary {

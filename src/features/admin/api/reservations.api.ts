@@ -2,6 +2,9 @@ import { httpClient } from "@/src/lib/api/client";
 import type {
   AdminCancelReservationRequest,
   AdminRescheduleReservationRequest,
+  AvailabilityCalendarParams,
+  AvailabilityCalendarResponse,
+  CreatedReservations,
   CancelReservationRequest,
   ConfirmValoracionRequest,
   CreateReservationRequest,
@@ -37,8 +40,17 @@ export const reservationsApi = {
     );
   },
 
+  getAvailabilityCalendar(params: AvailabilityCalendarParams) {
+    return httpClient.request<AvailabilityCalendarResponse>(
+      "/reservations/availability/calendar",
+      "GET",
+      undefined,
+      { params },
+    );
+  },
+
   create(data: CreateReservationRequest) {
-    return httpClient.request("/reservations", "POST", data);
+    return httpClient.request<CreatedReservations>("/reservations", "POST", data);
   },
 
   cancel(reservationId: string, data: CancelReservationRequest) {

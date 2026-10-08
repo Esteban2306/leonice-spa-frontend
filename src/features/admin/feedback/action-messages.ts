@@ -36,6 +36,34 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Enlace de cancelación copiado. Puedes pegarlo en el chat del cliente.",
     error: "No se pudo generar el enlace de cancelación",
   },
+  createReservation: {
+    success: "Reserva creada. Quedó esperando el depósito del cliente.",
+    error: "No se pudo crear la reserva",
+  },
+  rescheduleReservation: {
+    success: "Reserva reagendada.",
+    error: "No se pudo reagendar la reserva",
+  },
+  createClient: {
+    success: "Cliente creado.",
+    error: "No se pudo crear el cliente",
+  },
+  updateClient: {
+    success: "Perfil del cliente actualizado.",
+    error: "No se pudo guardar el perfil",
+  },
+  setHairProfile: {
+    success: "Perfil capilar actualizado. Queda vigente por 4 meses.",
+    error: "No se pudo guardar el perfil capilar",
+  },
+  confirmHairProfile: {
+    success: "Vigencia del perfil capilar renovada por 4 meses.",
+    error: "No se pudo confirmar el perfil capilar",
+  },
+  recordConsent: {
+    success: "Consentimiento registrado.",
+    error: "No se pudo registrar el consentimiento",
+  },
   blockSchedule: {
     success: "Horario bloqueado. Ya no se ofrecerá para reservas.",
     error: "No se pudo bloquear el horario",

@@ -1,9 +1,10 @@
 "use client";
 
-import { Check, FileX, LogIn, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, Ellipsis, FileX, LogIn, RotateCcw } from "lucide-react";
 
 import { ApproveDepositDialog } from "@/src/features/admin/components/reservation-actions/approve-deposit-dialog";
 import { RejectDepositDialog } from "@/src/features/admin/components/reservation-actions/reject-deposit-dialog";
+import { ReservationOptionsMenu } from "@/src/features/admin/components/reservation-actions/reservation-options-menu";
 import type { DashboardReservationItem } from "@/src/features/admin/types/dashboard.types";
 import {
   canCheckIn,
@@ -14,7 +15,6 @@ import type {
   ReservationPanelClient,
   ReservationPanelHandlers,
 } from "./panelHandlers";
-import { ReservationOptionsPopover } from "./reservationOptionsPopover";
 
 interface ReservationItemActionsProps extends ReservationPanelHandlers {
   item: DashboardReservationItem;
@@ -34,6 +34,7 @@ export function ReservationItemActions({
   client,
   actions,
   onOpenInCalendar,
+  onReschedule,
   onViewClient,
 }: ReservationItemActionsProps) {
   const isBusy = actions.busyReservationId === item.reservationId;
@@ -100,12 +101,30 @@ export function ReservationItemActions({
         </button>
       )}
 
-      <ReservationOptionsPopover
-        item={item}
-        client={client}
+      <ReservationOptionsMenu
+        target={{
+          reservationId: item.reservationId,
+          status: item.status,
+          isUpcoming: item.isUpcoming,
+          clientId: client.clientId,
+          clientName: client.name,
+          clientPhone: client.phone,
+          treatmentName: item.treatmentName,
+        }}
         actions={actions}
-        onOpenInCalendar={onOpenInCalendar}
         onViewClient={onViewClient}
+        onReschedule={onReschedule}
+        onOpenInCalendar={onOpenInCalendar}
+        trigger={
+          <button
+            type="button"
+            className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-tertiary/30 bg-primary px-4 font-sans text-base text-secondary transition-colors hover:bg-quaternary/30"
+          >
+            <Ellipsis className="size-4.5" strokeWidth={1.8} />
+            Opciones
+            <ChevronDown className="size-4" strokeWidth={1.8} />
+          </button>
+        }
       />
     </div>
   );

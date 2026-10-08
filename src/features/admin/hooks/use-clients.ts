@@ -1,25 +1,36 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { clientsApi } from "../api/clients.api";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
+  CreateClientRequest,
   FindClientsParams,
+  RecordConsentRequest,
   ResolveClientRequest,
+  SetHairProfileRequest,
   UpdateClientRequest,
 } from "../types/clients.types";
 
-const CLIENTS_STALE_TIME = 2 * 60 * 1000;
+const CLIENTS_STALE_TIME = 60 * 1000;
 
-export function useClients(params: FindClientsParams) {
+export function useClients(
+  params: FindClientsParams,
+  options: { enabled?: boolean } = {},
+) {
   return useQuery({
     queryKey: adminQueryKeys.clients.list(params),
     queryFn: () => clientsApi.search(params),
-    enabled: Boolean(params.q && params.q.trim().length >= 2),
+    enabled: options.enabled ?? true,
+    placeholderData: keepPreviousData,
     staleTime: CLIENTS_STALE_TIME,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
-    refetchOnMount: false,
   });
 }
 
@@ -31,26 +42,45 @@ export function useClient(clientId: string) {
     staleTime: CLIENTS_STALE_TIME,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
-    refetchOnMount: false,
   });
 }
 
-export function useResolveClient() {
+function useInvalidateClient() {
   const queryClient = useQueryClient();
+
+  return (clientId?: string) =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: adminQueryKeys.clients.lists() }),
+      clientId
+        ? queryClient.invalidateQueries({
+            queryKey: adminQueryKeys.clients.detail(clientId),
+          })
+        : Promise.resolve(),
+    ]);
+}
+
+export function useResolveClient() {
+  const invalidate = useInvalidateClient();
 
   return useMutation({
     mutationKey: ["admin", "clients", "resolve"],
     mutationFn: (data: ResolveClientRequest) => clientsApi.resolve(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.clients.lists(),
-      });
-    },
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useCreateClient() {
+  const invalidate = useInvalidateClient();
+
+  return useMutation({
+    mutationKey: ["admin", "clients", "create"],
+    mutationFn: (data: CreateClientRequest) => clientsApi.create(data),
+    onSuccess: () => invalidate(),
   });
 }
 
 export function useUpdateClient() {
-  const queryClient = useQueryClient();
+  const invalidate = useInvalidateClient();
 
   return useMutation({
     mutationKey: ["admin", "clients", "update"],
@@ -61,14 +91,48 @@ export function useUpdateClient() {
       clientId: string;
       data: UpdateClientRequest;
     }) => clientsApi.update(clientId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.clients.detail(variables.clientId),
-      });
+    onSuccess: (_data, variables) => invalidate(variables.clientId),
+  });
+}
 
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.clients.lists(),
-      });
-    },
+export function useSetHairProfile() {
+  const invalidate = useInvalidateClient();
+
+  return useMutation({
+    mutationKey: ["admin", "clients", "hair-profile"],
+    mutationFn: ({
+      clientId,
+      data,
+    }: {
+      clientId: string;
+      data: SetHairProfileRequest;
+    }) => clientsApi.setHairProfile(clientId, data),
+    onSuccess: (_data, variables) => invalidate(variables.clientId),
+  });
+}
+
+export function useConfirmHairProfile() {
+  const invalidate = useInvalidateClient();
+
+  return useMutation({
+    mutationKey: ["admin", "clients", "hair-profile-confirm"],
+    mutationFn: (clientId: string) => clientsApi.confirmHairProfile(clientId),
+    onSuccess: (_data, clientId) => invalidate(clientId),
+  });
+}
+
+export function useRecordConsent() {
+  const invalidate = useInvalidateClient();
+
+  return useMutation({
+    mutationKey: ["admin", "clients", "consent"],
+    mutationFn: ({
+      clientId,
+      data,
+    }: {
+      clientId: string;
+      data: RecordConsentRequest;
+    }) => clientsApi.recordConsent(clientId, data),
+    onSuccess: (_data, variables) => invalidate(variables.clientId),
   });
 }

@@ -39,6 +39,16 @@ export function usePendingDeposits(params: FindPendingDepositsParams) {
   });
 }
 
+export function useClientCredits(clientId: string) {
+  return useQuery({
+    queryKey: adminQueryKeys.deposits.credits(clientId),
+    queryFn: () => depositsApi.findClientCredits(clientId),
+    enabled: Boolean(clientId),
+    staleTime: DEPOSITS_STALE_TIME,
+    refetchOnWindowFocus: false,
+  });
+}
+
 export function useReservationDeposits(reservationId: string) {
   return useQuery({
     queryKey: adminQueryKeys.deposits.byReservation(reservationId),

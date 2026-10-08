@@ -4,6 +4,18 @@ export interface FindTreatmentsParams {
   categoryId?: string;
 }
 
+export interface Treatment {
+  id: string;
+  categoryId: string;
+  name: string;
+  isActive: boolean;
+  requiresPriorAssessment: boolean;
+  basePriceMin: string | null;
+  basePriceMax: string | null;
+  baseDurationMinMinutes: number | null;
+  baseDurationMaxMinutes: number | null;
+}
+
 export interface CreateTreatmentRequest {
   categoryId: string;
   name: string;
