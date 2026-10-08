@@ -1,23 +1,38 @@
+import type {
+  CancellationSource,
+  DepositStatus,
+  ReservationStatus,
+} from "@/src/features/admin/types/enums";
+
 export type CalendarViewMode = "month" | "week";
 
-export type CalendarReservationStatus = "CONFIRMADA" | "AGENDADA";
-
-export type CalendarFilterGroup = "status" | "category";
+export type CalendarFilterGroup = "status" | "category" | "attention";
 
 export interface CalendarReservation {
   id: string;
-  comboId: string | null;
-  /** YYYY-MM-DD */
+  comboGroupId: string | null;
   dateKey: string;
+  clientId: string;
   clientName: string;
+  phone: string;
   treatmentName: string;
-  professionalName: string;
+  categoryId: string;
+  categoryName: string;
+  startsAt: string;
+  endsAt: string;
   start: string;
   end: string;
-  status: CalendarReservationStatus;
-  phone: string;
-  category: string;
+  durationMinutes: number;
+  status: ReservationStatus;
   price: number;
+  depositStatus: DepositStatus | null;
+  depositAmount: number | null;
+  proofUrl: string | null;
+  isProofUnderReview: boolean;
+  depositExpiresAt: string | null;
+  checkedInAt: string | null;
+  cancellationSource: CancellationSource | null;
+  cancellationReason: string | null;
 }
 
 export interface CalendarFilter {
@@ -32,14 +47,13 @@ export interface ReservationGroup {
   reservations: CalendarReservation[];
 }
 
-export interface ReservationActionHandlers {
-  onViewClient: (reservationId: string) => void;
-  onReschedule: (reservationId: string) => void;
-  onCancel: (reservationId: string) => void;
+export interface DayScheduleSummary {
+  isClosed: boolean;
+  hasExceptions: boolean;
 }
 
 export interface ScheduleActionHandlers {
   onBlockDay: () => void;
   onBlockHours: () => void;
-  onEditSchedule: () => void;
+  onOpenExtraHours: () => void;
 }

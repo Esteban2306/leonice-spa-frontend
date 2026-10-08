@@ -1,10 +1,16 @@
 import { httpClient } from "@/src/lib/api/client";
-import type { FindCalendarParams } from "../types/calendar.types";
+import type {
+  CalendarRangeResponse,
+  FindCalendarParams,
+} from "../types/calendar.types";
 
 export const calendarApi = {
-  findByDate(params?: FindCalendarParams) {
-    return httpClient.request("/admin/calendar", "GET", {
-      params,
-    });
+  findRange(params: FindCalendarParams) {
+    return httpClient.request<CalendarRangeResponse>(
+      "/admin/calendar",
+      "GET",
+      undefined,
+      { params },
+    );
   },
 };

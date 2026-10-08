@@ -1,3 +1,5 @@
+import { getBogotaDayKey } from "@/src/lib/date/bogota";
+
 import type { CalendarViewMode } from "../types/calendar.types";
 
 const MONTH_YEAR_FORMATTER = new Intl.DateTimeFormat("es-CO", {
@@ -53,4 +55,30 @@ export function formatPeriodLabel(
   const last = days[6];
 
   return `${DAY_MONTH_FORMATTER.format(first)} – ${DAY_MONTH_FORMATTER.format(last)} ${last.getFullYear()}`;
+}
+
+const DATE_KEY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+export function fromDateKey(dateKey: string): Date | null {
+  const match = DATE_KEY_PATTERN.exec(dateKey);
+  if (!match) return null;
+
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return toDateKey(date) === dateKey ? date : null;
+}
+
+export function getBusinessToday(now: Date = new Date()): Date {
+  return fromDateKey(getBogotaDayKey(now)) ?? now;
+}
+
+export function getVisibleDays(cursor: Date, mode: CalendarViewMode): Date[] {
+  return mode === "month" ? getMonthDays(cursor) : getWeekDays(cursor);
+}
+
+export function getVisibleRange(
+  cursor: Date,
+  mode: CalendarViewMode,
+): { from: string; to: string } {
+  const days = getVisibleDays(cursor, mode);
+  return { from: toDateKey(days[0]), to: toDateKey(days[days.length - 1]) };
 }

@@ -142,8 +142,6 @@ export const adminQueryKeys = {
     all: () => [...adminQueryKeys.all, "calendar"] as const,
     range: (params: unknown) =>
       [...adminQueryKeys.calendar.all(), "range", params] as const,
-    byDate: (params: unknown) =>
-      [...adminQueryKeys.calendar.all(), params] as const,
   },
 
   schedule: {

@@ -1,6 +1,9 @@
+import { CalendarOff, CalendarCog } from "lucide-react";
+
 import type {
   CalendarReservation,
   CalendarViewMode,
+  DayScheduleSummary,
 } from "../../types/calendar.types";
 import { DayCellDots } from "./day-cell-dots";
 import { DayCellReservation } from "./day-cell-reservation";
@@ -12,6 +15,7 @@ interface DayCellProps {
   isSelected: boolean;
   isOutsideMonth: boolean;
   reservations: readonly CalendarReservation[];
+  schedule: DayScheduleSummary | null;
   onSelect: (date: Date) => void;
 }
 
@@ -64,6 +68,7 @@ export function DayCell({
   isSelected,
   isOutsideMonth,
   reservations,
+  schedule,
   onSelect,
 }: DayCellProps) {
   const isWeek = variant === "week";
@@ -83,7 +88,7 @@ export function DayCell({
       aria-current={isToday ? "date" : undefined}
       aria-label={`${LABEL_FORMATTER.format(date)}, ${total} ${
         total === 1 ? "reserva" : "reservas"
-      }`}
+      }${schedule?.isClosed ? ", día bloqueado" : schedule?.hasExceptions ? ", horario modificado" : ""}`}
       className={`flex w-full cursor-pointer flex-col rounded-xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary md:rounded-2xl ${
         LAYOUT[variant]
       } ${tone} ${isOutsideMonth && !isSelected ? "opacity-50" : ""}`}
@@ -103,6 +108,18 @@ export function DayCell({
               {WEEKDAY_FORMATTER.format(date)}
             </span>
           )}
+
+          {schedule?.isClosed ? (
+            <CalendarOff
+              aria-hidden="true"
+              className={`size-3.5 ${isSelected ? "text-quaternary" : "text-red-700"}`}
+            />
+          ) : schedule?.hasExceptions ? (
+            <CalendarCog
+              aria-hidden="true"
+              className={`size-3.5 ${isSelected ? "text-quaternary" : "text-tertiary"}`}
+            />
+          ) : null}
         </span>
 
         {total > 0 && (
@@ -135,7 +152,7 @@ export function DayCell({
 
         {total === 0 && !isOutsideMonth && (
           <span className="px-1 font-sans text-[11px] italic opacity-40">
-            Sin reservas
+            {schedule?.isClosed ? "Día bloqueado" : "Sin reservas"}
           </span>
         )}
       </span>

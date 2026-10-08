@@ -1,74 +1,154 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { MOCK_RESERVATIONS } from "../data/calendar.mock";
+import { getBogotaDayKey } from "@/src/lib/date/bogota";
+import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
+import { useCalendarRange } from "@/src/features/admin/hooks/use-calendar";
+import { useCategories } from "@/src/features/admin/hooks/use-categories";
+import { useReservation } from "@/src/features/admin/hooks/use-reservations";
+import { useReservationActions } from "@/src/features/admin/hooks/use-reservation-actions";
+import {
+  useScheduleDay,
+  useScheduleExceptions,
+} from "@/src/features/admin/hooks/use-schedule";
+import { useScheduleActions } from "@/src/features/admin/hooks/use-schedule-actions";
+
 import {
   addDays,
   addMonths,
   formatPeriodLabel,
+  fromDateKey,
+  getBusinessToday,
+  getVisibleRange,
   toDateKey,
 } from "../lib/calendar-dates";
-import { AVAILABLE_FILTERS, matchesFilters } from "../lib/calendar-filters";
+import { buildCalendarFilters, matchesFilters } from "../lib/calendar-filters";
+import { summarizeScheduleByDay } from "../lib/schedule-summary";
 import type {
   CalendarReservation,
   CalendarViewMode,
 } from "../types/calendar.types";
+import type { ScheduleDialogMode } from "../components/schedule/schedule-exception-dialog";
 import { CalendarView } from "./calendar-view";
 
 const NO_RESERVATIONS: readonly CalendarReservation[] = [];
 
-const pending = (): void => undefined;
+function parseViewMode(raw: string | null): CalendarViewMode {
+  return raw === "week" ? "week" : "month";
+}
 
 export function CalendarContainer() {
-  const [today, setToday] = useState(() => new Date());
-  const [selectedDate, setSelectedDate] = useState(() => new Date());
-  const [cursor, setCursor] = useState(() => new Date());
-  const [viewMode, setViewMode] = useState<CalendarViewMode>("month");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [focusReservationId] = useState(() =>
+    searchParams.get("reservationId"),
+  );
+  const initialDate =
+    fromDateKey(searchParams.get("date") ?? "") ?? getBusinessToday();
+
+  const [today, setToday] = useState(() => getBusinessToday());
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [cursor, setCursor] = useState(initialDate);
+  const [viewMode, setViewMode] = useState<CalendarViewMode>(() =>
+    parseViewMode(searchParams.get("view")),
+  );
   const [activeFilterIds, setActiveFilterIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedReservationId, setSelectedReservationId] = useState<
     string | null
-  >(null);
+  >(focusReservationId);
+  const [hasFocused, setHasFocused] = useState(false);
+  const [scheduleDialog, setScheduleDialog] =
+    useState<ScheduleDialogMode | null>(null);
+
+  const range = getVisibleRange(cursor, viewMode);
+  const selectedKey = toDateKey(selectedDate);
+
+  const calendarQuery = useCalendarRange(range);
+  const categoriesQuery = useCategories();
+  const exceptionsQuery = useScheduleExceptions(range);
+  const scheduleDayQuery = useScheduleDay(selectedKey);
+  const focusQuery = useReservation(focusReservationId);
+  const reservationActions = useReservationActions();
+  const scheduleActions = useScheduleActions();
+
+  const syncUrl = useCallback(
+    (date: Date, mode: CalendarViewMode, reservationId: string | null) => {
+      const params = new URLSearchParams();
+      params.set("date", toDateKey(date));
+      if (mode !== "month") params.set("view", mode);
+      if (reservationId) params.set("reservationId", reservationId);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router],
+  );
+
+  const nowMs = useMinuteClock();
+  const focused = focusQuery.data;
+  const focusedDate =
+    focused && !hasFocused
+      ? fromDateKey(getBogotaDayKey(new Date(focused.scheduledStart)))
+      : null;
+
+  if (focused && focusedDate) {
+    setHasFocused(true);
+    setSelectedDate(focusedDate);
+    setCursor(focusedDate);
+    setSelectedReservationId(focused.id);
+  }
+
+  const availableFilters = useMemo(
+    () => buildCalendarFilters(categoriesQuery.data ?? []),
+    [categoriesQuery.data],
+  );
 
   const reservationsByDate = useMemo(() => {
     const byDate: Record<string, CalendarReservation[]> = {};
 
-    const visible = MOCK_RESERVATIONS.filter((reservation) =>
-      matchesFilters(reservation, activeFilterIds),
-    ).sort((a, b) => a.start.localeCompare(b.start));
-
-    for (const reservation of visible) {
-      const bucket = byDate[reservation.dateKey];
-
-      if (bucket) {
-        bucket.push(reservation);
-      } else {
-        byDate[reservation.dateKey] = [reservation];
-      }
+    for (const reservation of calendarQuery.data ?? []) {
+      if (!matchesFilters(reservation, activeFilterIds, searchQuery)) continue;
+      (byDate[reservation.dateKey] ??= []).push(reservation);
     }
 
     return byDate;
-  }, [activeFilterIds]);
+  }, [calendarQuery.data, activeFilterIds, searchQuery]);
+
+  const scheduleByDate = useMemo(
+    () => summarizeScheduleByDay(exceptionsQuery.data ?? []),
+    [exceptionsQuery.data],
+  );
 
   const selectedDayReservations =
-    reservationsByDate[toDateKey(selectedDate)] ?? NO_RESERVATIONS;
+    reservationsByDate[selectedKey] ?? NO_RESERVATIONS;
+
+  function selectDate(date: Date, reservationId: string | null = null) {
+    setSelectedDate(date);
+    setSelectedReservationId(reservationId);
+    syncUrl(date, viewMode, reservationId);
+  }
 
   function handleSelectDate(date: Date) {
-    setSelectedDate(date);
-    setSelectedReservationId(null);
+    selectDate(date);
 
     if (viewMode === "month" && date.getMonth() !== cursor.getMonth()) {
       setCursor(date);
     }
   }
 
-  function handleToday() {
-    const now = new Date();
+  function handleSelectReservation(reservationId: string | null) {
+    setSelectedReservationId(reservationId);
+    syncUrl(selectedDate, viewMode, reservationId);
+  }
 
+  function handleToday() {
+    const now = getBusinessToday();
     setToday(now);
-    setSelectedDate(now);
     setCursor(now);
-    setSelectedReservationId(null);
+    selectDate(now);
   }
 
   function handleStep(direction: 1 | -1) {
@@ -82,6 +162,7 @@ export function CalendarContainer() {
   function handleViewModeChange(mode: CalendarViewMode) {
     setViewMode(mode);
     setCursor(selectedDate);
+    syncUrl(selectedDate, mode, selectedReservationId);
   }
 
   function handleToggleFilter(filterId: string) {
@@ -90,12 +171,11 @@ export function CalendarContainer() {
         ? current.filter((id) => id !== filterId)
         : [...current, filterId],
     );
-    setSelectedReservationId(null);
   }
 
   function handleClearFilters() {
     setActiveFilterIds([]);
-    setSelectedReservationId(null);
+    setSearchQuery("");
   }
 
   return (
@@ -105,26 +185,35 @@ export function CalendarContainer() {
       today={today}
       selectedDate={selectedDate}
       periodLabel={formatPeriodLabel(cursor, viewMode)}
-      availableFilters={AVAILABLE_FILTERS}
+      availableFilters={availableFilters}
       activeFilterIds={activeFilterIds}
+      searchQuery={searchQuery}
       reservationsByDate={reservationsByDate}
+      scheduleByDate={scheduleByDate}
+      isLoading={calendarQuery.isLoading || calendarQuery.isPlaceholderData}
+      isError={calendarQuery.isError}
+      onRetry={() => void calendarQuery.refetch()}
       selectedDayReservations={selectedDayReservations}
       selectedReservationId={selectedReservationId}
-      onCreateReservation={pending}
+      todayKey={toDateKey(today)}
+      nowMs={nowMs}
+      scheduleDay={scheduleDayQuery.data ?? null}
+      isScheduleDayLoading={scheduleDayQuery.isLoading}
+      categories={categoriesQuery.data ?? []}
+      scheduleDialog={scheduleDialog}
+      reservationActions={reservationActions}
+      scheduleActions={scheduleActions}
+      onScheduleDialogChange={setScheduleDialog}
       onSelectDate={handleSelectDate}
-      onSelectReservation={setSelectedReservationId}
+      onSelectReservation={handleSelectReservation}
       onToday={handleToday}
       onPrevious={() => handleStep(-1)}
       onNext={() => handleStep(1)}
       onViewModeChange={handleViewModeChange}
       onToggleFilter={handleToggleFilter}
       onClearFilters={handleClearFilters}
-      onBlockDay={pending}
-      onBlockHours={pending}
-      onEditSchedule={pending}
-      onViewClient={pending}
-      onReschedule={pending}
-      onCancel={pending}
+      onSearchChange={setSearchQuery}
+      onViewClient={(clientId) => router.push(`/admin/clients/${clientId}`)}
     />
   );
 }

@@ -1,8 +1,9 @@
 import type {
   CalendarReservation,
   CalendarViewMode,
+  DayScheduleSummary,
 } from "../../types/calendar.types";
-import { getMonthDays, getWeekDays, toDateKey } from "../../lib/calendar-dates";
+import { getVisibleDays, toDateKey } from "../../lib/calendar-dates";
 import { CalendarLegend } from "./calendar-legend";
 import { DayCell } from "./day-cell";
 import { WeekdayHeader } from "./weekday-header";
@@ -13,6 +14,7 @@ interface CalendarGridProps {
   today: Date;
   selectedDate: Date;
   reservationsByDate: Readonly<Record<string, readonly CalendarReservation[]>>;
+  scheduleByDate: Readonly<Record<string, DayScheduleSummary>>;
   onSelectDate: (date: Date) => void;
 }
 
@@ -29,10 +31,10 @@ export function CalendarGrid({
   today,
   selectedDate,
   reservationsByDate,
+  scheduleByDate,
   onSelectDate,
 }: CalendarGridProps) {
-  const days =
-    viewMode === "month" ? getMonthDays(cursor) : getWeekDays(cursor);
+  const days = getVisibleDays(cursor, viewMode);
 
   const todayKey = toDateKey(today);
   const selectedKey = toDateKey(selectedDate);
@@ -56,6 +58,7 @@ export function CalendarGrid({
                 viewMode === "month" && date.getMonth() !== cursor.getMonth()
               }
               reservations={reservationsByDate[key] ?? NO_RESERVATIONS}
+              schedule={scheduleByDate[key] ?? null}
               onSelect={onSelectDate}
             />
           );

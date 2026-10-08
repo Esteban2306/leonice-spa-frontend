@@ -1,14 +1,13 @@
-import type {
-  CalendarReservation,
-  ReservationActionHandlers,
-} from "../../types/calendar.types";
+import type { CalendarReservation } from "../../types/calendar.types";
+import type { DayPanelHandlers } from "./panel-handlers";
 import { ReservationActions } from "./reservation-actions";
 import { ReservationDetails } from "./reservation-details";
 import { ReservationStatusBadge } from "./reservation-status-badge";
 
-interface ReservationCardProps extends ReservationActionHandlers {
+interface ReservationCardProps extends DayPanelHandlers {
   reservation: CalendarReservation;
   isSelected: boolean;
+  belongsToCombo: boolean;
   showClientName?: boolean;
   onSelect: (reservationId: string | null) => void;
 }
@@ -16,12 +15,17 @@ interface ReservationCardProps extends ReservationActionHandlers {
 export function ReservationCard({
   reservation,
   isSelected,
+  belongsToCombo,
   showClientName = true,
   onSelect,
+  todayKey,
+  nowMs,
+  actions,
   onViewClient,
-  onReschedule,
-  onCancel,
 }: ReservationCardProps) {
+  const isToday = reservation.dateKey === todayKey;
+  const isUpcoming = new Date(reservation.startsAt).getTime() > nowMs;
+
   return (
     <article
       className={`rounded-2xl border bg-[#FBF8F0] transition-colors ${
@@ -59,7 +63,10 @@ export function ReservationCard({
           </span>
         </span>
 
-        <ReservationStatusBadge status={reservation.status} />
+        <ReservationStatusBadge
+          status={reservation.status}
+          cancellationSource={reservation.cancellationSource}
+        />
       </button>
 
       {isSelected && (
@@ -68,9 +75,11 @@ export function ReservationCard({
 
           <ReservationActions
             reservation={reservation}
+            isToday={isToday}
+            isUpcoming={isUpcoming}
+            belongsToCombo={belongsToCombo}
+            actions={actions}
             onViewClient={onViewClient}
-            onReschedule={onReschedule}
-            onCancel={onCancel}
           />
         </div>
       )}

@@ -1,10 +1,8 @@
-import type {
-  ReservationActionHandlers,
-  ReservationGroup,
-} from "../../types/calendar.types";
+import type { ReservationGroup } from "../../types/calendar.types";
+import type { DayPanelHandlers } from "./panel-handlers";
 import { ReservationCard } from "./reservation-card";
 
-interface ReservationGroupCardProps extends ReservationActionHandlers {
+interface ReservationGroupCardProps extends DayPanelHandlers {
   group: ReservationGroup;
   selectedReservationId: string | null;
   onSelectReservation: (reservationId: string | null) => void;
@@ -14,9 +12,7 @@ export function ReservationGroupCard({
   group,
   selectedReservationId,
   onSelectReservation,
-  onViewClient,
-  onReschedule,
-  onCancel,
+  ...handlers
 }: ReservationGroupCardProps) {
   const [first] = group.reservations;
 
@@ -25,11 +21,10 @@ export function ReservationGroupCard({
       key={reservation.id}
       reservation={reservation}
       isSelected={reservation.id === selectedReservationId}
+      belongsToCombo={group.isCombo}
       showClientName={!group.isCombo}
       onSelect={onSelectReservation}
-      onViewClient={onViewClient}
-      onReschedule={onReschedule}
-      onCancel={onCancel}
+      {...handlers}
     />
   ));
 

@@ -9,7 +9,7 @@ export function groupReservations(
   const groups = new Map<string, ReservationGroup>();
 
   for (const reservation of reservations) {
-    const key = reservation.comboId ?? reservation.id;
+    const key = reservation.comboGroupId ?? reservation.id;
     const existing = groups.get(key);
 
     if (existing) {

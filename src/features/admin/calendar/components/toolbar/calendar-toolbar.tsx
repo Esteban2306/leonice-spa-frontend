@@ -7,6 +7,7 @@ import { ActiveFilterChips } from "./active-filter-chips";
 import { FilterMenu } from "./filter-menu";
 import { PeriodNavigator } from "./period-navigator";
 import { ScheduleActions } from "./schedule-actions";
+import { SearchField } from "./search-field";
 import { ToolbarHeader } from "./toolbar-header";
 import { ToolbarMobilePanel } from "./toolbar-mobile-panel";
 import { ViewModeSwitch } from "./view-mode-switch";
@@ -16,14 +17,15 @@ interface CalendarToolbarProps extends ScheduleActionHandlers {
   periodLabel: string;
   availableFilters: readonly CalendarFilter[];
   activeFilterIds: readonly string[];
+  searchQuery: string;
 
-  onCreateReservation: () => void;
   onToday: () => void;
   onPrevious: () => void;
   onNext: () => void;
   onViewModeChange: (mode: CalendarViewMode) => void;
   onToggleFilter: (filterId: string) => void;
   onClearFilters: () => void;
+  onSearchChange: (query: string) => void;
 }
 
 export function CalendarToolbar({
@@ -31,16 +33,17 @@ export function CalendarToolbar({
   periodLabel,
   availableFilters,
   activeFilterIds,
-  onCreateReservation,
+  searchQuery,
   onToday,
   onPrevious,
   onNext,
   onViewModeChange,
   onToggleFilter,
   onClearFilters,
+  onSearchChange,
   onBlockDay,
   onBlockHours,
-  onEditSchedule,
+  onOpenExtraHours,
 }: CalendarToolbarProps) {
   const activeFilters = availableFilters.filter((filter) =>
     activeFilterIds.includes(filter.id),
@@ -66,13 +69,16 @@ export function CalendarToolbar({
     <ScheduleActions
       onBlockDay={onBlockDay}
       onBlockHours={onBlockHours}
-      onEditSchedule={onEditSchedule}
+      onOpenExtraHours={onOpenExtraHours}
     />
   );
 
   return (
     <div className="flex flex-col gap-4 md:gap-5">
-      <ToolbarHeader onCreateReservation={onCreateReservation} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <ToolbarHeader />
+        <SearchField value={searchQuery} onChange={onSearchChange} />
+      </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <ViewModeSwitch
@@ -89,7 +95,9 @@ export function CalendarToolbar({
       </div>
 
       <div className="flex flex-col gap-3 md:hidden">
-        <ToolbarMobilePanel activeCount={activeFilterIds.length}>
+        <ToolbarMobilePanel
+          activeCount={activeFilterIds.length + (searchQuery ? 1 : 0)}
+        >
           {filterMenu}
           {scheduleActions}
         </ToolbarMobilePanel>

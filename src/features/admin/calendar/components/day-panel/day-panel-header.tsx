@@ -1,9 +1,11 @@
-import { getInitials } from "../../lib/initials";
+import type { ReservationStatus } from "@/src/features/admin/types/enums";
+import { RESERVATION_STATUS_LABELS } from "@/src/features/admin/utils/reservation-status.utils";
+
+import type { CalendarReservation } from "../../types/calendar.types";
 
 interface DayPanelHeaderProps {
   date: Date;
-  reservationCount: number;
-  professionals: readonly string[];
+  reservations: readonly CalendarReservation[];
 }
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", {
@@ -12,13 +14,22 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", {
   month: "long",
 });
 
-export function DayPanelHeader({
-  date,
-  reservationCount,
-  professionals,
-}: DayPanelHeaderProps) {
+function countByStatus(
+  reservations: readonly CalendarReservation[],
+): Array<[ReservationStatus, number]> {
+  const counts = new Map<ReservationStatus, number>();
+  for (const reservation of reservations) {
+    counts.set(reservation.status, (counts.get(reservation.status) ?? 0) + 1);
+  }
+  return Array.from(counts.entries());
+}
+
+export function DayPanelHeader({ date, reservations }: DayPanelHeaderProps) {
+  const total = reservations.length;
+  const breakdown = countByStatus(reservations);
+
   return (
-    <header className="relative overflow-hidden bg-secondary p-4 md:p-6 text-primary">
+    <header className="relative overflow-hidden bg-secondary p-4 text-primary md:p-6">
       <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full border border-quaternary/20" />
 
       <div className="relative">
@@ -28,7 +39,7 @@ export function DayPanelHeader({
           </p>
 
           <span className="rounded-full bg-primary/10 px-3 py-1 font-sans text-xs">
-            {reservationCount} {reservationCount === 1 ? "reserva" : "reservas"}
+            {total} {total === 1 ? "reserva" : "reservas"}
           </span>
         </div>
 
@@ -36,21 +47,16 @@ export function DayPanelHeader({
           {DATE_FORMATTER.format(date)}
         </h2>
 
-        {professionals.length > 0 && (
-          <div className="mt-3 flex items-center gap-2 md:mt-5">
-            {professionals.slice(0, 4).map((name) => (
+        {breakdown.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5 md:mt-4">
+            {breakdown.map(([status, count]) => (
               <span
-                key={name}
-                title={name}
-                className="grid size-8 place-items-center rounded-full bg-quaternary font-sans text-xs font-medium text-secondary"
+                key={status}
+                className="rounded-full bg-primary/10 px-2.5 py-1 font-sans text-[11px] text-primary/85"
               >
-                {getInitials(name)}
+                {count} · {RESERVATION_STATUS_LABELS[status]}
               </span>
             ))}
-
-            <span className="ml-1 font-sans text-xs text-primary/55">
-              Profesionales del día
-            </span>
           </div>
         )}
       </div>

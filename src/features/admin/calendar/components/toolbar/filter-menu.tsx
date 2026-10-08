@@ -6,10 +6,8 @@ import {
   PopoverTrigger,
 } from "@/src/components/ui/popover";
 
-import type {
-  CalendarFilter,
-  CalendarFilterGroup,
-} from "../../types/calendar.types";
+import { CALENDAR_FILTER_GROUPS } from "../../lib/calendar-filters";
+import type { CalendarFilter } from "../../types/calendar.types";
 import { toolbarButtonClass } from "./toolbar-button";
 
 interface FilterMenuProps {
@@ -17,11 +15,6 @@ interface FilterMenuProps {
   activeFilterIds: readonly string[];
   onToggleFilter: (filterId: string) => void;
 }
-
-const GROUPS: ReadonlyArray<{ id: CalendarFilterGroup; label: string }> = [
-  { id: "status", label: "Estado" },
-  { id: "category", label: "Categoría" },
-];
 
 export function FilterMenu({
   availableFilters,
@@ -40,9 +33,14 @@ export function FilterMenu({
       <PopoverContent
         align="start"
         sideOffset={8}
-        className="w-64 rounded-2xl border border-tertiary/30 bg-primary p-2"
+        className="max-h-[70vh] w-72 overflow-y-auto rounded-2xl border border-tertiary/30 bg-primary p-2"
       >
-        {GROUPS.map((group) => (
+        <p className="px-2 pb-1 pt-1 font-sans text-[11px] leading-4 text-secondary/50">
+          Las canceladas se ocultan salvo que actives el filtro
+          &quot;Canceladas&quot;.
+        </p>
+
+        {CALENDAR_FILTER_GROUPS.map((group) => (
           <div key={group.id} className="py-1">
             <p className="px-2 py-1 font-sans text-[10px] uppercase tracking-[0.18em] text-secondary/45">
               {group.label}

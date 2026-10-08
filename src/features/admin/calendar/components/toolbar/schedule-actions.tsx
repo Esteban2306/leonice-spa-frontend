@@ -1,4 +1,4 @@
-import { Ban, CalendarClock, CalendarOff } from "lucide-react";
+import { Ban, CalendarOff, CalendarPlus2 } from "lucide-react";
 
 import type { ScheduleActionHandlers } from "../../types/calendar.types";
 import { ToolbarButton } from "./toolbar-button";
@@ -6,7 +6,7 @@ import { ToolbarButton } from "./toolbar-button";
 export function ScheduleActions({
   onBlockDay,
   onBlockHours,
-  onEditSchedule,
+  onOpenExtraHours,
 }: ScheduleActionHandlers) {
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -18,8 +18,8 @@ export function ScheduleActions({
         Bloquear horas
       </ToolbarButton>
 
-      <ToolbarButton icon={CalendarClock} onClick={onEditSchedule}>
-        Cambiar horarios
+      <ToolbarButton icon={CalendarPlus2} onClick={onOpenExtraHours}>
+        Horario extra
       </ToolbarButton>
     </div>
   );

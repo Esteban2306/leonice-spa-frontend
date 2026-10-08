@@ -1,45 +1,52 @@
 import { Info } from "lucide-react";
 
+import type { ScheduleDay } from "@/src/features/admin/types/schedule.types";
+
 import { groupReservations } from "../../lib/group-reservations";
-import type {
-  CalendarReservation,
-  ReservationActionHandlers,
-} from "../../types/calendar.types";
+import type { CalendarReservation } from "../../types/calendar.types";
 import { DayPanelHeader } from "./day-panel-header";
+import { DayScheduleSection } from "./day-schedule-section";
+import type { DayPanelHandlers } from "./panel-handlers";
 import { ReservationGroupCard } from "./reservation-group-card";
 
-interface DayDetailPanelProps extends ReservationActionHandlers {
+interface DayDetailPanelProps extends DayPanelHandlers {
   date: Date;
   reservations: readonly CalendarReservation[];
   selectedReservationId: string | null;
+  scheduleDay: ScheduleDay | null;
+  isScheduleLoading: boolean;
+  isSavingSchedule: boolean;
   onSelectReservation: (reservationId: string | null) => void;
+  onRemoveException: (exceptionId: string) => Promise<boolean>;
 }
 
 export function DayDetailPanel({
   date,
   reservations,
   selectedReservationId,
+  scheduleDay,
+  isScheduleLoading,
+  isSavingSchedule,
   onSelectReservation,
-  onViewClient,
-  onReschedule,
-  onCancel,
+  onRemoveException,
+  ...handlers
 }: DayDetailPanelProps) {
   const groups = groupReservations(reservations);
-  const professionals = Array.from(
-    new Set(reservations.map((reservation) => reservation.professionalName)),
-  );
 
   return (
-    <aside className="flex min-h-0 flex-col overflow-hidden rounded-3xl md:rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB]">
-      <DayPanelHeader
-        date={date}
-        reservationCount={reservations.length}
-        professionals={professionals}
-      />
+    <aside className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-tertiary/30 bg-[#FCF6EB] md:rounded-[2rem]">
+      <DayPanelHeader date={date} reservations={reservations} />
 
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 md:p-4">
+        <DayScheduleSection
+          schedule={scheduleDay}
+          isLoading={isScheduleLoading}
+          isSaving={isSavingSchedule}
+          onRemoveException={(id) => void onRemoveException(id)}
+        />
+
         {groups.length === 0 ? (
-          <div className="flex min-h-64 flex-1 flex-col items-center justify-center text-center">
+          <div className="flex min-h-48 flex-1 flex-col items-center justify-center text-center">
             <span className="mb-3 grid size-10 place-items-center rounded-full bg-secondary/5">
               <Info className="size-4 text-secondary/50" />
             </span>
@@ -48,8 +55,8 @@ export function DayDetailPanel({
               No hay reservas para este día.
             </p>
 
-            <p className="mt-1 max-w-52 font-sans text-xs text-secondary/50">
-              Puedes seleccionar otro día del calendario.
+            <p className="mt-1 max-w-56 font-sans text-xs text-secondary/50">
+              Revisa los filtros activos o selecciona otro día.
             </p>
           </div>
         ) : (
@@ -59,9 +66,7 @@ export function DayDetailPanel({
               group={group}
               selectedReservationId={selectedReservationId}
               onSelectReservation={onSelectReservation}
-              onViewClient={onViewClient}
-              onReschedule={onReschedule}
-              onCancel={onCancel}
+              {...handlers}
             />
           ))
         )}
