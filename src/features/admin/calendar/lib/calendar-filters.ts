@@ -20,7 +20,11 @@ const STATUS_FILTERS: ReadonlyArray<{
 ];
 
 const ATTENTION_FILTERS: ReadonlyArray<CalendarFilter> = [
-  { id: "attention:proof-review", label: "Comprobante por revisar", group: "attention" },
+  {
+    id: "attention:proof-review",
+    label: "Comprobante por revisar",
+    group: "attention",
+  },
   { id: "attention:combo", label: "Combos", group: "attention" },
 ];
 
@@ -89,7 +93,8 @@ function matchesSearch(reservation: CalendarReservation, query: string) {
   return (
     reservation.clientName.toLowerCase().includes(normalized) ||
     reservation.treatmentName.toLowerCase().includes(normalized) ||
-    (digits.length >= 3 && reservation.phone.replace(/\D/g, "").includes(digits))
+    (digits.length >= 3 &&
+      reservation.phone.replace(/\D/g, "").includes(digits))
   );
 }
 

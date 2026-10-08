@@ -63,7 +63,11 @@ export function fromDateKey(dateKey: string): Date | null {
   const match = DATE_KEY_PATTERN.exec(dateKey);
   if (!match) return null;
 
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  const date = new Date(
+    Number(match[1]),
+    Number(match[2]) - 1,
+    Number(match[3]),
+  );
   return toDateKey(date) === dateKey ? date : null;
 }
 

@@ -64,13 +64,18 @@ export function ScheduleExceptionDialog({
   onClose,
 }: ScheduleExceptionDialogProps) {
   const [categoryId, setCategoryId] = useState("");
-  const [startTime, setStartTime] = useState(mode === "open-hours" ? "12:00" : "08:00");
-  const [endTime, setEndTime] = useState(mode === "open-hours" ? "14:00" : "10:00");
+  const [startTime, setStartTime] = useState(
+    mode === "open-hours" ? "12:00" : "08:00",
+  );
+  const [endTime, setEndTime] = useState(
+    mode === "open-hours" ? "14:00" : "10:00",
+  );
   const [reason, setReason] = useState("");
 
   const copy = COPY[mode];
   const needsHours = mode !== "block-day";
-  const hasValidHours = !needsHours || (startTime !== "" && endTime !== "" && startTime < endTime);
+  const hasValidHours =
+    !needsHours || (startTime !== "" && endTime !== "" && startTime < endTime);
 
   const submit = () => {
     const input = {

@@ -44,7 +44,9 @@ export function DayScheduleSection({
         {schedule.isClosed ? (
           <>
             <CalendarOff className="size-4 text-red-700" />
-            <span className="font-medium text-red-800">Spa cerrado este día</span>
+            <span className="font-medium text-red-800">
+              Spa cerrado este día
+            </span>
           </>
         ) : (
           <>
@@ -67,7 +69,9 @@ export function DayScheduleSection({
           <span className="font-sans text-xs text-secondary">
             {describeException(exception)}
             {exception.reason && (
-              <span className="block text-secondary/55">{exception.reason}</span>
+              <span className="block text-secondary/55">
+                {exception.reason}
+              </span>
             )}
           </span>
 

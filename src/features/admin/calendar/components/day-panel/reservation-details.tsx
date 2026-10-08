@@ -65,7 +65,10 @@ export function ReservationDetails({ reservation }: ReservationDetailsProps) {
       )}
       {reservation.cancellationReason && (
         <div className="col-span-2">
-          <DetailField label="Motivo de cancelación" value={reservation.cancellationReason} />
+          <DetailField
+            label="Motivo de cancelación"
+            value={reservation.cancellationReason}
+          />
         </div>
       )}
     </div>

@@ -4,7 +4,9 @@ import type { ScheduleException } from "@/src/features/admin/types/schedule.type
 
 import { summarizeScheduleByDay } from "./schedule-summary";
 
-const exception = (overrides: Partial<ScheduleException>): ScheduleException => ({
+const exception = (
+  overrides: Partial<ScheduleException>,
+): ScheduleException => ({
   id: "e1",
   date: "2026-12-09",
   type: "BLOCK",
@@ -30,11 +32,19 @@ describe("summarizeScheduleByDay", () => {
   it("bloqueos parciales o por categoría solo marcan horario modificado", () => {
     const summary = summarizeScheduleByDay([
       exception({ allDay: false, startTime: "08:00", endTime: "10:00" }),
-      exception({ id: "e2", date: "2026-12-10", scope: "CATEGORY", categoryId: "c" }),
+      exception({
+        id: "e2",
+        date: "2026-12-10",
+        scope: "CATEGORY",
+        categoryId: "c",
+      }),
       exception({ id: "e3", date: "2026-12-11", type: "OPEN", allDay: false }),
     ]);
     expect(summary["2026-12-09"].isClosed).toBe(false);
     expect(summary["2026-12-10"].isClosed).toBe(false);
-    expect(summary["2026-12-11"]).toEqual({ isClosed: false, hasExceptions: true });
+    expect(summary["2026-12-11"]).toEqual({
+      isClosed: false,
+      hasExceptions: true,
+    });
   });
 });
