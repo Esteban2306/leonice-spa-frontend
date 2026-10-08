@@ -1,73 +1,109 @@
+import { CalendarSurface } from "../components/calendar-surface";
+import { CalendarGrid } from "../components/grid/calendar-grid";
+import { DayDetailPanel } from "../components/day-panel/day-detail-panel";
+import { CalendarToolbar } from "../components/toolbar/calendar-toolbar";
 import type {
+  CalendarFilter,
   CalendarReservation,
   CalendarViewMode,
+  ReservationActionHandlers,
+  ScheduleActionHandlers,
 } from "../types/calendar.types";
-import { CalendarGrid } from "../components/calendar-grid";
-import { CalendarToolbar } from "../components/calendar-toolbar";
-import { DayDetailPanel } from "../components/day-detail-panel";
 
-interface CalendarViewProps {
-  currentMonth: Date;
-  selectedDate: Date;
+interface CalendarViewProps
+  extends ReservationActionHandlers, ScheduleActionHandlers {
   viewMode: CalendarViewMode;
-  reservations: CalendarReservation[];
-  selectedDayReservations: CalendarReservation[];
-  activeFilters: string[];
+  cursor: Date;
+  today: Date;
+  selectedDate: Date;
+  periodLabel: string;
 
+  availableFilters: readonly CalendarFilter[];
+  activeFilterIds: readonly string[];
+
+  reservationsByDate: Readonly<Record<string, readonly CalendarReservation[]>>;
+  selectedDayReservations: readonly CalendarReservation[];
+  selectedReservationId: string | null;
+
+  onCreateReservation: () => void;
   onSelectDate: (date: Date) => void;
+  onSelectReservation: (reservationId: string | null) => void;
   onToday: () => void;
-  onPreviousMonth: () => void;
-  onNextMonth: () => void;
-  onMonthChange: (month: Date) => void;
+  onPrevious: () => void;
+  onNext: () => void;
   onViewModeChange: (mode: CalendarViewMode) => void;
-  onToggleFilter: (filter: string) => void;
+  onToggleFilter: (filterId: string) => void;
   onClearFilters: () => void;
 }
 
 export function CalendarView({
-  currentMonth,
-  selectedDate,
   viewMode,
-  reservations,
+  cursor,
+  today,
+  selectedDate,
+  periodLabel,
+  availableFilters,
+  activeFilterIds,
+  reservationsByDate,
   selectedDayReservations,
-  activeFilters,
+  selectedReservationId,
+  onCreateReservation,
   onSelectDate,
+  onSelectReservation,
   onToday,
-  onPreviousMonth,
-  onNextMonth,
-  onMonthChange,
+  onPrevious,
+  onNext,
   onViewModeChange,
   onToggleFilter,
   onClearFilters,
+  onBlockDay,
+  onBlockHours,
+  onEditSchedule,
+  onViewClient,
+  onReschedule,
+  onCancel,
 }: CalendarViewProps) {
   return (
-    <div className="flex h-full min-h-0 flex-col gap-4">
-      <CalendarToolbar
-        currentMonth={currentMonth}
-        viewMode={viewMode}
-        activeFilters={activeFilters}
-        onToday={onToday}
-        onPreviousMonth={onPreviousMonth}
-        onNextMonth={onNextMonth}
-        onViewModeChange={onViewModeChange}
-        onToggleFilter={onToggleFilter}
-        onClearFilters={onClearFilters}
-      />
-
-      <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_360px] gap-4">
+    <div className="grid h-auto min-h-0 grid-cols-1 gap-3 md:h-full md:gap-4 xl:grid-cols-[minmax(0,1fr)_360px] p-2 sm:p-4">
+      {" "}
+      <CalendarSurface
+        toolbar={
+          <CalendarToolbar
+            viewMode={viewMode}
+            periodLabel={periodLabel}
+            availableFilters={availableFilters}
+            activeFilterIds={activeFilterIds}
+            onCreateReservation={onCreateReservation}
+            onToday={onToday}
+            onPrevious={onPrevious}
+            onNext={onNext}
+            onViewModeChange={onViewModeChange}
+            onToggleFilter={onToggleFilter}
+            onClearFilters={onClearFilters}
+            onBlockDay={onBlockDay}
+            onBlockHours={onBlockHours}
+            onEditSchedule={onEditSchedule}
+          />
+        }
+      >
         <CalendarGrid
-          currentMonth={currentMonth}
+          viewMode={viewMode}
+          cursor={cursor}
+          today={today}
           selectedDate={selectedDate}
-          reservations={reservations}
+          reservationsByDate={reservationsByDate}
           onSelectDate={onSelectDate}
-          onMonthChange={onMonthChange}
         />
-
-        <DayDetailPanel
-          date={selectedDate}
-          reservations={selectedDayReservations}
-        />
-      </div>
+      </CalendarSurface>
+      <DayDetailPanel
+        date={selectedDate}
+        reservations={selectedDayReservations}
+        selectedReservationId={selectedReservationId}
+        onSelectReservation={onSelectReservation}
+        onViewClient={onViewClient}
+        onReschedule={onReschedule}
+        onCancel={onCancel}
+      />
     </div>
   );
 }
