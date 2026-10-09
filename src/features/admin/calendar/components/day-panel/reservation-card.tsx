@@ -1,5 +1,6 @@
 import { Ellipsis } from "lucide-react";
 
+import { AssessmentCallout } from "@/src/features/admin/components/hair-assessment/assessment-callout";
 import { ReservationOptionsMenu } from "@/src/features/admin/components/reservation-actions/reservation-options-menu";
 
 import type { CalendarReservation } from "../../types/calendar.types";
@@ -98,6 +99,18 @@ export function ReservationCard({
           }
         />
       </div>
+
+      {reservation.assessment?.state === "PENDING" && (
+        <div className="px-4 pb-4">
+          <AssessmentCallout
+            assessment={reservation.assessment}
+            clientId={reservation.clientId}
+            clientName={reservation.clientName}
+            treatmentName={reservation.treatmentName}
+            density="compact"
+          />
+        </div>
+      )}
 
       {isSelected && (
         <div className="flex flex-col gap-4 border-t border-secondary/10 p-4">

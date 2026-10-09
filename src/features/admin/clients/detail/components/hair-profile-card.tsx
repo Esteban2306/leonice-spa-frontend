@@ -8,6 +8,8 @@ import { ChoicePills, Field } from "@/src/features/admin/components/reservation-
 import type { HairProfileView, SetHairProfileRequest } from "@/src/features/admin/types/clients.types";
 import type { HairColor, HairLength } from "@/src/features/admin/types/enums";
 
+import { HAIR_COLOR_OPTIONS, HAIR_LENGTH_OPTIONS } from "@/src/features/admin/components/hair-assessment/hair-options";
+
 import { validityProgress } from "../../lib/client-crm";
 import { CardShell } from "./card-shell";
 
@@ -18,17 +20,6 @@ interface HairProfileCardProps {
   onSave: (data: SetHairProfileRequest) => Promise<boolean>;
   onConfirm: () => Promise<boolean>;
 }
-
-const LENGTHS: ReadonlyArray<{ value: HairLength; label: string }> = [
-  { value: "CORTO", label: "Corto" },
-  { value: "MEDIANO", label: "Mediano" },
-  { value: "LARGO", label: "Largo" },
-];
-
-const COLORS: ReadonlyArray<{ value: HairColor; label: string }> = [
-  { value: "CLARO", label: "Claro" },
-  { value: "OSCURO", label: "Oscuro" },
-];
 
 const STATUS_BADGE = {
   VALID: { label: "Vigente", className: "bg-green-100 text-green-800" },
@@ -93,10 +84,10 @@ export function HairProfileCard({ profile, nowMs, isSaving, onSave, onConfirm }:
           }
         >
           <Field label="Largo">
-            <ChoicePills ariaLabel="Largo del cabello" value={length} options={LENGTHS} onChange={setLength} />
+            <ChoicePills ariaLabel="Largo del cabello" value={length} options={HAIR_LENGTH_OPTIONS} onChange={setLength} />
           </Field>
           <Field label="Color">
-            <ChoicePills ariaLabel="Color del cabello" value={color} options={COLORS} onChange={setColor} />
+            <ChoicePills ariaLabel="Color del cabello" value={color} options={HAIR_COLOR_OPTIONS} onChange={setColor} />
           </Field>
         </ActionDialog>
 

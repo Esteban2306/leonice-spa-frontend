@@ -29,7 +29,12 @@ export function ReservationPanelMobile({
   onViewClient,
 }: ReservationPanelMobileProps) {
   const { clientId, client, dateLabel, items, isCombo } = reservation;
-  const panelClient = { clientId, name: client.name, phone: client.phone, isCombo };
+  const panelClient = {
+    clientId,
+    name: client.name,
+    phone: client.phone,
+    isCombo,
+  };
 
   return (
     <Accordion>
@@ -71,8 +76,16 @@ export function ReservationPanelMobile({
                   index > 0 ? "border-t border-tertiary/25 pt-5" : ""
                 }`}
               >
-                <ReservationItemSchedule item={item} dateLabel={dateLabel} compact />
-                <ReservationItemTreatment item={item} clientName={client.name} />
+                <ReservationItemSchedule
+                  item={item}
+                  dateLabel={dateLabel}
+                  compact
+                />
+                <ReservationItemTreatment
+                  item={item}
+                  clientId={reservation.clientId}
+                  clientName={client.name}
+                />
                 <ReservationItemActions
                   item={item}
                   client={panelClient}

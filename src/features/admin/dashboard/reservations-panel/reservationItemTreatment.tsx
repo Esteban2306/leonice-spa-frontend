@@ -2,10 +2,12 @@ import { formatCopFromThousands } from "@/src/lib/money/cop";
 import type { DashboardReservationItem } from "@/src/features/admin/types/dashboard.types";
 
 import { DepositProofViewer } from "@/src/features/admin/components/reservation-actions/deposit-proof-viewer";
+import { AssessmentCallout } from "@/src/features/admin/components/hair-assessment/assessment-callout";
 import { ProofStatusNote } from "./proofStatusBadge";
 
 interface ReservationItemTreatmentProps {
   item: DashboardReservationItem;
+  clientId: string;
   clientName: string;
 }
 
@@ -13,9 +15,11 @@ const LABEL = "font-sans text-xs uppercase tracking-[0.18em] text-secondary/50";
 
 export function ReservationItemTreatment({
   item,
+  clientId,
   clientName,
 }: ReservationItemTreatmentProps) {
-  const showProof = item.status === "PENDIENTE_DEPOSITO" || item.proofUrl !== null;
+  const showProof =
+    item.status === "PENDIENTE_DEPOSITO" || item.proofUrl !== null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -28,6 +32,13 @@ export function ReservationItemTreatment({
           {item.durationMinutes} min · {item.categoryLabel}
         </p>
       </div>
+
+      <AssessmentCallout
+        assessment={item.assessment}
+        clientId={clientId}
+        clientName={clientName}
+        treatmentName={item.treatmentName}
+      />
 
       <div>
         <span className={LABEL}>Precio</span>
@@ -50,7 +61,10 @@ export function ReservationItemTreatment({
           <span className={LABEL}>Comprobante</span>
           <div className="mt-2 flex items-center gap-4">
             {item.proofUrl ? (
-              <DepositProofViewer proofUrl={item.proofUrl} clientName={clientName} />
+              <DepositProofViewer
+                proofUrl={item.proofUrl}
+                clientName={clientName}
+              />
             ) : (
               <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-dashed border-tertiary/40 p-1 text-center font-sans text-[10px] leading-tight text-secondary/50">
                 Sin comprobante

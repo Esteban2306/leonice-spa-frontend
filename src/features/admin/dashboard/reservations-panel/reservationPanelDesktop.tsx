@@ -23,7 +23,12 @@ export function ReservationPanelDesktop({
   onViewClient,
 }: ReservationPanelDesktopProps) {
   const { clientId, client, dateLabel, items, isCombo } = reservation;
-  const panelClient = { clientId, name: client.name, phone: client.phone, isCombo };
+  const panelClient = {
+    clientId,
+    name: client.name,
+    phone: client.phone,
+    isCombo,
+  };
 
   return (
     <div className="grid divide-y divide-tertiary/25 lg:grid-cols-[1.2fr_3.3fr] lg:divide-x lg:divide-y-0">
@@ -77,7 +82,11 @@ export function ReservationPanelDesktop({
             </section>
 
             <section className="p-4 sm:p-5">
-              <ReservationItemTreatment item={item} clientName={client.name} />
+              <ReservationItemTreatment
+                item={item}
+                clientId={reservation.clientId}
+                clientName={client.name}
+              />
             </section>
 
             <section className="flex flex-col justify-center p-4 sm:p-3">
