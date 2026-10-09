@@ -1,6 +1,14 @@
 "use client";
 
-import { Bell, CalendarPlus, Moon, Sunrise, Sun, Sunset } from "lucide-react";
+import {
+  Bell,
+  CalendarPlus,
+  ChartNoAxesColumn,
+  Moon,
+  Sunrise,
+  Sun,
+  Sunset,
+} from "lucide-react";
 
 import { BUSINESS_TIME_ZONE } from "@/src/lib/date/bogota";
 
@@ -71,6 +79,7 @@ export function DashboardHeader({
   summary,
   onViewNotifications,
   onCreateReservation,
+  onOpenDailyReport,
 }: DashboardHeaderProps) {
   const now = new Date();
 
@@ -118,6 +127,18 @@ export function DashboardHeader({
                 </strong>{" "}
                 pendientes por confirmar.
               </p>
+
+              <button
+                type="button"
+                onClick={onOpenDailyReport}
+                className="mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-full font-sans text-sm text-secondary underline decoration-tertiary underline-offset-4 transition-colors hover:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+              >
+                <ChartNoAxesColumn
+                  className="size-4 text-tertiary"
+                  strokeWidth={1.8}
+                />
+                Ver reporte de ayer
+              </button>
             </div>
           </div>
         </div>

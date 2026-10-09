@@ -7,6 +7,7 @@ import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
 import { Toaster } from "@/src/components/ui/toast";
 
 import AdminSidebar from "@/src/features/admin/components/admin-app-sidebar";
+import { DailyReportGate } from "@/src/features/admin/daily-report/daily-report-gate";
 import { AdminSignalsWatcher } from "@/src/features/admin/feedback/admin-signals-watcher";
 import { useSession } from "@/src/features/auth/hooks/use-auth";
 
@@ -49,6 +50,7 @@ export default function ProtectedLayout({
   return (
     <Toaster limit={4}>
       <AdminSignalsWatcher />
+      <DailyReportGate />
 
       <SidebarProvider defaultOpen>
         <AdminSidebar />

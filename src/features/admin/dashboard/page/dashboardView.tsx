@@ -1,3 +1,5 @@
+import type { ComponentProps } from "react";
+
 import type {
   DashboardHeaderActions,
   DashboardHeaderData,
@@ -8,13 +10,14 @@ import type {
 } from "@/src/features/admin/types/dashboard.types";
 
 import { DashboardHeader } from "../components/dashboardHeader";
+import { HairProfilesNotice } from "../components/hairProfilesNotice";
 import { DashboardMetrics } from "../components/dashboardMetrics";
 import type { ReservationPanelHandlers } from "../reservations-panel/panelHandlers";
 import { ReservationsPanel } from "../reservations-panel/reservationsPanel";
 
 interface DashboardViewProps
-  extends DashboardHeaderActions,
-    ReservationPanelHandlers {
+  extends DashboardHeaderActions, ReservationPanelHandlers {
+  hairProfiles: ComponentProps<typeof HairProfilesNotice>;
   header: DashboardHeaderData;
   metrics: DashboardMetricsData;
   isSummaryLoading: boolean;
@@ -51,6 +54,8 @@ export function DashboardView({
   onViewClient,
   onViewNotifications,
   onCreateReservation,
+  onOpenDailyReport,
+  hairProfiles,
 }: DashboardViewProps) {
   return (
     <main className="min-h-full bg-primary">
@@ -60,7 +65,10 @@ export function DashboardView({
           summary={header.summary}
           onViewNotifications={onViewNotifications}
           onCreateReservation={onCreateReservation}
+          onOpenDailyReport={onOpenDailyReport}
         />
+
+        <HairProfilesNotice {...hairProfiles} />
 
         <DashboardMetrics
           data={metrics}

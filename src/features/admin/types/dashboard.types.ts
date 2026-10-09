@@ -14,6 +14,7 @@ export interface DashboardHeaderData {
 export interface DashboardHeaderActions {
   onViewNotifications: () => void;
   onCreateReservation: () => void;
+  onOpenDailyReport: () => void;
 }
 
 export interface DashboardMetricsData {

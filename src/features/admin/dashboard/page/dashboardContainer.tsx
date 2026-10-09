@@ -1,12 +1,16 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { getBogotaDayKey } from "@/src/lib/date/bogota";
 import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
 
+import { DailyReportDialog } from "../../daily-report/daily-report-dialog";
+import { useClientActions } from "../../hooks/use-client-actions";
+import { usePendingHairProfiles } from "../../hooks/use-clients";
 import { useDashboardSummary } from "../../hooks/use-dashboard";
+import { useDailyReport } from "../../hooks/use-reports";
 import { useDashboardReservations } from "../../hooks/use-dashboard-reservations";
 import { useReservationActions } from "../../hooks/use-reservation-actions";
 import type {
@@ -22,6 +26,7 @@ import { RESERVATIONS_PANEL_ID } from "../reservations-panel/reservationsPanel";
 import { DashboardView } from "./dashboardView";
 
 const PAGE_SIZE = 3;
+const HAIR_PROFILES_PAGE = 5;
 
 function parsePage(raw: string | null): number {
   const parsed = Number(raw);
@@ -80,6 +85,17 @@ export function DashboardContainer() {
   });
   const summaryQuery = useDashboardSummary();
   const actions = useReservationActions();
+  const clientActions = useClientActions();
+  const [hairProfilesLimit, setHairProfilesLimit] =
+    useState(HAIR_PROFILES_PAGE);
+  const hairProfilesQuery = usePendingHairProfiles({
+    page: 1,
+    pageSize: hairProfilesLimit,
+  });
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const reportQuery = useDailyReport(null, { enabled: isReportOpen });
+  const hairProfilesTotal = hairProfilesQuery.data?.pagination.total ?? 0;
+  const hairProfiles = hairProfilesQuery.data?.data ?? [];
 
   const { data: reservationsData } = reservationsQuery;
 
@@ -139,35 +155,60 @@ export function DashboardContainer() {
   };
 
   return (
-    <DashboardView
-      header={header}
-      metrics={metrics}
-      isSummaryLoading={summaryQuery.isLoading}
-      isSummaryError={summaryQuery.isError && !summary}
-      onRetrySummary={() => void summaryQuery.refetch()}
-      view={view}
-      onViewChange={changeView}
-      reservations={reservationsData?.reservations ?? []}
-      pagination={
-        reservationsData?.pagination ?? {
-          page: currentPage,
-          pageSize: PAGE_SIZE,
-          total: 0,
-          totalPages: 0,
+    <>
+      <DashboardView
+        header={header}
+        metrics={metrics}
+        isSummaryLoading={summaryQuery.isLoading}
+        isSummaryError={summaryQuery.isError && !summary}
+        onRetrySummary={() => void summaryQuery.refetch()}
+        view={view}
+        onViewChange={changeView}
+        reservations={reservationsData?.reservations ?? []}
+        pagination={
+          reservationsData?.pagination ?? {
+            page: currentPage,
+            pageSize: PAGE_SIZE,
+            total: 0,
+            totalPages: 0,
+          }
         }
-      }
-      isReservationsLoading={
-        reservationsQuery.isLoading || reservationsQuery.isPlaceholderData
-      }
-      isReservationsError={reservationsQuery.isError}
-      onRetryReservations={() => void reservationsQuery.refetch()}
-      onPageChange={goToPage}
-      actions={actions}
-      onOpenInCalendar={handleOpenInCalendar}
-      onReschedule={handleReschedule}
-      onViewClient={handleViewClient}
-      onViewNotifications={handleViewNotifications}
-      onCreateReservation={handleCreateReservation}
-    />
+        isReservationsLoading={
+          reservationsQuery.isLoading || reservationsQuery.isPlaceholderData
+        }
+        isReservationsError={reservationsQuery.isError}
+        onRetryReservations={() => void reservationsQuery.refetch()}
+        onPageChange={goToPage}
+        actions={actions}
+        onOpenInCalendar={handleOpenInCalendar}
+        onReschedule={handleReschedule}
+        onViewClient={handleViewClient}
+        onViewNotifications={handleViewNotifications}
+        onCreateReservation={handleCreateReservation}
+        onOpenDailyReport={() => setIsReportOpen(true)}
+        hairProfiles={{
+          profiles: hairProfiles,
+          total: hairProfilesTotal,
+          isFetching: hairProfilesQuery.isFetching,
+          canLoadMore: hairProfiles.length < hairProfilesTotal,
+          isSaving: clientActions.isSaving,
+          onLoadMore: () =>
+            setHairProfilesLimit((limit) =>
+              Math.min(limit + HAIR_PROFILES_PAGE, 100),
+            ),
+          onRegister: clientActions.setHairProfile,
+          onConfirm: clientActions.confirmHairProfile,
+          onViewClient: handleViewClient,
+        }}
+      />
+      <DailyReportDialog
+        open={isReportOpen}
+        report={reportQuery.data}
+        isLoading={reportQuery.isLoading}
+        isError={reportQuery.isError}
+        onRetry={() => void reportQuery.refetch()}
+        onClose={() => setIsReportOpen(false)}
+      />
+    </>
   );
 }
