@@ -33,7 +33,8 @@ export const ADMIN_ACTION_MESSAGES = {
     error: "No se pudo enviar el enlace de cancelación",
   },
   copyCancellationLink: {
-    success: "Enlace de cancelación copiado. Puedes pegarlo en el chat del cliente.",
+    success:
+      "Enlace de cancelación copiado. Puedes pegarlo en el chat del cliente.",
     error: "No se pudo generar el enlace de cancelación",
   },
   createReservation: {
@@ -75,6 +76,70 @@ export const ADMIN_ACTION_MESSAGES = {
   removeScheduleException: {
     success: "Excepción de horario eliminada.",
     error: "No se pudo quitar la excepción de horario",
+  },
+  createCategory: {
+    success: "Categoría creada.",
+    error: "No se pudo crear la categoría",
+  },
+  updateCategory: {
+    success: "Categoría actualizada.",
+    error: "No se pudo actualizar la categoría",
+  },
+  activateCategory: {
+    success: "Categoría activada. Sus servicios activos vuelven a ofrecerse.",
+    error: "No se pudo activar la categoría",
+  },
+  deactivateCategory: {
+    success: "Categoría desactivada. Ya no se ofrece para nuevas reservas.",
+    error: "No se pudo desactivar la categoría",
+  },
+  createTreatment: {
+    success: "Servicio creado y disponible para reservas.",
+    error: "No se pudo crear el servicio",
+  },
+  updateTreatment: {
+    success: "Servicio actualizado.",
+    error: "No se pudo actualizar el servicio",
+  },
+  activateTreatment: {
+    success: "Servicio activado. Vuelve a ofrecerse para reservas.",
+    error: "No se pudo activar el servicio",
+  },
+  deactivateTreatment: {
+    success: "Servicio desactivado. Las reservas existentes se conservan.",
+    error: "No se pudo desactivar el servicio",
+  },
+  saveHairPricing: {
+    success: "Precios por cabello guardados.",
+    error: "No se pudieron guardar los precios por cabello",
+  },
+  createCapacityPool: {
+    success: "Capacidad agregada a la estación.",
+    error: "No se pudo crear la capacidad",
+  },
+  updateCapacityPool: {
+    success: "Capacidad actualizada.",
+    error: "No se pudo actualizar la capacidad",
+  },
+  deactivateCapacityPool: {
+    success: "Capacidad desactivada.",
+    error: "No se pudo desactivar la capacidad",
+  },
+  activateCapacityPool: {
+    success: "Capacidad activada.",
+    error: "No se pudo activar la capacidad",
+  },
+  createPromotion: {
+    success: "Promoción creada.",
+    error: "No se pudo crear la promoción",
+  },
+  updatePromotion: {
+    success: "Promoción actualizada.",
+    error: "No se pudo actualizar la promoción",
+  },
+  deactivatePromotion: {
+    success: "Promoción desactivada.",
+    error: "No se pudo desactivar la promoción",
   },
 } as const satisfies Record<string, ActionMessages>;
 

@@ -50,6 +50,8 @@ export const adminQueryKeys = {
   categories: {
     all: () => [...adminQueryKeys.all, "categories"] as const,
     lists: () => [...adminQueryKeys.categories.all(), "list"] as const,
+    adminList: (params?: unknown) =>
+      [...adminQueryKeys.categories.lists(), "admin", params] as const,
     details: () => [...adminQueryKeys.categories.all(), "detail"] as const,
     detail: (categoryId: string) =>
       [...adminQueryKeys.categories.details(), categoryId] as const,
@@ -60,6 +62,8 @@ export const adminQueryKeys = {
     lists: () => [...adminQueryKeys.treatments.all(), "list"] as const,
     list: (params?: unknown) =>
       [...adminQueryKeys.treatments.lists(), params] as const,
+    adminList: (params?: unknown) =>
+      [...adminQueryKeys.treatments.lists(), "admin", params] as const,
     details: () => [...adminQueryKeys.treatments.all(), "detail"] as const,
     detail: (treatmentId: string) =>
       [...adminQueryKeys.treatments.details(), treatmentId] as const,
@@ -133,8 +137,9 @@ export const adminQueryKeys = {
 
   capacityPools: {
     all: () => [...adminQueryKeys.all, "capacity-pools"] as const,
-    byCategory: (categoryId: string) =>
-      [...adminQueryKeys.capacityPools.all(), "category", categoryId] as const,
+    lists: () => [...adminQueryKeys.capacityPools.all(), "list"] as const,
+    list: (params?: unknown) =>
+      [...adminQueryKeys.capacityPools.lists(), params] as const,
     detail: (poolId: string) =>
       [...adminQueryKeys.capacityPools.all(), "detail", poolId] as const,
   },

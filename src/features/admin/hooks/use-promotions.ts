@@ -1,6 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { promotionsApi } from "../api/promotions.api";
+import { invalidateCatalogDomain } from "./invalidate-catalog-domain";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
@@ -11,14 +17,18 @@ import type {
 
 const PROMOTIONS_STALE_TIME = 2 * 60 * 1000;
 
-export function usePromotions(params?: FindPromotionsParams) {
+export function usePromotions(
+  params?: FindPromotionsParams,
+  options: { enabled?: boolean } = {},
+) {
   return useQuery({
     queryKey: adminQueryKeys.promotions.list(params),
-    queryFn: () => promotionsApi.findMany(params),
+    queryFn: ({ signal }) => promotionsApi.findMany(params, { signal }),
+    enabled: options.enabled ?? true,
+    placeholderData: keepPreviousData,
     staleTime: PROMOTIONS_STALE_TIME,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
-    refetchOnMount: false,
   });
 }
 
@@ -40,11 +50,7 @@ export function useCreatePromotion() {
   return useMutation({
     mutationKey: ["admin", "promotions", "create"],
     mutationFn: (data: CreatePromotionRequest) => promotionsApi.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.promotions.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -60,15 +66,7 @@ export function useUpdatePromotion() {
       promotionId: string;
       data: UpdatePromotionRequest;
     }) => promotionsApi.update(promotionId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.promotions.detail(variables.promotionId),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.promotions.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -78,14 +76,6 @@ export function useDeactivatePromotion() {
   return useMutation({
     mutationKey: ["admin", "promotions", "deactivate"],
     mutationFn: (promotionId: string) => promotionsApi.deactivate(promotionId),
-    onSuccess: (_data, promotionId) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.promotions.detail(promotionId),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.promotions.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }

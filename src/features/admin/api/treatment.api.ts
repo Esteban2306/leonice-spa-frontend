@@ -1,10 +1,15 @@
 import { httpClient } from "@/src/lib/api/client";
+import type { QueryOptions } from "@/src/lib/api/http.types";
 import type {
+  AdminTreatment,
   CreateTreatmentRequest,
+  FindAdminTreatmentsParams,
   FindTreatmentsParams,
-  Treatment,
+  HairColorSurchargeRow,
+  HairLengthPricingRow,
   SetHairColorSurchargesRequest,
   SetHairLengthPricingRequest,
+  Treatment,
   UpdateTreatmentRequest,
 } from "../types/treatments.types";
 
@@ -15,27 +20,40 @@ export const treatmentsApi = {
     });
   },
 
+  findAdmin(params?: FindAdminTreatmentsParams, options: QueryOptions = {}) {
+    return httpClient.request<AdminTreatment[]>(
+      "/treatments/admin",
+      "GET",
+      undefined,
+      { params, signal: options.signal },
+    );
+  },
+
   findOne(treatmentId: string) {
-    return httpClient.request(`/treatments/${treatmentId}`, "GET");
+    return httpClient.request<Treatment>(`/treatments/${treatmentId}`, "GET");
   },
 
   create(data: CreateTreatmentRequest) {
-    return httpClient.request("/treatments", "POST", data);
+    return httpClient.request<Treatment>("/treatments", "POST", data);
   },
 
   update(treatmentId: string, data: UpdateTreatmentRequest) {
-    return httpClient.request(`/treatments/${treatmentId}`, "PATCH", data);
+    return httpClient.request<Treatment>(
+      `/treatments/${treatmentId}`,
+      "PATCH",
+      data,
+    );
   },
 
   getHairLengthPricing(treatmentId: string) {
-    return httpClient.request(
+    return httpClient.request<HairLengthPricingRow[]>(
       `/treatments/${treatmentId}/hair-length-pricing`,
       "GET",
     );
   },
 
   setHairLengthPricing(treatmentId: string, data: SetHairLengthPricingRequest) {
-    return httpClient.request(
+    return httpClient.request<unknown>(
       `/treatments/${treatmentId}/hair-length-pricing`,
       "PATCH",
       data,
@@ -43,7 +61,7 @@ export const treatmentsApi = {
   },
 
   getHairColorSurcharges(treatmentId: string) {
-    return httpClient.request(
+    return httpClient.request<HairColorSurchargeRow[]>(
       `/treatments/${treatmentId}/hair-color-surcharges`,
       "GET",
     );
@@ -53,7 +71,7 @@ export const treatmentsApi = {
     treatmentId: string,
     data: SetHairColorSurchargesRequest,
   ) {
-    return httpClient.request(
+    return httpClient.request<unknown>(
       `/treatments/${treatmentId}/hair-color-surcharges`,
       "PATCH",
       data,

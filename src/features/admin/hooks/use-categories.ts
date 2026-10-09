@@ -1,14 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { categoriesApi } from "../api/categoties.api";
+import { invalidateCatalogDomain } from "./invalidate-catalog-domain";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
   CreateCategoryRequest,
+  FindAdminCategoriesParams,
   UpdateCategoryRequest,
 } from "../types/categories.types";
 
 const CATEGORIES_STALE_TIME = 10 * 60 * 1000;
+const ADMIN_CATEGORIES_STALE_TIME = 60 * 1000;
 
 export function useCategories() {
   return useQuery({
@@ -18,6 +21,16 @@ export function useCategories() {
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: false,
+  });
+}
+
+export function useAdminCategories(params: FindAdminCategoriesParams = {}) {
+  return useQuery({
+    queryKey: adminQueryKeys.categories.adminList(params),
+    queryFn: ({ signal }) => categoriesApi.findAdmin(params, { signal }),
+    staleTime: ADMIN_CATEGORIES_STALE_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
   });
 }
 
@@ -39,11 +52,7 @@ export function useCreateCategory() {
   return useMutation({
     mutationKey: ["admin", "categories", "create"],
     mutationFn: (data: CreateCategoryRequest) => categoriesApi.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.categories.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -59,18 +68,6 @@ export function useUpdateCategory() {
       categoryId: string;
       data: UpdateCategoryRequest;
     }) => categoriesApi.update(categoryId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.categories.detail(variables.categoryId),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.categories.lists(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }

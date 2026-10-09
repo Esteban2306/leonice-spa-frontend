@@ -14,3 +14,5 @@ export interface RequestOptions {
   params?: object;
   signal?: AbortSignal;
 }
+
+export type QueryOptions = Pick<RequestOptions, "signal">;

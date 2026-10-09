@@ -1,26 +1,35 @@
 import { httpClient } from "@/src/lib/api/client";
+import type { QueryOptions } from "@/src/lib/api/http.types";
 import type {
+  CapacityPool,
   CreateCapacityPoolRequest,
   FindCapacityPoolsParams,
   UpdateCapacityPoolRequest,
 } from "../types/capacity-pools.types";
 
 export const capacityPoolsApi = {
-  findByCategory(params: FindCapacityPoolsParams) {
-    return httpClient.request("/capacity-pools", "GET", {
-      params,
-    });
+  findMany(params?: FindCapacityPoolsParams, options: QueryOptions = {}) {
+    return httpClient.request<CapacityPool[]>(
+      "/capacity-pools",
+      "GET",
+      undefined,
+      { params, signal: options.signal },
+    );
   },
 
   findOne(poolId: string) {
-    return httpClient.request(`/capacity-pools/${poolId}`, "GET");
+    return httpClient.request<CapacityPool>(`/capacity-pools/${poolId}`, "GET");
   },
 
   create(data: CreateCapacityPoolRequest) {
-    return httpClient.request("/capacity-pools", "POST", data);
+    return httpClient.request<CapacityPool>("/capacity-pools", "POST", data);
   },
 
   update(poolId: string, data: UpdateCapacityPoolRequest) {
-    return httpClient.request(`/capacity-pools/${poolId}`, "PATCH", data);
+    return httpClient.request<CapacityPool>(
+      `/capacity-pools/${poolId}`,
+      "PATCH",
+      data,
+    );
   },
 };

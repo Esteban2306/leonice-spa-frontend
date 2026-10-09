@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { capacityPoolsApi } from "../api/capacity-pools.api";
+import { invalidateCatalogDomain } from "./invalidate-catalog-domain";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
@@ -11,14 +12,13 @@ import type {
 
 const CAPACITY_POOLS_STALE_TIME = 5 * 60 * 1000;
 
-export function useCapacityPools(params: FindCapacityPoolsParams) {
+export function useCapacityPools(params: FindCapacityPoolsParams = {}) {
   return useQuery({
-    queryKey: adminQueryKeys.capacityPools.byCategory(params.categoryId),
-    queryFn: () => capacityPoolsApi.findByCategory(params),
+    queryKey: adminQueryKeys.capacityPools.list(params),
+    queryFn: ({ signal }) => capacityPoolsApi.findMany(params, { signal }),
     staleTime: CAPACITY_POOLS_STALE_TIME,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
-    refetchOnMount: false,
   });
 }
 
@@ -41,11 +41,7 @@ export function useCreateCapacityPool() {
     mutationKey: ["admin", "capacity-pools", "create"],
     mutationFn: (data: CreateCapacityPoolRequest) =>
       capacityPoolsApi.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.capacityPools.all(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -61,14 +57,6 @@ export function useUpdateCapacityPool() {
       poolId: string;
       data: UpdateCapacityPoolRequest;
     }) => capacityPoolsApi.update(poolId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.capacityPools.detail(variables.poolId),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.capacityPools.all(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }

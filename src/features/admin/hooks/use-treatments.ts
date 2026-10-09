@@ -1,10 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { treatmentsApi } from "../api/treatment.api";
+import { invalidateCatalogDomain } from "./invalidate-catalog-domain";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
   CreateTreatmentRequest,
+  FindAdminTreatmentsParams,
   FindTreatmentsParams,
   SetHairColorSurchargesRequest,
   SetHairLengthPricingRequest,
@@ -12,6 +19,7 @@ import type {
 } from "../types/treatments.types";
 
 const TREATMENTS_STALE_TIME = 5 * 60 * 1000;
+const ADMIN_TREATMENTS_STALE_TIME = 60 * 1000;
 
 export function useTreatments(params?: FindTreatmentsParams) {
   return useQuery({
@@ -21,6 +29,17 @@ export function useTreatments(params?: FindTreatmentsParams) {
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: false,
+  });
+}
+
+export function useAdminTreatments(params: FindAdminTreatmentsParams) {
+  return useQuery({
+    queryKey: adminQueryKeys.treatments.adminList(params),
+    queryFn: ({ signal }) => treatmentsApi.findAdmin(params, { signal }),
+    placeholderData: keepPreviousData,
+    staleTime: ADMIN_TREATMENTS_STALE_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
   });
 }
 
@@ -78,11 +97,7 @@ export function useCreateTreatment() {
   return useMutation({
     mutationKey: ["admin", "treatments", "create"],
     mutationFn: (data: CreateTreatmentRequest) => treatmentsApi.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -98,15 +113,7 @@ export function useUpdateTreatment() {
       treatmentId: string;
       data: UpdateTreatmentRequest;
     }) => treatmentsApi.update(treatmentId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.detail(variables.treatmentId),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.lists(),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -122,23 +129,7 @@ export function useSetTreatmentHairLengthPricing() {
       treatmentId: string;
       data: SetHairLengthPricingRequest;
     }) => treatmentsApi.setHairLengthPricing(treatmentId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.hairLengthPricing(
-          variables.treatmentId,
-        ),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.hairPricingMatrix(
-          variables.treatmentId,
-        ),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.detail(variables.treatmentId),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
 
@@ -154,22 +145,6 @@ export function useSetTreatmentHairColorSurcharges() {
       treatmentId: string;
       data: SetHairColorSurchargesRequest;
     }) => treatmentsApi.setHairColorSurcharges(treatmentId, data),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.hairColorSurcharges(
-          variables.treatmentId,
-        ),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.hairPricingMatrix(
-          variables.treatmentId,
-        ),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: adminQueryKeys.treatments.detail(variables.treatmentId),
-      });
-    },
+    onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
