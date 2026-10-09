@@ -6,8 +6,8 @@ import {
   UserX,
   Wallet,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
+import { KpiButton as Kpi } from "@/src/features/admin/components/kpi-button";
 import { formatCopFromThousands } from "@/src/lib/money/cop";
 import type { ClientDetail } from "@/src/features/admin/types/clients.types";
 
@@ -19,36 +19,6 @@ interface ClientKpisProps {
   creditThousands: number;
   onShowHistory: (filter: HistoryStatusFilter) => void;
   onShowTab: (tab: ClientTab) => void;
-}
-
-interface KpiProps {
-  icon: LucideIcon;
-  value: string;
-  label: string;
-  hint?: string;
-  tone?: "dark" | "light" | "gold";
-  onClick: () => void;
-}
-
-const TONES = {
-  dark: "border-secondary bg-secondary text-primary",
-  light: "border-tertiary/25 bg-[#FCF6EB] text-secondary",
-  gold: "border-tertiary/40 bg-quaternary/30 text-secondary",
-} as const;
-
-function Kpi({ icon: Icon, value, label, hint, tone = "light", onClick }: KpiProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex flex-col gap-2 rounded-[1.75rem] border p-4 text-left transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary ${TONES[tone]}`}
-    >
-      <Icon className="size-4.5 opacity-70" strokeWidth={1.8} />
-      <span className="font-heading text-3xl leading-none">{value}</span>
-      <span className="font-sans text-sm">{label}</span>
-      {hint && <span className="font-sans text-xs opacity-60">{hint}</span>}
-    </button>
-  );
 }
 
 export function ClientKpis({ stats, creditThousands, onShowHistory, onShowTab }: ClientKpisProps) {
