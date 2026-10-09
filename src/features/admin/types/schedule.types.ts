@@ -56,3 +56,21 @@ export interface ScheduleConflictReservation {
   treatment: string;
   scheduledStart: string;
 }
+
+export interface BaseScheduleWindow {
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+}
+
+export interface UpdateBaseScheduleRequest {
+  days: Array<{
+    dayOfWeek: number;
+    windows: Array<{ startTime: string; endTime: string }>;
+  }>;
+}
+
+export interface UpdateBaseScheduleResult {
+  base: BaseScheduleWindow[];
+  depositDeadlinesExtended: ScheduleChangeResult["depositDeadlinesExtended"];
+}

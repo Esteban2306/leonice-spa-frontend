@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 
 import { clientsApi } from "../api/clients.api";
+import { invalidateReservationDomain } from "./invalidate-reservation-domain";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
@@ -50,7 +51,9 @@ function useInvalidateClient() {
 
   return (clientId?: string) =>
     Promise.all([
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.clients.lists() }),
+      queryClient.invalidateQueries({
+        queryKey: adminQueryKeys.clients.lists(),
+      }),
       clientId
         ? queryClient.invalidateQueries({
             queryKey: adminQueryKeys.clients.detail(clientId),
@@ -97,6 +100,7 @@ export function useUpdateClient() {
 
 export function useSetHairProfile() {
   const invalidate = useInvalidateClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["admin", "clients", "hair-profile"],
@@ -107,17 +111,26 @@ export function useSetHairProfile() {
       clientId: string;
       data: SetHairProfileRequest;
     }) => clientsApi.setHairProfile(clientId, data),
-    onSuccess: (_data, variables) => invalidate(variables.clientId),
+    onSuccess: (_data, variables) =>
+      Promise.all([
+        invalidate(variables.clientId),
+        invalidateReservationDomain(queryClient),
+      ]),
   });
 }
 
 export function useConfirmHairProfile() {
   const invalidate = useInvalidateClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["admin", "clients", "hair-profile-confirm"],
     mutationFn: (clientId: string) => clientsApi.confirmHairProfile(clientId),
-    onSuccess: (_data, clientId) => invalidate(clientId),
+    onSuccess: (_data, clientId) =>
+      Promise.all([
+        invalidate(clientId),
+        invalidateReservationDomain(queryClient),
+      ]),
   });
 }
 
@@ -134,5 +147,20 @@ export function useRecordConsent() {
       data: RecordConsentRequest;
     }) => clientsApi.recordConsent(clientId, data),
     onSuccess: (_data, variables) => invalidate(variables.clientId),
+  });
+}
+
+const PENDING_HAIR_PROFILES_STALE_TIME = 60 * 1000;
+
+export function usePendingHairProfiles(params: {
+  page?: number;
+  pageSize?: number;
+}) {
+  return useQuery({
+    queryKey: adminQueryKeys.clients.pendingHairProfiles(params),
+    queryFn: () => clientsApi.findPendingHairProfiles(params),
+    placeholderData: keepPreviousData,
+    staleTime: PENDING_HAIR_PROFILES_STALE_TIME,
+    refetchOnWindowFocus: false,
   });
 }

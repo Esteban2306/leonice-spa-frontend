@@ -77,6 +77,10 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Excepción de horario eliminada.",
     error: "No se pudo quitar la excepción de horario",
   },
+  updateBaseSchedule: {
+    success: "Horario semanal actualizado. El calendario y el bot ya lo usan.",
+    error: "No se pudo guardar el horario semanal",
+  },
   createCategory: {
     success: "Categoría creada.",
     error: "No se pudo crear la categoría",

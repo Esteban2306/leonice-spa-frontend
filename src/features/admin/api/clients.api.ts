@@ -10,6 +10,7 @@ import type {
   ResolveClientRequest,
   SetHairProfileRequest,
   UpdateClientRequest,
+  PaginatedPendingHairProfiles,
 } from "../types/clients.types";
 
 export const clientsApi = {
@@ -32,7 +33,11 @@ export const clientsApi = {
   },
 
   update(clientId: string, data: UpdateClientRequest) {
-    return httpClient.request<ClientView>(`/clients/${clientId}`, "PATCH", data);
+    return httpClient.request<ClientView>(
+      `/clients/${clientId}`,
+      "PATCH",
+      data,
+    );
   },
 
   setHairProfile(clientId: string, data: SetHairProfileRequest) {
@@ -40,6 +45,15 @@ export const clientsApi = {
       `/clients/${clientId}/hair-profile`,
       "PUT",
       data,
+    );
+  },
+
+  findPendingHairProfiles(params: { page?: number; pageSize?: number }) {
+    return httpClient.request<PaginatedPendingHairProfiles>(
+      "/clients/hair-profiles/pending",
+      "GET",
+      undefined,
+      { params },
     );
   },
 

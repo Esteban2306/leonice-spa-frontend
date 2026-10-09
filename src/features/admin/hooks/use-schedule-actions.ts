@@ -8,9 +8,13 @@ import { toastError, toastSuccess } from "../feedback/admin-toast";
 import {
   useCreateScheduleException,
   useDeleteScheduleException,
+  useUpdateBaseSchedule,
 } from "./use-schedule";
 
-import type { ScheduleChangeResult } from "../types/schedule.types";
+import type {
+  ScheduleChangeResult,
+  UpdateBaseScheduleRequest,
+} from "../types/schedule.types";
 
 export interface ScheduleExceptionInput {
   date: string;
@@ -24,6 +28,7 @@ export interface ScheduleActions {
   block: (input: ScheduleExceptionInput) => Promise<boolean>;
   openExtraHours: (input: ScheduleExceptionInput) => Promise<boolean>;
   removeException: (exceptionId: string) => Promise<boolean>;
+  updateBaseSchedule: (data: UpdateBaseScheduleRequest) => Promise<boolean>;
   isSaving: boolean;
 }
 
@@ -45,10 +50,16 @@ function describeConflicts(error: unknown): string | null {
     return null;
   }
 
-  const listed = ((error.details as ConflictDetails | undefined)?.reservations ?? [])
+  const listed = (
+    (error.details as ConflictDetails | undefined)?.reservations ?? []
+  )
     .slice(0, MAX_LISTED_CONFLICTS)
     .map((r) =>
-      [r.clientName, r.treatment, r.scheduledStart && formatBogotaTime(r.scheduledStart)]
+      [
+        r.clientName,
+        r.treatment,
+        r.scheduledStart && formatBogotaTime(r.scheduledStart),
+      ]
         .filter(Boolean)
         .join(" · "),
     );
@@ -56,15 +67,23 @@ function describeConflicts(error: unknown): string | null {
   return listed.length > 0 ? `${error.message} ${listed.join(" | ")}` : null;
 }
 
-function describeExtendedDeadlines(result: ScheduleChangeResult): string | undefined {
+function describeExtendedDeadlines(
+  result: Pick<ScheduleChangeResult, "depositDeadlinesExtended">,
+): string | undefined {
   const count = result.depositDeadlinesExtended.length;
   if (count === 0) return undefined;
   return `Se extendió el plazo de depósito de ${count} ${count === 1 ? "reserva" : "reservas"}.`;
 }
 
 async function runScheduleAction(
-  action: "blockSchedule" | "openSchedule" | "removeScheduleException",
-  execute: () => Promise<ScheduleChangeResult>,
+  action:
+    | "blockSchedule"
+    | "openSchedule"
+    | "removeScheduleException"
+    | "updateBaseSchedule",
+  execute: () => Promise<
+    Pick<ScheduleChangeResult, "depositDeadlinesExtended">
+  >,
 ): Promise<boolean> {
   const messages = ADMIN_ACTION_MESSAGES[action];
 
@@ -74,10 +93,7 @@ async function runScheduleAction(
     return true;
   } catch (error) {
     const conflicts = describeConflicts(error);
-    toastError(
-      messages.error,
-      conflicts ? new Error(conflicts) : error,
-    );
+    toastError(messages.error, conflicts ? new Error(conflicts) : error);
     return false;
   }
 }
@@ -85,8 +101,10 @@ async function runScheduleAction(
 export function useScheduleActions(): ScheduleActions {
   const create = useCreateScheduleException();
   const remove = useDeleteScheduleException();
+  const updateBase = useUpdateBaseSchedule();
   const { mutateAsync: createAsync } = create;
   const { mutateAsync: removeAsync } = remove;
+  const { mutateAsync: updateBaseAsync } = updateBase;
 
   const actions = useMemo(
     () => ({
@@ -102,9 +120,14 @@ export function useScheduleActions(): ScheduleActions {
         runScheduleAction("removeScheduleException", () =>
           removeAsync(exceptionId),
         ),
+      updateBaseSchedule: (data: UpdateBaseScheduleRequest) =>
+        runScheduleAction("updateBaseSchedule", () => updateBaseAsync(data)),
     }),
-    [createAsync, removeAsync],
+    [createAsync, removeAsync, updateBaseAsync],
   );
 
-  return { ...actions, isSaving: create.isPending || remove.isPending };
+  return {
+    ...actions,
+    isSaving: create.isPending || remove.isPending || updateBase.isPending,
+  };
 }

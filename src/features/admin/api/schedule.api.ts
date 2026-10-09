@@ -1,9 +1,12 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
+  BaseScheduleWindow,
   CreateScheduleExceptionRequest,
   ScheduleChangeResult,
   ScheduleDay,
   ScheduleException,
+  UpdateBaseScheduleRequest,
+  UpdateBaseScheduleResult,
 } from "../types/schedule.types";
 
 export interface FindScheduleExceptionsParams {
@@ -13,8 +16,26 @@ export interface FindScheduleExceptionsParams {
 }
 
 export const scheduleApi = {
+  getBase() {
+    return httpClient.request<BaseScheduleWindow[]>(
+      "/admin/schedule/base",
+      "GET",
+    );
+  },
+
+  updateBase(data: UpdateBaseScheduleRequest) {
+    return httpClient.request<UpdateBaseScheduleResult>(
+      "/admin/schedule/base",
+      "PUT",
+      data,
+    );
+  },
+
   getDay(date: string) {
-    return httpClient.request<ScheduleDay>(`/admin/schedule/days/${date}`, "GET");
+    return httpClient.request<ScheduleDay>(
+      `/admin/schedule/days/${date}`,
+      "GET",
+    );
   },
 
   listExceptions(params: FindScheduleExceptionsParams) {

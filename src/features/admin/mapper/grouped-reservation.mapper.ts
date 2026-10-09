@@ -52,6 +52,7 @@ function mapItem(
     depositExpiresAt: item.depositExpiresAt,
     cancellationSource: item.cancellationSource,
     cancellationReason: item.cancellationReason,
+    assessment: item.assessment,
   };
 }
 

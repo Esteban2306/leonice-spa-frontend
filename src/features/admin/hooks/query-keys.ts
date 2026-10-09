@@ -45,6 +45,12 @@ export const adminQueryKeys = {
     details: () => [...adminQueryKeys.clients.all(), "detail"] as const,
     detail: (clientId: string) =>
       [...adminQueryKeys.clients.details(), clientId] as const,
+    pendingHairProfiles: (params: unknown) =>
+      [
+        ...adminQueryKeys.clients.all(),
+        "pending-hair-profiles",
+        params,
+      ] as const,
   },
 
   categories: {
@@ -163,5 +169,12 @@ export const adminQueryKeys = {
       [...adminQueryKeys.schedule.all(), "day", date] as const,
     exceptions: (params: unknown) =>
       [...adminQueryKeys.schedule.all(), "exceptions", params] as const,
+    base: () => [...adminQueryKeys.schedule.all(), "base"] as const,
+  },
+
+  reports: {
+    all: () => [...adminQueryKeys.all, "reports"] as const,
+    daily: (date: string | null) =>
+      [...adminQueryKeys.reports.all(), "daily", date] as const,
   },
 };

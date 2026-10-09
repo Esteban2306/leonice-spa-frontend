@@ -1,3 +1,4 @@
+import type { ReservationAssessment } from "./reservations.types";
 import type {
   CancellationSource,
   DepositCoverage,
@@ -39,6 +40,7 @@ export interface CalendarApiReservation {
   treatment: { id: string; name: string };
   category: { id: string; name: string };
   deposit: CalendarApiDeposit | null;
+  assessment?: ReservationAssessment;
 }
 
 export interface CalendarRangeResponse {

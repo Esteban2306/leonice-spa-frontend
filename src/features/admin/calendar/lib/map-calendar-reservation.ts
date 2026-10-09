@@ -42,6 +42,7 @@ export function mapCalendarReservation(
     checkedInAt: reservation.checkedInAt,
     cancellationSource: reservation.cancellationSource,
     cancellationReason: reservation.cancellationReason,
+    assessment: reservation.assessment,
   };
 }
 

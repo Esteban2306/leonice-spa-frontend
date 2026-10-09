@@ -94,10 +94,7 @@ export interface ReservationDetail {
 export type AvailabilityPurpose = "CREATE" | "RESCHEDULE";
 
 export type AvailabilityDayReason =
-  | "OUT_OF_RANGE"
-  | "TOO_SOON"
-  | "CLOSED"
-  | "FULL";
+  "OUT_OF_RANGE" | "TOO_SOON" | "CLOSED" | "FULL";
 
 export interface AvailabilitySlot {
   iso: string;
@@ -152,6 +149,7 @@ export interface GroupedReservationItem {
   cancellationReason: string | null;
   cancelledAt: string | null;
   checkedInAt: string | null;
+  assessment?: ReservationAssessment;
 }
 
 export interface GroupedReservation {
@@ -171,4 +169,14 @@ export interface ReservationsPagination {
 export interface PaginatedGroupedReservations {
   data: GroupedReservation[];
   pagination: ReservationsPagination;
+}
+
+export type AssessmentState = "PENDING" | "DONE" | "NOT_REQUIRED";
+
+export type AssessmentReason = "REQUIRES_ASSESSMENT" | "HAIR_PRICING";
+
+export interface ReservationAssessment {
+  state: AssessmentState;
+  reason: AssessmentReason | null;
+  hairProfileStatus: "MISSING" | "EXPIRED" | "VALID";
 }

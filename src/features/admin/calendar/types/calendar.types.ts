@@ -1,3 +1,4 @@
+import type { ReservationAssessment } from "@/src/features/admin/types/reservations.types";
 import type {
   CancellationSource,
   DepositStatus,
@@ -34,6 +35,7 @@ export interface CalendarReservation {
   checkedInAt: string | null;
   cancellationSource: CancellationSource | null;
   cancellationReason: string | null;
+  assessment?: ReservationAssessment;
 }
 
 export interface CalendarFilter {

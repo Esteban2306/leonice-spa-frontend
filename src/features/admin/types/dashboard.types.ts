@@ -1,3 +1,4 @@
+import type { ReservationAssessment } from "./reservations.types";
 import type { CancellationSource, ReservationStatus } from "./enums";
 
 export interface DashboardSummary {
@@ -50,6 +51,7 @@ export interface DashboardReservationItem {
   depositExpiresAt: string | null;
   cancellationSource: CancellationSource | null;
   cancellationReason: string | null;
+  assessment?: ReservationAssessment;
 }
 
 export interface DashboardReservation {

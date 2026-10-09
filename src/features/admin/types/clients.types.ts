@@ -56,10 +56,7 @@ export interface SetHairProfileRequest {
 }
 
 export type ConsentType =
-  | "DATOS_SALUD"
-  | "MARKETING"
-  | "TERMINOS_SERVICIO"
-  | "AUTORIZACION_MENOR";
+  "DATOS_SALUD" | "MARKETING" | "TERMINOS_SERVICIO" | "AUTORIZACION_MENOR";
 
 export interface RecordConsentRequest {
   type: ConsentType;
@@ -128,3 +125,26 @@ export interface ClientDetail extends ClientView {
 }
 
 export const HEALTH_DATA_POLICY_VERSION = "v1.0-2026-08";
+
+export interface PendingHairProfile {
+  clientId: string;
+  name: string;
+  phone: string;
+  hairProfile: HairProfileView;
+  nextReservation: {
+    reservationId: string;
+    scheduledStart: string;
+    status: string;
+    treatment: string;
+  } | null;
+}
+
+export interface PaginatedPendingHairProfiles {
+  data: PendingHairProfile[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}

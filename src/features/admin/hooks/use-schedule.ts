@@ -7,7 +7,12 @@ import {
 import { invalidateScheduleDomain } from "./invalidate-schedule-domain";
 import { adminQueryKeys } from "./query-keys";
 
-import type { CreateScheduleExceptionRequest } from "../types/schedule.types";
+import { invalidateReservationDomain } from "./invalidate-reservation-domain";
+
+import type {
+  CreateScheduleExceptionRequest,
+  UpdateBaseScheduleRequest,
+} from "../types/schedule.types";
 
 const SCHEDULE_STALE_TIME = 30 * 1000;
 
@@ -49,5 +54,32 @@ export function useDeleteScheduleException() {
     mutationFn: (exceptionId: string) =>
       scheduleApi.deleteException(exceptionId),
     onSuccess: () => invalidateScheduleDomain(queryClient),
+  });
+}
+
+const BASE_SCHEDULE_STALE_TIME = 5 * 60 * 1000;
+
+export function useBaseSchedule(options: { enabled?: boolean } = {}) {
+  return useQuery({
+    queryKey: adminQueryKeys.schedule.base(),
+    queryFn: () => scheduleApi.getBase(),
+    enabled: options.enabled ?? true,
+    staleTime: BASE_SCHEDULE_STALE_TIME,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useUpdateBaseSchedule() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "schedule", "update-base"],
+    mutationFn: (data: UpdateBaseScheduleRequest) =>
+      scheduleApi.updateBase(data),
+    onSuccess: () =>
+      Promise.all([
+        invalidateScheduleDomain(queryClient),
+        invalidateReservationDomain(queryClient),
+      ]),
   });
 }
