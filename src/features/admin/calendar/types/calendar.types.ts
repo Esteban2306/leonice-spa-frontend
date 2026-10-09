@@ -87,4 +87,5 @@ export interface ScheduleActionHandlers {
   onBlockDay: () => void;
   onBlockHours: () => void;
   onOpenExtraHours: () => void;
+  onEditWeeklySchedule: () => void;
 }

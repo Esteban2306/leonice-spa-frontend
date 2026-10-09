@@ -6,10 +6,11 @@ import type { ScheduleDay } from "@/src/features/admin/types/schedule.types";
 import { CalendarSurface } from "../components/calendar-surface";
 import { DayDetailPanel } from "../components/day-panel/day-detail-panel";
 import { CalendarGrid } from "../components/grid/calendar-grid";
+import { ScheduleExceptionDialog } from "../components/schedule/schedule-exception-dialog";
 import {
-  ScheduleExceptionDialog,
-  type ScheduleDialogMode,
-} from "../components/schedule/schedule-exception-dialog";
+  WeeklyScheduleDialog,
+  type CalendarScheduleDialog,
+} from "../components/schedule/weekly-schedule-dialog";
 import { CalendarToolbar } from "../components/toolbar/calendar-toolbar";
 import { BookingPanel } from "../components/booking/booking-panel";
 import { BookingSetupDialog } from "../components/booking/booking-setup-dialog";
@@ -46,11 +47,11 @@ interface CalendarViewProps {
   isScheduleDayLoading: boolean;
   categories: readonly Category[];
 
-  scheduleDialog: ScheduleDialogMode | null;
+  scheduleDialog: CalendarScheduleDialog | null;
   reservationActions: ReservationActions;
   scheduleActions: ScheduleActions;
 
-  onScheduleDialogChange: (mode: ScheduleDialogMode | null) => void;
+  onScheduleDialogChange: (mode: CalendarScheduleDialog | null) => void;
   onSelectDate: (date: Date) => void;
   onSelectReservation: (reservationId: string | null) => void;
   onToday: () => void;
@@ -133,6 +134,7 @@ export function CalendarView({
             onBlockDay={() => onScheduleDialogChange("block-day")}
             onBlockHours={() => onScheduleDialogChange("block-hours")}
             onOpenExtraHours={() => onScheduleDialogChange("open-hours")}
+            onEditWeeklySchedule={() => onScheduleDialogChange("weekly")}
           />
         }
       >
@@ -197,7 +199,14 @@ export function CalendarView({
         />
       )}
 
-      {scheduleDialog && (
+      {scheduleDialog === "weekly" && (
+        <WeeklyScheduleDialog
+          actions={scheduleActions}
+          onClose={() => onScheduleDialogChange(null)}
+        />
+      )}
+
+      {scheduleDialog && scheduleDialog !== "weekly" && (
         <ScheduleExceptionDialog
           mode={scheduleDialog}
           date={selectedDate}

@@ -30,7 +30,7 @@ import type {
   CalendarReservation,
   CalendarViewMode,
 } from "../types/calendar.types";
-import type { ScheduleDialogMode } from "../components/schedule/schedule-exception-dialog";
+import type { CalendarScheduleDialog } from "../components/schedule/weekly-schedule-dialog";
 import { CalendarView } from "./calendar-view";
 import { useCalendarBooking } from "./use-calendar-booking";
 
@@ -64,7 +64,7 @@ export function CalendarContainer() {
   >(focusReservationId);
   const [hasFocused, setHasFocused] = useState(false);
   const [scheduleDialog, setScheduleDialog] =
-    useState<ScheduleDialogMode | null>(null);
+    useState<CalendarScheduleDialog | null>(null);
   const [bookingParams] = useState(() => ({
     initialSetupOpen: searchParams.get("new") === "true",
     presetClientId: searchParams.get("clientId"),
