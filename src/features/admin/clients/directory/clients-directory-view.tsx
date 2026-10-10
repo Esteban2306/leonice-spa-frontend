@@ -1,4 +1,11 @@
-import { ChevronLeft, ChevronRight, Search, UserPlus, Users, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  UserPlus,
+  Users,
+  X,
+} from "lucide-react";
 
 import type {
   ClientListItem,
@@ -49,9 +56,12 @@ export function ClientsDirectoryView({
             <p className="font-sans text-xs uppercase tracking-[0.22em] text-quaternary">
               Clientes · CRM
             </p>
-            <h1 className="mt-2 font-heading text-4xl">Directorio de clientes</h1>
+            <h1 className="mt-2 font-heading text-4xl">
+              Directorio de clientes
+            </h1>
             <p className="mt-2 max-w-xl font-sans text-sm text-primary/65">
-              Busca por nombre o teléfono y abre la ficha para gestionar perfil, salud, citas y pagos.
+              Busca por nombre o teléfono y abre la ficha para gestionar perfil,
+              salud, citas y pagos.
             </p>
           </div>
 
@@ -80,7 +90,7 @@ export function ClientsDirectoryView({
                 onChange={(event) => onQueryChange(event.target.value)}
                 placeholder="Buscar por nombre o teléfono"
                 aria-label="Buscar clientes"
-                className="h-12 w-full rounded-full border border-secondary/15 bg-white pl-11 pr-10 font-sans text-sm text-secondary outline-none placeholder:text-secondary/40 focus-visible:border-tertiary focus-visible:ring-2 focus-visible:ring-tertiary/40"
+                className="h-12 w-full rounded-full border border-secondary/15 bg-white pl-11 pr-10 font-sans text-sm text-secondary outline-none placeholder:text-secondary/40 focus-visible:border-tertiary focus-visible:ring-2 focus-visible:ring-tertiary/40 [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
               />
               {query && (
                 <button
@@ -107,9 +117,16 @@ export function ClientsDirectoryView({
           )}
 
           {isError && (
-            <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 font-sans text-sm text-red-800">
+            <div
+              role="alert"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 font-sans text-sm text-red-800"
+            >
               No se pudo cargar el directorio.
-              <button type="button" onClick={onRetry} className="cursor-pointer rounded-full bg-red-700 px-4 py-1.5 text-white">
+              <button
+                type="button"
+                onClick={onRetry}
+                className="cursor-pointer rounded-full bg-red-700 px-4 py-1.5 text-white"
+              >
                 Reintentar
               </button>
             </div>
@@ -120,13 +137,19 @@ export function ClientsDirectoryView({
             className={`grid grid-cols-1 gap-3 transition-opacity lg:grid-cols-2 ${isLoading ? "opacity-60" : ""}`}
           >
             {clients.map((client) => (
-              <ClientDirectoryCard key={client.id} client={client} onOpen={onOpenClient} />
+              <ClientDirectoryCard
+                key={client.id}
+                client={client}
+                onOpen={onOpenClient}
+              />
             ))}
           </div>
 
           {!isLoading && !isError && clients.length === 0 && (
             <p className="py-12 text-center font-sans text-secondary/60">
-              {query ? "No hay clientes que coincidan con la búsqueda." : "Aún no hay clientes registrados."}
+              {query
+                ? "No hay clientes que coincidan con la búsqueda."
+                : "Aún no hay clientes registrados."}
             </p>
           )}
 
