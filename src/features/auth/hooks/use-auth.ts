@@ -53,3 +53,10 @@ export function useLogout() {
     },
   });
 }
+
+export function useChangePassword() {
+  return useMutation({
+    mutationKey: ["auth", "change-password"],
+    mutationFn: authApi.changePassword,
+  });
+}

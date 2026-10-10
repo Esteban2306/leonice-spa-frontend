@@ -39,5 +39,11 @@ export const FRIENDLY_ERROR_MESSAGES: Readonly<Record<string, string>> = {
     "Ya existe un cliente con ese teléfono. Búscalo en el directorio.",
   CLIENT_HEALTH_CONSENT_REQUIRED:
     "Registra el consentimiento de datos de salud antes de guardar alergias o embarazo.",
+  AUTH_CURRENT_PASSWORD_INVALID: "La contraseña actual no es correcta.",
+  AUTH_PASSWORD_UNCHANGED: "La nueva contraseña debe ser distinta de la actual.",
+  CANCELLATION_LINK_INVALID:
+    "Este enlace de cancelación no es válido. Pide uno nuevo al spa.",
+  CANCELLATION_LINK_EXPIRED:
+    "Este enlace de cancelación ya venció. Comunícate con el spa.",
   CLIENT_SEARCH_TOO_SHORT: "Escribe al menos 2 letras o 4 dígitos para buscar.",
 };

@@ -172,6 +172,12 @@ export const adminQueryKeys = {
     base: () => [...adminQueryKeys.schedule.all(), "base"] as const,
   },
 
+  settings: {
+    all: () => [...adminQueryKeys.all, "settings"] as const,
+    recipients: () =>
+      [...adminQueryKeys.settings.all(), "notification-recipients"] as const,
+  },
+
   reports: {
     all: () => [...adminQueryKeys.all, "reports"] as const,
     daily: (date: string | null) =>

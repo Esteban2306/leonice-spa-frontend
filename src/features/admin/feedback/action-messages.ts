@@ -77,6 +77,26 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Excepción de horario eliminada.",
     error: "No se pudo quitar la excepción de horario",
   },
+  createRecipient: {
+    success: "Destinatario agregado. Recibirá los avisos por WhatsApp.",
+    error: "No se pudo agregar el destinatario",
+  },
+  updateRecipient: {
+    success: "Destinatario actualizado.",
+    error: "No se pudo actualizar el destinatario",
+  },
+  activateRecipient: {
+    success: "Avisos activados para este número.",
+    error: "No se pudieron activar los avisos",
+  },
+  deactivateRecipient: {
+    success: "Avisos pausados para este número.",
+    error: "No se pudieron pausar los avisos",
+  },
+  changePassword: {
+    success: "Contraseña actualizada. Vuelve a iniciar sesión con la nueva.",
+    error: "No se pudo cambiar la contraseña",
+  },
   updateBaseSchedule: {
     success: "Horario semanal actualizado. El calendario y el bot ya lo usan.",
     error: "No se pudo guardar el horario semanal",
