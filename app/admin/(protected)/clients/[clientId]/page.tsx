@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { ClientDetailContainer } from "@/src/features/admin/clients/detail/client-detail-container";
+import { ClientDetailContainer } from "@/src/features/admin/clients/page/client-detail-container";
 
 export default async function ClientDetailPage({
   params,

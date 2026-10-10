@@ -1,22 +1,28 @@
 import type { ReservationActions } from "@/src/features/admin/hooks/use-reservation-actions";
 import type { ClientActions } from "@/src/features/admin/hooks/use-client-actions";
-import type { ClientDetail, UpdateClientRequest } from "@/src/features/admin/types/clients.types";
+import type {
+  ClientDetail,
+  UpdateClientRequest,
+} from "@/src/features/admin/types/clients.types";
 import type { DashboardReservation } from "@/src/features/admin/types/dashboard.types";
-import type { ClientCredit, DepositRecordView } from "@/src/features/admin/types/deposits.types";
+import type {
+  ClientCredit,
+  DepositRecordView,
+} from "@/src/features/admin/types/deposits.types";
 
 import type { HistoryStatusFilter } from "../lib/client-crm";
-import { ClientHeader } from "./components/client-header";
-import { ClientKpis } from "./components/client-kpis";
-import { ClientTabs, type ClientTab } from "./components/client-tabs";
-import { ConsentsCard } from "./components/consents-card";
-import { EditProfileDialog } from "./components/edit-profile-dialog";
-import { HairProfileCard } from "./components/hair-profile-card";
-import { HealthCard } from "./components/health-card";
-import { HistoryTab } from "./components/history-tab";
-import { NotesTab } from "./components/notes-tab";
-import { PaymentsTab } from "./components/payments-tab";
-import { ProfileCard } from "./components/profile-card";
-import { UpcomingTab } from "./components/upcoming-tab";
+import { ClientHeader } from "../detail/components/client-header";
+import { ClientKpis } from "../detail/components/client-kpis";
+import { ClientTabs, type ClientTab } from "../detail/components/client-tabs";
+import { ConsentsCard } from "../detail/components/consents-card";
+import { EditProfileDialog } from "../detail/components/edit-profile-dialog";
+import { HairProfileCard } from "../detail/components/hair-profile-card";
+import { HealthCard } from "../detail/components/health-card";
+import { HistoryTab } from "../detail/components/history-tab";
+import { NotesTab } from "../detail/components/notes-tab";
+import { PaymentsTab } from "../detail/components/payments-tab";
+import { ProfileCard } from "../detail/components/profile-card";
+import { UpcomingTab } from "../detail/components/upcoming-tab";
 
 export interface ClientDetailViewProps {
   client: ClientDetail;
@@ -48,7 +54,9 @@ export interface ClientDetailViewProps {
 
 export function ClientDetailView(props: ClientDetailViewProps) {
   const { client, todayKey, clientActions, tab } = props;
-  const hasHealthConsent = client.consents.some((consent) => consent.type === "DATOS_SALUD");
+  const hasHealthConsent = client.consents.some(
+    (consent) => consent.type === "DATOS_SALUD",
+  );
 
   return (
     <main className="min-h-full bg-primary">
@@ -70,7 +78,12 @@ export function ClientDetailView(props: ClientDetailViewProps) {
 
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
           <div className="flex flex-col gap-5">
-            <ProfileCard client={client} todayKey={todayKey} onUpdate={props.onUpdate} onCopy={props.onCopy} />
+            <ProfileCard
+              client={client}
+              todayKey={todayKey}
+              onUpdate={props.onUpdate}
+              onCopy={props.onCopy}
+            />
             <HairProfileCard
               profile={client.hairProfile}
               nowMs={props.nowMs}
@@ -83,13 +96,19 @@ export function ClientDetailView(props: ClientDetailViewProps) {
               hasConsent={hasHealthConsent}
               isSaving={clientActions.isSaving}
               onUpdate={props.onUpdate}
-              onRecordConsent={() => clientActions.recordHealthConsent(client.id)}
+              onRecordConsent={() =>
+                clientActions.recordHealthConsent(client.id)
+              }
             />
             <ConsentsCard consents={client.consents} />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">
-            <ClientTabs tab={tab} upcomingCount={props.upcoming.length} onChange={props.onTabChange} />
+            <ClientTabs
+              tab={tab}
+              upcomingCount={props.upcoming.length}
+              onChange={props.onTabChange}
+            />
 
             {tab === "upcoming" && (
               <UpcomingTab

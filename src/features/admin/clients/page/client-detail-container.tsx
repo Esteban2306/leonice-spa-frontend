@@ -6,10 +6,16 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { getBogotaDayKey } from "@/src/lib/date/bogota";
 import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
-import { toastError, toastSuccess } from "@/src/features/admin/feedback/admin-toast";
+import {
+  toastError,
+  toastSuccess,
+} from "@/src/features/admin/feedback/admin-toast";
 import { useClientActions } from "@/src/features/admin/hooks/use-client-actions";
 import { useClient } from "@/src/features/admin/hooks/use-clients";
-import { useClientCredits, useDeposits } from "@/src/features/admin/hooks/use-deposits";
+import {
+  useClientCredits,
+  useDeposits,
+} from "@/src/features/admin/hooks/use-deposits";
 import { useReservationActions } from "@/src/features/admin/hooks/use-reservation-actions";
 import { useReservations } from "@/src/features/admin/hooks/use-reservations";
 import { mapGroupedReservationToDashboard } from "@/src/features/admin/mapper/grouped-reservation.mapper";
@@ -17,7 +23,7 @@ import type { UpdateClientRequest } from "@/src/features/admin/types/clients.typ
 import type { ReservationStatus } from "@/src/features/admin/types/enums";
 
 import type { HistoryStatusFilter } from "../lib/client-crm";
-import { isClientTab, type ClientTab } from "./components/client-tabs";
+import { isClientTab, type ClientTab } from "../detail/components/client-tabs";
 import { ClientDetailView } from "./client-detail-view";
 
 const LIVE_STATUSES: readonly ReservationStatus[] = [
@@ -30,7 +36,8 @@ const LIVE_STATUSES: readonly ReservationStatus[] = [
 function isTypingTarget(target: EventTarget | null): boolean {
   return (
     target instanceof HTMLElement &&
-    (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+    (target.isContentEditable ||
+      ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
   );
 }
 
@@ -43,12 +50,18 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
 
   const rawTab = searchParams.get("tab");
   const tab: ClientTab = isClientTab(rawTab) ? rawTab : "upcoming";
-  const [historyStatus, setHistoryStatus] = useState<HistoryStatusFilter>("ALL");
+  const [historyStatus, setHistoryStatus] =
+    useState<HistoryStatusFilter>("ALL");
   const [historyQuery, setHistoryQuery] = useState("");
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const clientQuery = useClient(clientId);
-  const upcomingQuery = useReservations({ clientId, from: todayKey, page: 1, pageSize: 50 });
+  const upcomingQuery = useReservations({
+    clientId,
+    from: todayKey,
+    page: 1,
+    pageSize: 50,
+  });
   const depositsQuery = useDeposits({ clientId, page: 1, pageSize: 50 });
   const creditsQuery = useClientCredits(clientId);
   const reservationActions = useReservationActions();
@@ -60,7 +73,13 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
   useEffect(() => {
     if (!phone) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey || isTypingTarget(event.target)) return;
+      if (
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey ||
+        isTypingTarget(event.target)
+      )
+        return;
       if (document.querySelector("[data-slot=dialog-content]")) return;
       const key = event.key.toLowerCase();
       if (key === "e") {
@@ -69,7 +88,11 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
       }
       if (key === "w") {
         event.preventDefault();
-        window.open(`https://wa.me/${phone.replace(/\D/g, "")}`, "_blank", "noopener,noreferrer");
+        window.open(
+          `https://wa.me/${phone.replace(/\D/g, "")}`,
+          "_blank",
+          "noopener,noreferrer",
+        );
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -79,13 +102,21 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
   const upcoming = useMemo(() => {
     const now = new Date(nowMs);
     return (upcomingQuery.data?.data ?? [])
-      .map((group) => ({ ...group, items: group.items.filter((item) => LIVE_STATUSES.includes(item.status)) }))
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) =>
+          LIVE_STATUSES.includes(item.status),
+        ),
+      }))
       .filter((group) => group.items.length > 0)
       .map((group) => mapGroupedReservationToDashboard(group, now));
   }, [upcomingQuery.data, nowMs]);
 
   const credits = creditsQuery.data?.credits ?? [];
-  const creditThousands = credits.reduce((sum, credit) => sum + Number(credit.amount), 0);
+  const creditThousands = credits.reduce(
+    (sum, credit) => sum + Number(credit.amount),
+    0,
+  );
 
   const changeTab = (next: ClientTab) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -100,7 +131,8 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
     changeTab("history");
   };
 
-  const update = (data: UpdateClientRequest) => clientActions.update(clientId, data);
+  const update = (data: UpdateClientRequest) =>
+    clientActions.update(clientId, data);
 
   const copy = async (text: string, label: string) => {
     try {
@@ -112,21 +144,36 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
   };
 
   if (clientQuery.isLoading) {
-    return <main className="grid min-h-full place-items-center bg-primary p-10 font-sans text-secondary/60">Cargando ficha del cliente…</main>;
+    return (
+      <main className="grid min-h-full place-items-center bg-primary p-10 font-sans text-secondary/60">
+        Cargando ficha del cliente…
+      </main>
+    );
   }
 
   if (!client) {
     return (
       <main className="grid min-h-full place-items-center bg-primary p-10 text-center">
         <div className="flex flex-col items-center gap-3 font-sans text-secondary">
-          <p>{clientQuery.isError ? "No pudimos cargar este cliente." : "El cliente no existe."}</p>
+          <p>
+            {clientQuery.isError
+              ? "No pudimos cargar este cliente."
+              : "El cliente no existe."}
+          </p>
           <div className="flex gap-2">
             {clientQuery.isError && (
-              <button type="button" onClick={() => void clientQuery.refetch()} className="cursor-pointer rounded-full bg-secondary px-5 py-2 text-sm text-primary">
+              <button
+                type="button"
+                onClick={() => void clientQuery.refetch()}
+                className="cursor-pointer rounded-full bg-secondary px-5 py-2 text-sm text-primary"
+              >
                 Reintentar
               </button>
             )}
-            <Link href="/admin/clients" className="rounded-full border border-secondary/20 px-5 py-2 text-sm">
+            <Link
+              href="/admin/clients"
+              className="rounded-full border border-secondary/20 px-5 py-2 text-sm"
+            >
               Volver al directorio
             </Link>
           </div>
@@ -158,9 +205,15 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
       onEditOpenChange={setIsEditOpen}
       onUpdate={update}
       onCopy={(text, label) => void copy(text, label)}
-      onNewReservation={() => router.push(`/admin/calendar?new=true&clientId=${clientId}`)}
-      onOpenInCalendar={(reservationId) => router.push(`/admin/calendar?reservationId=${reservationId}`)}
-      onReschedule={(reservationId) => router.push(`/admin/calendar?reschedule=${reservationId}`)}
+      onNewReservation={() =>
+        router.push(`/admin/calendar?new=true&clientId=${clientId}`)
+      }
+      onOpenInCalendar={(reservationId) =>
+        router.push(`/admin/calendar?reservationId=${reservationId}`)
+      }
+      onReschedule={(reservationId) =>
+        router.push(`/admin/calendar?reschedule=${reservationId}`)
+      }
       onViewClient={(id) => router.push(`/admin/clients/${id}`)}
     />
   );
