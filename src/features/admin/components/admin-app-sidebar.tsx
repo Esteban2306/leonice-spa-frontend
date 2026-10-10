@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   CalendarDays,
-  CircleDollarSign,
   LayoutDashboard,
   LogOut,
   MessageCircle,
@@ -64,11 +63,6 @@ const navigationItems = [
     name: "Ajustes",
     href: "/admin/settings",
     icon: Settings,
-  },
-  {
-    name: "Pagos",
-    href: "/admin/payments",
-    icon: CircleDollarSign,
   },
 ] as const;
 
@@ -192,7 +186,7 @@ export default function AdminSidebar() {
                         </span>
                       )}
 
-                                            {isActive && (
+                      {isActive && (
                         <span
                           className="
                         absolute
