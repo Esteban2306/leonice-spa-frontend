@@ -8,6 +8,7 @@ import {
   CircleDollarSign,
   LayoutDashboard,
   LogOut,
+  MessageCircle,
   Scissors,
   Settings,
   UsersRound,
@@ -29,6 +30,7 @@ import {
 
 import { Button } from "@/src/components/ui/button";
 import { useLogout, useSession } from "@/src/features/auth/hooks/use-auth";
+import { useInboxCounts } from "@/src/features/admin/whatsapp/lib/use-inbox-counts";
 
 import LogoW from "../../../../public/leonice-logo-w.png";
 
@@ -54,6 +56,11 @@ const navigationItems = [
     icon: Scissors,
   },
   {
+    name: "WhatsApp",
+    href: "/admin/whatsapp",
+    icon: MessageCircle,
+  },
+  {
     name: "Ajustes",
     href: "/admin/settings",
     icon: Settings,
@@ -73,6 +80,7 @@ export default function AdminSidebar() {
 
   const { data: user } = useSession();
   const logout = useLogout();
+  const inbox = useInboxCounts();
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -175,7 +183,16 @@ export default function AdminSidebar() {
                         </span>
                       </div>
 
-                      {isActive && (
+                      {item.href === "/admin/whatsapp" && inbox.pending > 0 && (
+                        <span
+                          aria-label={`${inbox.pending} conversaciones pendientes`}
+                          className="absolute top-1/2 right-6 grid min-w-5 -translate-y-1/2 place-items-center rounded-full bg-red-700 px-1.5 font-sans text-[11px] font-semibold text-white tabular-nums in-data-[collapsible=icon]:top-1 in-data-[collapsible=icon]:right-0 in-data-[collapsible=icon]:min-w-4 in-data-[collapsible=icon]:translate-y-0 in-data-[collapsible=icon]:text-[9px]"
+                        >
+                          {inbox.pending}
+                        </span>
+                      )}
+
+                                            {isActive && (
                         <span
                           className="
                         absolute
