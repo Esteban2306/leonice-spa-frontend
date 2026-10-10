@@ -77,16 +77,17 @@ export function ReservationPanelDesktop({
                 Fecha
               </span>
               <div className="mt-4">
-                <ReservationItemSchedule item={item} dateLabel={dateLabel} />
+                <ReservationItemSchedule
+                  item={item}
+                  dateLabel={dateLabel}
+                  clientId={reservation.clientId}
+                  clientName={client.name}
+                />
               </div>
             </section>
 
             <section className="p-4 sm:p-5">
-              <ReservationItemTreatment
-                item={item}
-                clientId={reservation.clientId}
-                clientName={client.name}
-              />
+              <ReservationItemTreatment item={item} clientName={client.name} />
             </section>
 
             <section className="flex flex-col justify-center p-4 sm:p-3">

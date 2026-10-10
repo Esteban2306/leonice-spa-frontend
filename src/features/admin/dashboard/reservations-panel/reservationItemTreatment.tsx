@@ -7,7 +7,6 @@ import { ProofStatusNote } from "./proofStatusBadge";
 
 interface ReservationItemTreatmentProps {
   item: DashboardReservationItem;
-  clientId: string;
   clientName: string;
 }
 
@@ -15,7 +14,6 @@ const LABEL = "font-sans text-xs uppercase tracking-[0.18em] text-secondary/50";
 
 export function ReservationItemTreatment({
   item,
-  clientId,
   clientName,
 }: ReservationItemTreatmentProps) {
   const showProof =
@@ -32,13 +30,6 @@ export function ReservationItemTreatment({
           {item.durationMinutes} min · {item.categoryLabel}
         </p>
       </div>
-
-      <AssessmentCallout
-        assessment={item.assessment}
-        clientId={clientId}
-        clientName={clientName}
-        treatmentName={item.treatmentName}
-      />
 
       <div>
         <span className={LABEL}>Precio</span>

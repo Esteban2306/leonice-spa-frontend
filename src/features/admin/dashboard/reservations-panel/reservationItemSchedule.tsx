@@ -3,17 +3,22 @@ import { CalendarDays, Clock3 } from "lucide-react";
 import type { DashboardReservationItem } from "@/src/features/admin/types/dashboard.types";
 
 import { DepositCountdown } from "./depositCountdown";
+import { AssessmentCallout } from "../../components/hair-assessment/assessment-callout";
 
 interface ReservationItemScheduleProps {
   item: DashboardReservationItem;
   dateLabel: string;
   compact?: boolean;
+  clientId: string;
+  clientName: string;
 }
 
 export function ReservationItemSchedule({
   item,
   dateLabel,
   compact = false,
+  clientId,
+  clientName,
 }: ReservationItemScheduleProps) {
   const iconClass = compact ? "size-4 text-secondary" : "size-5 text-secondary";
   const textClass = compact
@@ -38,6 +43,13 @@ export function ReservationItemSchedule({
           proofStatus={item.proofStatus}
         />
       )}
+
+      <AssessmentCallout
+        assessment={item.assessment}
+        clientId={clientId}
+        clientName={clientName}
+        treatmentName={item.treatmentName}
+      />
     </div>
   );
 }

@@ -15,7 +15,7 @@ export function ReservationsViewToggle({
     <div
       role="tablist"
       aria-label="Vista de reservas"
-      className="flex w-full flex-wrap items-center gap-1 rounded-[1.25rem] border border-secondary/15 bg-white p-1 sm:inline-flex sm:w-auto sm:rounded-full"
+      className="flex w-full max-w-116.25 flex-wrap items-center gap-1 rounded-[1.25rem] border border-secondary/15 bg-white p-1 sm:inline-flex sm:w-auto sm:rounded-full"
     >
       {DASHBOARD_VIEWS.map((option) => {
         const isActive = option.id === view;

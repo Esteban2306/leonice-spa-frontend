@@ -80,10 +80,11 @@ export function ReservationPanelMobile({
                   item={item}
                   dateLabel={dateLabel}
                   compact
+                  clientId={reservation.clientId}
+                  clientName={client.name}
                 />
                 <ReservationItemTreatment
                   item={item}
-                  clientId={reservation.clientId}
                   clientName={client.name}
                 />
                 <ReservationItemActions
