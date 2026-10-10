@@ -14,7 +14,7 @@ export function CancelShell({ children }: { children: ReactNode }) {
       />
       <div className="mt-8 w-full max-w-xl">{children}</div>
       <p className="mt-8 max-w-sm text-center font-sans text-xs text-secondary/70">
-        Leonice Spa · Bogotá. Este enlace es personal; no lo compartas.
+        Leonice Spa · Granada. Este enlace es personal; no lo compartas.
       </p>
     </main>
   );
