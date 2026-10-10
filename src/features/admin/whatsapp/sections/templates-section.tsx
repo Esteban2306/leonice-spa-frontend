@@ -470,7 +470,14 @@ function RulesCard({ actions }: { actions: ConduitActions }) {
   );
 }
 
-function RecipientsCheckCard({ windowDays }: { windowDays: number }) {
+function RecipientsCheckCard({
+  windowDays,
+  spaPhone,
+}: {
+  windowDays: number;
+  spaPhone: string | null;
+}) {
+  const spaDigits = spaPhone?.replace(/\D/g, "") ?? "";
   const recipients = useNotificationRecipients();
   const contacts = useConduitContacts({ limit: 100 });
   const nowMs = useMinuteClock();
@@ -501,8 +508,10 @@ function RecipientsCheckCard({ windowDays }: { windowDays: number }) {
       )}
       <ul className="flex flex-col gap-2">
         {(recipients.data ?? []).map((recipient) => {
-          const at = lastInbound.get(recipient.phone.replace(/\D/g, ""));
+          const digits = recipient.phone.replace(/\D/g, "");
+          const at = lastInbound.get(digits);
           const eligible = Boolean(at && new Date(at).getTime() >= cutoff);
+          const isSpaNumber = spaDigits !== "" && digits === spaDigits;
           return (
             <li
               key={recipient.id}
@@ -518,6 +527,15 @@ function RecipientsCheckCard({ windowDays }: { windowDays: number }) {
               </div>
               {!recipient.isActive ? (
                 <StatusPill tone="gray">Pausado</StatusPill>
+              ) : isSpaNumber ? (
+                <span className="flex max-w-64 flex-col items-end gap-1 text-right">
+                  <StatusPill tone="amber">Es el número del spa</StatusPill>
+                  <span className="font-sans text-[11px] text-secondary/70">
+                    WhatsApp no avisa de mensajes enviados a uno mismo. Usa otro
+                    número, por ejemplo tu WhatsApp personal en el mismo
+                    celular.
+                  </span>
+                </span>
               ) : eligible ? (
                 <StatusPill tone="green">Puede recibir avisos</StatusPill>
               ) : (
@@ -577,6 +595,7 @@ export function TemplatesSection() {
         <RulesCard actions={actions} />
         <RecipientsCheckCard
           windowDays={overview.data?.connection?.inboundLookbackDays ?? 180}
+          spaPhone={overview.data?.connection?.phoneNumber ?? null}
         />
       </div>
       <TemplateEditorDialog
