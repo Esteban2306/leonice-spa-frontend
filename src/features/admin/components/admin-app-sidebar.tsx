@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   Scissors,
+  Settings,
   UsersRound,
 } from "lucide-react";
 
@@ -51,6 +52,11 @@ const navigationItems = [
     name: "Servicios",
     href: "/admin/services",
     icon: Scissors,
+  },
+  {
+    name: "Ajustes",
+    href: "/admin/settings",
+    icon: Settings,
   },
   {
     name: "Pagos",
