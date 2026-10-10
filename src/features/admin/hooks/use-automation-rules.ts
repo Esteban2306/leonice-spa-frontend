@@ -15,6 +15,7 @@ export function useAutomationRules(params?: FindAutomationRulesParams) {
   return useQuery({
     queryKey: adminQueryKeys.automationRules.list(params),
     queryFn: () => automationRulesApi.findMany(params),
+    enabled: Boolean(params?.categoryId || params?.treatmentId),
     staleTime: AUTOMATION_RULES_STALE_TIME,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,

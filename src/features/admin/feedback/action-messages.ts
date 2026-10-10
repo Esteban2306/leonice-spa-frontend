@@ -77,6 +77,118 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Excepción de horario eliminada.",
     error: "No se pudo quitar la excepción de horario",
   },
+  conduitConnect: {
+    success: "Conexión iniciada. Escanea el código QR desde el teléfono del spa.",
+    error: "No se pudo iniciar la conexión",
+  },
+  conduitReconnect: {
+    success: "Generamos un código QR nuevo.",
+    error: "No se pudo reconectar",
+  },
+  conduitDisconnect: {
+    success: "WhatsApp quedó desconectado.",
+    error: "No se pudo desconectar",
+  },
+  conduitWarmup: {
+    success: "Nivel de calentamiento actualizado.",
+    error: "No se pudo cambiar el nivel de calentamiento",
+  },
+  conduitCampaignPolicy: {
+    success: "Política anti-bloqueo actualizada.",
+    error: "No se pudo cambiar la política anti-bloqueo",
+  },
+  conduitBotOn: {
+    success: "Asistente encendido. Vuelve a responder a las clientas.",
+    error: "No se pudo encender el asistente",
+  },
+  conduitBotOff: {
+    success: "Asistente apagado. Los recordatorios siguen saliendo.",
+    error: "No se pudo apagar el asistente",
+  },
+  conduitBotSettings: {
+    success: "Ajustes del asistente guardados.",
+    error: "No se pudieron guardar los ajustes del asistente",
+  },
+  conduitPersonality: {
+    success: "Personalidad del asistente guardada.",
+    error: "No se pudo guardar la personalidad",
+  },
+  conduitPrompt: {
+    success: "Instrucciones guardadas. Aplican desde el próximo mensaje.",
+    error: "No se pudieron guardar las instrucciones",
+  },
+  conduitAddModel: {
+    success: "Modelo de IA agregado.",
+    error: "No se pudo agregar el modelo de IA",
+  },
+  conduitRemoveModel: {
+    success: "Modelo de IA quitado.",
+    error: "No se pudo quitar el modelo de IA",
+  },
+  conduitResetModel: {
+    success: "Modelo de IA reactivado.",
+    error: "No se pudo reactivar el modelo de IA",
+  },
+  conduitToolOn: {
+    success: "Herramienta activada.",
+    error: "No se pudo activar la herramienta",
+  },
+  conduitToolOff: {
+    success: "Herramienta desactivada.",
+    error: "No se pudo desactivar la herramienta",
+  },
+  conduitAddEscalation: {
+    success: "Contacto agregado. Recibirá los avisos del asistente.",
+    error: "No se pudo agregar el contacto",
+  },
+  conduitRemoveEscalation: {
+    success: "Contacto quitado.",
+    error: "No se pudo quitar el contacto",
+  },
+  conduitReply: {
+    success: "Mensaje enviado. El asistente queda en pausa en este chat.",
+    error: "No se pudo enviar el mensaje",
+  },
+  conduitPause: {
+    success: "Asistente en pausa en este chat.",
+    error: "No se pudo pausar el asistente",
+  },
+  conduitResume: {
+    success: "Asistente reanudado. Responderá los mensajes pendientes.",
+    error: "No se pudo reanudar el asistente",
+  },
+  conduitClose: {
+    success: "Conversación cerrada. Se reabre si la clienta vuelve a escribir.",
+    error: "No se pudo cerrar la conversación",
+  },
+  conduitSaveTemplate: {
+    success: "Plantilla guardada.",
+    error: "No se pudo guardar la plantilla",
+  },
+  conduitRemoveTemplate: {
+    success: "Plantilla eliminada.",
+    error: "No se pudo eliminar la plantilla",
+  },
+  conduitCancelMessage: {
+    success: "Envío programado cancelado.",
+    error: "No se pudo cancelar el envío",
+  },
+  conduitRequeue: {
+    success: "Mensaje enviado de nuevo a la cola.",
+    error: "No se pudo reintentar el mensaje",
+  },
+  conduitRetryOutbox: {
+    success: "Evento reenviado a la cola.",
+    error: "No se pudo reintentar el evento",
+  },
+  businessSettings: {
+    success: "Información del negocio guardada. El asistente ya la usa.",
+    error: "No se pudo guardar la información del negocio",
+  },
+  saveAutomationRule: {
+    success: "Regla de automatización guardada.",
+    error: "No se pudo guardar la regla",
+  },
   createRecipient: {
     success: "Destinatario agregado. Recibirá los avisos por WhatsApp.",
     error: "No se pudo agregar el destinatario",

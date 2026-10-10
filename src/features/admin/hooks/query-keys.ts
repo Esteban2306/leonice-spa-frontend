@@ -172,6 +172,42 @@ export const adminQueryKeys = {
     base: () => [...adminQueryKeys.schedule.all(), "base"] as const,
   },
 
+  conduit: {
+    all: () => [...adminQueryKeys.all, "conduit"] as const,
+    overview: () => [...adminQueryKeys.conduit.all(), "overview"] as const,
+    connection: () => [...adminQueryKeys.conduit.all(), "connection"] as const,
+    qr: () => [...adminQueryKeys.conduit.all(), "qr"] as const,
+    contacts: (params: unknown) =>
+      [...adminQueryKeys.conduit.all(), "contacts", params] as const,
+    bot: () => [...adminQueryKeys.conduit.all(), "bot"] as const,
+    promptSettings: () =>
+      [...adminQueryKeys.conduit.all(), "prompt-settings"] as const,
+    prompt: (type: string) =>
+      [...adminQueryKeys.conduit.all(), "prompt", type] as const,
+    models: () => [...adminQueryKeys.conduit.all(), "models"] as const,
+    tools: () => [...adminQueryKeys.conduit.all(), "tools"] as const,
+    escalation: () => [...adminQueryKeys.conduit.all(), "escalation"] as const,
+    conversations: () =>
+      [...adminQueryKeys.conduit.all(), "conversations"] as const,
+    conversationList: (params: unknown) =>
+      [...adminQueryKeys.conduit.conversations(), "list", params] as const,
+    conversationMessages: (id: string) =>
+      [...adminQueryKeys.conduit.conversations(), "messages", id] as const,
+    templates: () => [...adminQueryKeys.conduit.all(), "templates"] as const,
+    templateUsage: () =>
+      [...adminQueryKeys.conduit.all(), "template-usage"] as const,
+    messages: (params: unknown) =>
+      [...adminQueryKeys.conduit.all(), "messages", params] as const,
+    deadLetters: (params: unknown) =>
+      [...adminQueryKeys.conduit.all(), "dead-letters", params] as const,
+    outbox: (params: unknown) =>
+      [...adminQueryKeys.conduit.all(), "outbox", params] as const,
+    deliveryEvents: (params: unknown) =>
+      [...adminQueryKeys.conduit.all(), "delivery-events", params] as const,
+    businessSettings: () =>
+      [...adminQueryKeys.conduit.all(), "business-settings"] as const,
+  },
+
   settings: {
     all: () => [...adminQueryKeys.all, "settings"] as const,
     recipients: () =>

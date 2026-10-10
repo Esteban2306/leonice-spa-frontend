@@ -39,6 +39,10 @@ export const FRIENDLY_ERROR_MESSAGES: Readonly<Record<string, string>> = {
     "Ya existe un cliente con ese teléfono. Búscalo en el directorio.",
   CLIENT_HEALTH_CONSENT_REQUIRED:
     "Registra el consentimiento de datos de salud antes de guardar alergias o embarazo.",
+  CONDUIT_UNAVAILABLE:
+    "El servicio de WhatsApp no responde. Reintenta en unos minutos.",
+  CONDUIT_NOT_CONFIGURED:
+    "La integración con WhatsApp no está configurada en el servidor.",
   AUTH_CURRENT_PASSWORD_INVALID: "La contraseña actual no es correcta.",
   AUTH_PASSWORD_UNCHANGED: "La nueva contraseña debe ser distinta de la actual.",
   CANCELLATION_LINK_INVALID:

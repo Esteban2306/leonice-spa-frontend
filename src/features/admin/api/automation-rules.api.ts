@@ -1,5 +1,6 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
+  AutomationRule,
   CreateAutomationRuleRequest,
   FindAutomationRulesParams,
   UpdateAutomationRuleRequest,
@@ -7,16 +8,27 @@ import type {
 
 export const automationRulesApi = {
   findMany(params?: FindAutomationRulesParams) {
-    return httpClient.request("/automation-rules", "GET", {
-      params,
-    });
+    return httpClient.request<AutomationRule[]>(
+      "/automation-rules",
+      "GET",
+      undefined,
+      { params },
+    );
   },
 
   create(data: CreateAutomationRuleRequest) {
-    return httpClient.request("/automation-rules", "POST", data);
+    return httpClient.request<AutomationRule>(
+      "/automation-rules",
+      "POST",
+      data,
+    );
   },
 
   update(ruleId: string, data: UpdateAutomationRuleRequest) {
-    return httpClient.request(`/automation-rules/${ruleId}`, "PATCH", data);
+    return httpClient.request<AutomationRule>(
+      `/automation-rules/${ruleId}`,
+      "PATCH",
+      data,
+    );
   },
 };
