@@ -13,6 +13,7 @@ import {
   maskWhatsappPhone,
   minutesUntilTomorrowMorning,
   missingVariables,
+  needsAttention,
   reviewTools,
   riskCopy,
   sortForInbox,
@@ -76,6 +77,22 @@ describe("bandeja", () => {
     ]);
     expect(sorted.map((c) => c.id)).toEqual(["handoff", "waiting", "quiet"]);
     expect(isHandoff("Atiende recepción")).toBe(false);
+  });
+
+  it("saca de pendientes una conversación cerrada aunque el último mensaje sea de la clienta", () => {
+    expect(needsAttention(conversation("open", { awaitingReply: true }))).toBe(
+      true,
+    );
+    expect(
+      needsAttention(
+        conversation("closed", { status: "COMPLETED", awaitingReply: true }),
+      ),
+    ).toBe(false);
+    expect(
+      needsAttention(
+        conversation("abandoned", { status: "ABANDONED", botPaused: true }),
+      ),
+    ).toBe(false);
   });
 
   it("calcula la pausa hasta mañana a las 8:00 a. m. de Bogotá", () => {

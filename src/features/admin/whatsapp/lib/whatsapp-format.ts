@@ -144,8 +144,17 @@ export function isHandoff(reason: string | null | undefined): boolean {
   return Boolean(reason && /pasar_a_persona|traspaso|persona/i.test(reason));
 }
 
+export function isClosed(conversation: ConversationSummary): boolean {
+  return (
+    conversation.status === "COMPLETED" || conversation.status === "ABANDONED"
+  );
+}
+
 export function needsAttention(conversation: ConversationSummary): boolean {
-  return conversation.awaitingReply || conversation.botPaused;
+  return (
+    !isClosed(conversation) &&
+    (conversation.awaitingReply || conversation.botPaused)
+  );
 }
 
 export function sortForInbox(

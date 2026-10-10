@@ -231,12 +231,28 @@ export function useConduitActions() {
           return outcome.ok;
         }),
       close: (conversationId: string) =>
-        run(
-          `close:${conversationId}`,
-          "conduitClose",
-          () => conduitApi.close(conversationId),
-          refresh(K.conversations()),
-        ),
+        singleFlight(`close:${conversationId}`, async () => {
+          const key = `close:${conversationId}`;
+          setBusy((current) => new Set(current).add(key));
+          const revert = patchConversation(queryClient, conversationId, {
+            status: "COMPLETED",
+            awaitingReply: false,
+            botPaused: false,
+            botPausedUntil: null,
+            botPauseReason: null,
+          });
+          const outcome = await runAdminAction("conduitClose", () =>
+            conduitApi.close(conversationId),
+          );
+          setBusy((current) => {
+            const next = new Set(current);
+            next.delete(key);
+            return next;
+          });
+          if (!outcome.ok) revert();
+          await queryClient.invalidateQueries({ queryKey: K.conversations() });
+          return outcome.ok;
+        }),
 
       saveTemplate: (id: string | null, data: SaveTemplateRequest) =>
         run(
