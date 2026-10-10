@@ -33,7 +33,10 @@ import {
 } from "@/src/features/admin/hooks/use-conduit-actions";
 import { useNotificationRecipients } from "@/src/features/admin/hooks/use-notification-recipients";
 import type { AutomationRule } from "@/src/features/admin/types/automation.types";
-import type { ConduitTemplate } from "@/src/features/admin/types/conduit.types";
+import type {
+  ConduitTemplate,
+  TemplateUsage,
+} from "@/src/features/admin/types/conduit.types";
 
 import { ErrorPanel } from "../components/error-panel";
 import {
@@ -68,7 +71,7 @@ const PURPOSE_COPY: Record<string, string> = {
 interface EditorState {
   open: boolean;
   template: ConduitTemplate | null;
-  usageName: string | null;
+  usage: TemplateUsage | null;
   version: number;
 }
 
@@ -77,7 +80,7 @@ function UsageCard({
   onCreate,
 }: {
   templates: readonly ConduitTemplate[];
-  onCreate: (usageName: string) => void;
+  onCreate: (usage: TemplateUsage) => void;
 }) {
   const usage = useTemplateUsage();
   const [copied, setCopied] = useState<string | null>(null);
@@ -93,7 +96,7 @@ function UsageCard({
     <SectionCard
       title="Qué envía el sistema"
       icon={<BellRing className="size-5" strokeWidth={1.7} />}
-      description="Cada aviso automático usa una plantilla. El ID se configura en el servidor: copia el ID de la plantilla y pide que se asigne a la variable indicada."
+      description="Cada aviso automático usa una plantilla. El sistema la enlaza sola por su nombre; la variable del servidor solo hace falta si quieres forzar otra."
       aside={
         <StatusPill tone={missing ? "red" : "green"}>
           {missing ? `${missing} sin configurar` : "Todas configuradas"}
@@ -141,8 +144,15 @@ function UsageCard({
                       {PURPOSE_COPY[item.name] ?? item.name}
                     </p>
                     <p className="font-mono text-[11px] text-secondary/60">
-                      {item.envKey}
+                      {item.source === "env" ? item.envKey : item.catalogName}
                     </p>
+                    {item.source && (
+                      <p className="font-sans text-[11px] text-secondary/60">
+                        {item.source === "env"
+                          ? "Fijada en el servidor"
+                          : "Enlazada por nombre"}
+                      </p>
+                    )}
                   </td>
                   <td className="py-2.5 pr-3 align-top text-secondary/80">
                     {spec?.audience ?? "—"}
@@ -171,7 +181,7 @@ function UsageCard({
                     {!item.configured && (
                       <button
                         type="button"
-                        onClick={() => onCreate(item.name)}
+                        onClick={() => onCreate(item)}
                         className="inline-flex h-9 cursor-pointer items-center gap-1 rounded-full px-3 text-xs text-secondary underline decoration-tertiary underline-offset-4"
                       >
                         Crear plantilla
@@ -561,21 +571,24 @@ export function TemplatesSection() {
   const [editor, setEditor] = useState<EditorState>({
     open: false,
     template: null,
-    usageName: null,
+    usage: null,
     version: 0,
   });
-  const open = (template: ConduitTemplate | null, usageName: string | null) =>
+  const open = (
+    template: ConduitTemplate | null,
+    usage: TemplateUsage | null,
+  ) =>
     setEditor((current) => ({
       open: true,
       template,
-      usageName,
+      usage,
       version: current.version + 1,
     }));
   const list = templates.data?.data ?? [];
 
   return (
     <div className="flex flex-col gap-5">
-      <UsageCard templates={list} onCreate={(name) => open(null, name)} />
+      <UsageCard templates={list} onCreate={(usage) => open(null, usage)} />
       {templates.isError ? (
         <ErrorPanel
           error={templates.error}
@@ -602,7 +615,7 @@ export function TemplatesSection() {
         key={editor.version}
         open={editor.open}
         template={editor.template}
-        usageName={editor.usageName}
+        usage={editor.usage}
         onOpenChange={(next) =>
           setEditor((current) => ({ ...current, open: next }))
         }

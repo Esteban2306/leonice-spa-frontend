@@ -85,6 +85,10 @@ export interface TemplateUsage {
   envKey: string;
   templateId: string | null;
   configured: boolean;
+  source: "env" | "catalog" | null;
+  catalogName: string;
+  description: string;
+  suggestedBody: string;
 }
 
 export interface ConduitOverview {

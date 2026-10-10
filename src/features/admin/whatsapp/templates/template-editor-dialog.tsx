@@ -11,6 +11,7 @@ import {
 import type {
   ConduitTemplate,
   SaveTemplateRequest,
+  TemplateUsage,
 } from "@/src/features/admin/types/conduit.types";
 
 import {
@@ -49,22 +50,24 @@ function renderPreview(body: string): string {
 export function TemplateEditorDialog({
   open,
   template,
-  usageName,
+  usage,
   onOpenChange,
   onSave,
 }: {
   open: boolean;
   template: ConduitTemplate | null;
-  usageName: string | null;
+  usage: TemplateUsage | null;
   onOpenChange: (open: boolean) => void;
   onSave: (id: string | null, data: SaveTemplateRequest) => Promise<boolean>;
 }) {
-  const [name, setName] = useState(
-    template?.name ?? usageName?.toLowerCase() ?? "",
+  const [name, setName] = useState(template?.name ?? usage?.catalogName ?? "");
+  const [description, setDescription] = useState(
+    template?.description ?? usage?.description ?? "",
   );
-  const [description, setDescription] = useState(template?.description ?? "");
-  const [body, setBody] = useState(template?.bodyHandlebars ?? "");
-  const [purpose, setPurpose] = useState(usageName ?? "");
+  const [body, setBody] = useState(
+    template?.bodyHandlebars ?? usage?.suggestedBody ?? "",
+  );
+  const [purpose, setPurpose] = useState(usage?.name ?? "");
   const required = purpose
     ? (REQUIRED_TEMPLATE_VARIABLES[purpose]?.variables ?? [])
     : [];
