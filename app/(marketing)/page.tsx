@@ -1,5 +1,17 @@
-// Placeholder: la home pública aún no está construida. Next exige un default
-// export para que la ruta compile.
-export default function MarketingHomePage() {
-  return null;
+import type { Metadata } from "next";
+
+import { getLandingCatalog } from "@/src/features/landing/api/landing-catalog";
+import { LandingPage } from "@/src/features/landing/landing-page";
+
+export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Leonice Arenas Spa Capilar · Diagnóstico y tratamientos capilares",
+  description:
+    "Diagnóstico capilar personalizado y tratamientos de grado profesional en un espacio pensado para devolverte la confianza en tu cabello.",
+};
+
+export default async function MarketingHomePage() {
+  const catalog = await getLandingCatalog();
+  return <LandingPage catalog={catalog} />;
 }
