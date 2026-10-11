@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "src/components/ui/Dock.jsx",
+    "src/components/ui/AccordionGallery.jsx",
+    "src/components/ui/CircularCarousel.jsx",
   ]),
 ]);
 
