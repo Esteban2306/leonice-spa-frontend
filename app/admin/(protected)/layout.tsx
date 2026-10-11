@@ -7,6 +7,7 @@ import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
 import { Toaster } from "@/src/components/ui/toast";
 
 import AdminSidebar from "@/src/features/admin/components/admin-app-sidebar";
+import { AdminMobileDock } from "@/src/features/admin/components/admin-mobile-dock";
 import { DailyReportGate } from "@/src/features/admin/daily-report/daily-report-gate";
 import { AdminSignalsWatcher } from "@/src/features/admin/feedback/admin-signals-watcher";
 import { useSession } from "@/src/features/auth/hooks/use-auth";
@@ -53,9 +54,15 @@ export default function ProtectedLayout({
       <DailyReportGate />
 
       <SidebarProvider defaultOpen>
-        <AdminSidebar />
+        <div className="hidden desk:contents">
+          <AdminSidebar />
+        </div>
 
-        <SidebarInset className="min-w-0">{children}</SidebarInset>
+        <SidebarInset className="min-w-0 pb-[var(--admin-dock-space)] desk:pb-0">
+          {children}
+        </SidebarInset>
+
+        <AdminMobileDock />
       </SidebarProvider>
     </Toaster>
   );

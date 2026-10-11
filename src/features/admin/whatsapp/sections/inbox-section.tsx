@@ -96,7 +96,7 @@ export function InboxSection() {
   const canSend = overview.data?.connection?.status === "CONNECTED";
 
   return (
-    <div className="grid h-[calc(100dvh-12.5rem)] min-h-[30rem] grid-cols-1 sm:h-[calc(100dvh-15rem)] sm:min-h-[34rem] gap-4 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)]">
+    <div className="grid h-[calc(100dvh-12.5rem-var(--admin-dock-space))] min-h-[30rem] grid-cols-1 sm:h-[calc(100dvh-15rem-var(--admin-dock-space))] desk:h-[calc(100dvh-15rem)] sm:min-h-[34rem] gap-4 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)]">
       <div
         className={cn(
           "min-h-0",

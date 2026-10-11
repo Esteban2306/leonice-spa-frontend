@@ -3,15 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  CalendarDays,
-  LayoutDashboard,
-  LogOut,
-  MessageCircle,
-  Scissors,
-  Settings,
-  UsersRound,
-} from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import {
   Sidebar,
@@ -30,41 +22,13 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { useLogout, useSession } from "@/src/features/auth/hooks/use-auth";
 import { useInboxCounts } from "@/src/features/admin/whatsapp/lib/use-inbox-counts";
+import {
+  ADMIN_NAVIGATION,
+  WHATSAPP_HREF,
+  isActiveAdminRoute,
+} from "@/src/features/admin/navigation/admin-navigation";
 
 import LogoW from "../../../../public/leonice-logo-w.png";
-
-const navigationItems = [
-  {
-    name: "Resumen",
-    href: "/admin",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Calendario",
-    href: "/admin/calendar",
-    icon: CalendarDays,
-  },
-  {
-    name: "Clientes - CRM",
-    href: "/admin/clients",
-    icon: UsersRound,
-  },
-  {
-    name: "Servicios",
-    href: "/admin/services",
-    icon: Scissors,
-  },
-  {
-    name: "WhatsApp",
-    href: "/admin/whatsapp",
-    icon: MessageCircle,
-  },
-  {
-    name: "Ajustes",
-    href: "/admin/settings",
-    icon: Settings,
-  },
-] as const;
 
 const ADMIN_LOCATION = "Sede principal";
 
@@ -127,13 +91,10 @@ export default function AdminSidebar() {
         <SidebarGroup className="px-0 py-3">
           <SidebarGroupContent>
             <SidebarMenu className="gap-1.5">
-              {navigationItems.map((item) => {
+              {ADMIN_NAVIGATION.map((item) => {
                 const Icon = item.icon;
 
-                const isActive =
-                  item.href === "/admin"
-                    ? pathname === "/admin"
-                    : pathname.startsWith(item.href);
+                const isActive = isActiveAdminRoute(pathname, item.href);
 
                 return (
                   <SidebarMenuItem key={item.href}>
@@ -177,7 +138,7 @@ export default function AdminSidebar() {
                         </span>
                       </div>
 
-                      {item.href === "/admin/whatsapp" && inbox.pending > 0 && (
+                      {item.href === WHATSAPP_HREF && inbox.pending > 0 && (
                         <span
                           aria-label={`${inbox.pending} conversaciones pendientes`}
                           className="absolute top-1/2 right-6 grid min-w-5 -translate-y-1/2 place-items-center rounded-full bg-red-700 px-1.5 font-sans text-[11px] font-semibold text-white tabular-nums in-data-[collapsible=icon]:top-1 in-data-[collapsible=icon]:right-0 in-data-[collapsible=icon]:min-w-4 in-data-[collapsible=icon]:translate-y-0 in-data-[collapsible=icon]:text-[9px]"

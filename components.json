@@ -27,6 +27,7 @@
     "@ss-blocks": "https://shadcnstudio.com/r/blocks/{style}/{name}.json",
     "@ss-pages": "https://shadcnstudio.com/r/pages/{style}/{name}.json",
     "@ss-illustrations": "https://shadcnstudio.com/r/illustrations/{name}.json",
-    "@ss-themes": "https://shadcnstudio.com/r/themes/{name}.json"
+    "@ss-themes": "https://shadcnstudio.com/r/themes/{name}.json",
+    "@react-bits": "https://reactbits.dev/r/{name}.json"
   }
 }
