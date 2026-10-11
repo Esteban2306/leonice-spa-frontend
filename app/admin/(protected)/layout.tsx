@@ -58,7 +58,7 @@ export default function ProtectedLayout({
           <AdminSidebar />
         </div>
 
-        <SidebarInset className="min-w-0 pb-[var(--admin-dock-space)] desk:pb-0">
+        <SidebarInset className="min-w-0 pb-[var(--admin-dock-space)] desk:pb-0 max-desk:has-[>main.bg-primary]:bg-primary">
           {children}
         </SidebarInset>
 
