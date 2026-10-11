@@ -197,7 +197,7 @@ function ContactsCard({ windowDays }: { windowDays: number }) {
       ) : contacts.isLoading ? (
         <SkeletonRows rows={3} height="h-10" />
       ) : (
-        <div className="overflow-x-auto">
+        <div className="relative overflow-x-auto">
           <table className="w-full min-w-[34rem] font-sans text-sm">
             <thead>
               <tr className="border-b border-tertiary/25 text-left text-xs uppercase tracking-[0.12em] text-secondary/70">

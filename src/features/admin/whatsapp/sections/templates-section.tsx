@@ -103,7 +103,7 @@ function UsageCard({
         </StatusPill>
       }
     >
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
         <table className="w-full min-w-[46rem] font-sans text-sm">
           <thead>
             <tr className="border-b border-tertiary/25 text-left text-xs uppercase tracking-[0.12em] text-secondary/70">
