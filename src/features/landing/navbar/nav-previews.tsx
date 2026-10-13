@@ -21,7 +21,13 @@ const list = {
 };
 const item = {
   hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
-  show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.45, ease: EASE } },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.45, ease: EASE },
+    transitionEnd: { filter: "none" },
+  },
 };
 
 export function TreatmentsPreview({

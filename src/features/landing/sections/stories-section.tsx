@@ -93,7 +93,7 @@ export function StoriesSection() {
             scrollTrigger: { trigger: root, start: "top 70%", once: true },
           })
           .from(split?.words ?? [], { yPercent: 105, duration: 1, stagger: 0.04 })
-          .from("[data-story-quote]", { opacity: 0, y: 20, filter: "blur(6px)", duration: 1 }, 0.5);
+          .from("[data-story-quote]", { opacity: 0, y: 20, filter: "blur(6px)", duration: 1, clearProps: "filter" }, 0.5);
         return () => split?.revert();
       },
       root,
@@ -146,7 +146,7 @@ export function StoriesSection() {
             <motion.blockquote
               key={story.id}
               initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
               exit={{ opacity: 0, y: -10, filter: "blur(4px)", transition: { duration: 0.25 } }}
               transition={{ duration: 0.6, ease: EASE }}
               className="flex flex-col items-center gap-4"

@@ -130,7 +130,7 @@ export function HeroSection({ videoSrc = null }: { videoSrc?: string | null }) {
       tl.fromTo(
         "[data-hero-bg]",
         { scale: 1.08, filter: "saturate(0.6) brightness(1.08)" },
-        { scale: 1, filter: "saturate(1) brightness(1)", duration: 2.2 },
+        { scale: 1, filter: "saturate(1) brightness(1)", duration: 2.2, clearProps: "filter" },
         0,
       )
         .fromTo(
@@ -143,7 +143,7 @@ export function HeroSection({ videoSrc = null }: { videoSrc?: string | null }) {
         .from("[data-hero-rule]", { scaleY: 0, transformOrigin: "top", duration: 1.4 }, 0.6)
         .from(
           "[data-hero-copy] > *",
-          { y: 18, opacity: 0, filter: "blur(6px)", duration: 1, stagger: 0.12 },
+          { y: 18, opacity: 0, filter: "blur(6px)", duration: 1, stagger: 0.12, clearProps: "filter" },
           0.85,
         )
         .from(
