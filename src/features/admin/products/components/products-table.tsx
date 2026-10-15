@@ -129,7 +129,7 @@ function SortHeader({
             : "descending"
           : "none"
       }
-      className={cn("font-normal", className)}
+      className={cn("text-xs leading-none font-normal", className)}
     >
       <button
         type="button"
@@ -140,14 +140,14 @@ function SortHeader({
           })
         }
         className={cn(
-          "-mx-1 inline-flex cursor-pointer items-center gap-1 rounded-full px-1 py-0.5 font-sans text-xs tracking-[0.12em] uppercase transition-colors hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary",
+          "-mx-1 inline-flex cursor-pointer items-center gap-1 rounded-full px-1 font-sans leading-none text-xs tracking-[0.12em] uppercase transition-colors hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary",
           isActive ? "text-secondary" : "text-secondary/55",
         )}
       >
         {label}
         <Icon
           aria-hidden="true"
-          className={cn("size-3.5", !isActive && "opacity-0")}
+          className={cn("size-3", !isActive && "opacity-0")}
         />
       </button>
     </th>
@@ -320,7 +320,7 @@ export function ProductsTable({
               />
               <th
                 scope="col"
-                className="hidden py-3 pr-3 font-sans text-xs font-normal tracking-[0.12em] text-secondary/55 uppercase lg:table-cell"
+                className="hidden py-3 pr-3 font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/55 uppercase lg:table-cell"
               >
                 Categoría
               </th>
@@ -333,7 +333,7 @@ export function ProductsTable({
               />
               <th
                 scope="col"
-                className="py-3 pr-3 font-sans text-xs font-normal tracking-[0.12em] text-secondary/55 uppercase"
+                className="py-3 pr-3 font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/55 uppercase"
               >
                 Fotos
               </th>
@@ -346,7 +346,7 @@ export function ProductsTable({
               />
               <th
                 scope="col"
-                className="py-3 pr-4 text-right font-sans text-xs font-normal tracking-[0.12em] text-secondary/55 uppercase"
+                className="py-3 pr-4 text-right font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/55 uppercase"
               >
                 A la venta
               </th>
