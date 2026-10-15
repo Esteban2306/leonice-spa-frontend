@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, X } from "lucide-react";
 
 import { ActionDialog } from "@/src/features/admin/components/reservation-actions/action-dialog";
@@ -27,13 +27,28 @@ import {
   type VariantDraftErrors,
 } from "../lib/product-catalog";
 import { SelectControl } from "./select-control";
+import { VariantPhotoSlot } from "./variant-photo-slot";
 
 interface CreateProductDialogProps {
   open: boolean;
   categories: readonly AdminProductCategory[];
   defaultCategoryId: string;
   onOpenChange: (open: boolean) => void;
-  onCreate: (data: CreateProductRequest) => Promise<AdminProduct | null>;
+  onCreate: (
+    data: CreateProductRequest,
+    photos: readonly NewVariantPhoto[],
+  ) => Promise<AdminProduct | null>;
+}
+
+export interface NewVariantPhoto {
+  brand: string;
+  presentation: string;
+  file: File;
+}
+
+interface PendingPhoto {
+  file: File;
+  previewUrl: string;
 }
 
 let draftKey = 0;
@@ -64,10 +79,34 @@ export function CreateProductDialog({
   const [productCategoryId, setProductCategoryId] = useState(defaultCategoryId);
   const [description, setDescription] = useState("");
   const [variants, setVariants] = useState<VariantDraft[]>([emptyVariant()]);
+  const [photos, setPhotos] = useState<Record<string, PendingPhoto>>({});
+  const photosRef = useRef(photos);
   const [errors, setErrors] = useState<ProductDraftErrors>({});
   const [variantErrors, setVariantErrors] = useState<
     Record<string, VariantDraftErrors>
   >({});
+
+  useEffect(() => {
+    photosRef.current = photos;
+  }, [photos]);
+
+  useEffect(
+    () => () => {
+      Object.values(photosRef.current).forEach((photo) =>
+        URL.revokeObjectURL(photo.previewUrl),
+      );
+    },
+    [],
+  );
+
+  const setPhoto = (key: string, file: File | null) =>
+    setPhotos((current) => {
+      const { [key]: previous, ...rest } = current;
+      if (previous) URL.revokeObjectURL(previous.previewUrl);
+      return file
+        ? { ...rest, [key]: { file, previewUrl: URL.createObjectURL(file) } }
+        : rest;
+    });
 
   const activeCategories = categories.filter((category) => category.isActive);
 
@@ -91,20 +130,32 @@ export function CreateProductDialog({
     );
     const nextVariantErrors: Record<string, VariantDraftErrors> = {};
     const payload: CreateProductVariantRequest[] = [];
+    const newPhotos: NewVariantPhoto[] = [];
     for (const variant of filled) {
       const taken = takenVariantIdentities(
         payload.map((item, index) => ({ id: String(index), ...item })),
       );
       const result = validateVariantDraft(variant, taken);
-      if (result.data) payload.push(result.data);
-      else nextVariantErrors[variant.key] = result.errors;
+      if (result.data) {
+        payload.push(result.data);
+        const photo = photos[variant.key];
+        if (photo)
+          newPhotos.push({
+            brand: result.data.brand,
+            presentation: result.data.presentation,
+            file: photo.file,
+          });
+      } else nextVariantErrors[variant.key] = result.errors;
     }
     setVariantErrors(nextVariantErrors);
 
     if (!product.data || Object.keys(nextVariantErrors).length > 0)
       return false;
 
-    const created = await onCreate({ ...product.data, variants: payload });
+    const created = await onCreate(
+      { ...product.data, variants: payload },
+      newPhotos,
+    );
     return created !== null;
   };
 
@@ -113,7 +164,7 @@ export function CreateProductDialog({
       open={open}
       onOpenChange={onOpenChange}
       title="Nuevo producto"
-      description="Después de crearlo podrás subir la foto de cada variante desde la tabla."
+      description="Cada variante puede llevar su foto; se sube al crear el producto."
       submitLabel="Crear producto"
       submittingLabel="Creando…"
       contentClassName="sm:max-w-2xl"
@@ -176,8 +227,9 @@ export function CreateProductDialog({
         </legend>
         <div
           aria-hidden="true"
-          className="hidden grid-cols-[minmax(0,1fr)_minmax(0,1fr)_9rem_2.5rem] gap-2 px-2 font-sans text-xs text-secondary/60 sm:grid"
+          className="hidden grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1fr)_9rem_2.5rem] gap-2 px-2 font-sans text-xs text-secondary/60 sm:grid"
         >
+          <span>Foto</span>
           <span>Marca</span>
           <span>Presentación</span>
           <span className="text-right">Precio en pesos</span>
@@ -188,8 +240,15 @@ export function CreateProductDialog({
             return (
               <div
                 key={variant.key}
-                className="grid grid-cols-2 gap-2 rounded-2xl border border-secondary/10 bg-white/60 p-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_9rem_2.5rem]"
+                className="grid grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1fr)] items-start gap-2 rounded-2xl border border-secondary/10 bg-white/60 p-2 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1fr)_9rem_2.5rem]"
               >
+                <VariantPhotoSlot
+                  imageUrl={photos[variant.key]?.previewUrl ?? null}
+                  label={`la variante ${index + 1}`}
+                  isUploading={false}
+                  onUpload={(file) => setPhoto(variant.key, file)}
+                  onRemove={() => setPhoto(variant.key, null)}
+                />
                 <div className="flex flex-col gap-1">
                   <input
                     aria-label={`Marca de la variante ${index + 1}`}
@@ -255,11 +314,12 @@ export function CreateProductDialog({
                   type="button"
                   aria-label={`Quitar la variante ${index + 1}`}
                   disabled={variants.length === 1}
-                  onClick={() =>
+                  onClick={() => {
+                    setPhoto(variant.key, null);
                     setVariants((current) =>
                       current.filter((item) => item.key !== variant.key),
-                    )
-                  }
+                    );
+                  }}
                   className="grid size-10 cursor-pointer place-items-center justify-self-end rounded-full text-secondary/50 transition-colors hover:bg-secondary/5 hover:text-secondary disabled:invisible"
                 >
                   <X className="size-4" />
@@ -278,8 +338,9 @@ export function CreateProductDialog({
           Otra variante
         </button>
         <p className="font-sans text-xs text-secondary/55">
-          Cada variante es una marca y presentación con su precio en pesos. Deja
-          la fila vacía si prefieres agregarlas después.
+          Cada variante es una marca y presentación con su precio en pesos y una
+          foto opcional (JPG, PNG o WebP, hasta 5 MB). Deja la fila vacía si
+          prefieres agregarlas después.
         </p>
       </fieldset>
     </ActionDialog>

@@ -292,9 +292,18 @@ export function ProductsContainer() {
               : "")
           }
           onOpenChange={(open) => !open && setCreateVersion(null)}
-          onCreate={async (data) => {
+          onCreate={async (data, photos) => {
             const created = await actions.createProduct(data);
             if (created) {
+              for (const photo of photos) {
+                const variant = created.variants.find(
+                  (item) =>
+                    item.brand === photo.brand &&
+                    item.presentation === photo.presentation,
+                );
+                if (variant)
+                  await actions.uploadVariantImage(variant.id, photo.file);
+              }
               setExpandedIds((current) => new Set(current).add(created.id));
               setSelected(created.id);
             }
