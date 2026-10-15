@@ -2,12 +2,11 @@
 
 import { useRef } from "react";
 
-import { BookingLink } from "@/src/features/landing/components/action-link";
+import { Carousel, CarouselContent, CarouselItem } from "@/src/components/ui/carousel";
+import { ActionLink } from "@/src/features/landing/components/action-link";
+import { PRODUCTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import { SectionHeading } from "@/src/features/landing/components/section-heading";
-import {
-  productsContent,
-  type LandingProduct,
-} from "@/src/features/landing/content/landing-content";
+import { productsContent, type LandingProduct } from "@/src/features/landing/content/landing-content";
 import { SECTION_IDS } from "@/src/features/landing/lib/site-config";
 import {
   EASE_OUT,
@@ -16,7 +15,16 @@ import {
   SplitText,
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
+import { useMediaQuery } from "@/src/features/landing/motion/use-media-query";
 import { ProductCard } from "@/src/features/landing/sections/products/product-card";
+import { ProductCarouselFooter } from "@/src/features/landing/sections/products/product-carousel-footer";
+
+const OPTIONS = {
+  align: "start",
+  containScroll: "trimSnaps",
+  slidesToScroll: 1,
+  duration: 28,
+} as const;
 
 export function ProductsSection({
   products = productsContent.items,
@@ -24,6 +32,9 @@ export function ProductsSection({
   products?: LandingProduct[];
 }) {
   const rootRef = useRef<HTMLElement>(null);
+  const compact = useMediaQuery("(max-width: 640px)");
+  const short = useMediaQuery("(max-height: 820px)");
+  const dense = compact || short;
 
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current;
@@ -36,26 +47,39 @@ export function ProductsSection({
       () => {
         const heading = root.querySelector<HTMLElement>("[data-heading]");
         const split = heading ? SplitText.create(heading, { type: "words", mask: "words" }) : null;
+        const viewport = root.querySelector<HTMLElement>("[data-slot='carousel-content']");
+        const viewRect = viewport?.getBoundingClientRect();
+        const bodies = Array.from(root.querySelectorAll<HTMLElement>("[data-product-body]"))
+          .filter((body) => {
+            if (!viewRect) return true;
+            const rect = body.getBoundingClientRect();
+            return rect.right > viewRect.left + 1 && rect.left < viewRect.right - 1;
+          })
+          .sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+        gsap.set(bodies, { opacity: 0 });
+
         gsap
           .timeline({
             defaults: { ease: EASE_OUT },
-            scrollTrigger: { trigger: root, start: "top 70%", once: true },
+            scrollTrigger: { trigger: root, start: "top 70%" },
           })
           .from(split?.words ?? [], { yPercent: 105, duration: 1, stagger: 0.05 })
           .from("[data-lead]", { opacity: 0, y: 14, duration: 0.9 }, 0.25)
-          .from(
-            "[data-shelf] > li",
+          .fromTo(
+            bodies,
+            { opacity: 0, x: -44 },
             {
-              y: 70,
-              rotateX: -18,
-              opacity: 0,
-              transformPerspective: 900,
-              transformOrigin: "50% 100%",
-              duration: 1.3,
-              stagger: 0.1,
+              opacity: 1,
+              x: 0,
+              duration: 0.95,
+              stagger: 0.14,
+              ease: "power3.out",
+              clearProps: "opacity,transform",
             },
-            0.3,
-          );
+            0.45,
+          )
+          .from("[data-products-footer]", { opacity: 0, y: 10, duration: 0.8 }, 1.1);
+
         return () => split?.revert();
       },
       root,
@@ -70,32 +94,37 @@ export function ProductsSection({
       id={SECTION_IDS.products}
       tabIndex={-1}
       aria-labelledby="products-title"
-      className="relative bg-[#F2EBDB] py-24 outline-none sm:py-32"
+      className="relative overflow-hidden bg-[#F2EBDB] py-14 outline-none sm:py-8"
     >
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-14 px-5 sm:px-8">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-5 sm:px-8">
         <SectionHeading
           id="products-title"
           title={productsContent.title}
           lead={productsContent.lead}
           action={
-            <BookingLink
-              variant="sand"
-              message="Hola, quiero conocer los productos que venden en Leonice."
-            >
+            <ActionLink variant="sand" href={PRODUCTS_PAGE}>
               Explorar todos los productos
-            </BookingLink>
+            </ActionLink>
           }
         />
-        <ul
-          data-shelf
-          className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-6 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 desk:grid-cols-4"
-        >
-          {products.map((product) => (
-            <li key={product.id} className="w-[72vw] max-w-[18rem] shrink-0 snap-center sm:w-auto sm:max-w-none">
-              <ProductCard product={product} />
-            </li>
-          ))}
-        </ul>
+        <Carousel opts={OPTIONS} aria-label="Productos para tu rutina en casa" className="flex flex-col gap-4">
+          <CarouselContent className="-ml-5">
+            {products.map((product, index) => (
+              <CarouselItem
+                key={product.id}
+                aria-label={`${index + 1} de ${products.length}`}
+                className="basis-[78%] pl-5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              >
+                <div data-product-body className={compact ? "h-[32rem]" : "h-[27.5rem]"}>
+                  <ProductCard product={product} dense={dense} />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div data-products-footer>
+            <ProductCarouselFooter />
+          </div>
+        </Carousel>
       </div>
     </section>
   );

@@ -63,4 +63,11 @@ export interface ShowcaseTreatmentDetail extends ShowcaseTreatmentCard {
   steps: ShowcaseStep[];
   category: ShowcaseCategorySummary;
   related: ShowcaseTreatmentCard[];
+  recommendedProducts: {
+    slug: string;
+    name: string;
+    tagline: string | null;
+    priceFromPesos: number | null;
+    imageUrl: string | null;
+  }[];
 }

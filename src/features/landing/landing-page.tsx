@@ -1,5 +1,4 @@
-import type { LandingCatalog } from "@/src/features/landing/content/landing-content";
-import { productsContent } from "@/src/features/landing/content/landing-content";
+import type { LandingCatalog, LandingProduct } from "@/src/features/landing/content/landing-content";
 import { SunlightStage } from "@/src/features/landing/motion/sunlight-stage";
 import { LandingNavbar } from "@/src/features/landing/navbar/landing-navbar";
 import { HeroSection } from "@/src/features/landing/sections/hero-section";
@@ -12,17 +11,23 @@ import { TreatmentsSection } from "@/src/features/landing/sections/treatments/tr
 import { VisitSection } from "@/src/features/landing/sections/visit-section";
 import { WhySection } from "@/src/features/landing/sections/why-section";
 
-export function LandingPage({ catalog }: { catalog: LandingCatalog }) {
+export function LandingPage({
+  catalog,
+  products,
+}: {
+  catalog: LandingCatalog;
+  products: LandingProduct[];
+}) {
   return (
     <SunlightStage>
-      <LandingNavbar categories={catalog.categories} products={productsContent.items} />
+      <LandingNavbar categories={catalog.categories} products={products} />
       <main>
         <HeroSection />
         <WhySection />
         <TreatmentsSection catalog={catalog} />
         <StoriesSection />
         <PromiseSection />
-        <ProductsSection />
+        <ProductsSection products={products} />
         <MetricsSection />
         <VisitSection />
       </main>

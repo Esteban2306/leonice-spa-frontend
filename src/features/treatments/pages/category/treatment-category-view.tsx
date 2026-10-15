@@ -6,10 +6,10 @@ import type {
   ShowcaseCategoryDetail,
   ShowcaseCategorySummary,
 } from "@/src/features/treatments/api/showcase.types";
-import { BookingBand } from "@/src/features/treatments/components/booking-band";
-import { Breadcrumbs } from "@/src/features/treatments/components/breadcrumbs";
+import { BookingBand } from "@/src/features/landing/components/booking-band";
+import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
 import { CategoryIcon } from "@/src/features/treatments/components/category-icon";
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { Reveal } from "@/src/features/landing/components/reveal";
 import { TreatmentCard } from "@/src/features/treatments/components/treatment-card";
 import {
   bookingMessage,

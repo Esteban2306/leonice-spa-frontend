@@ -1,8 +1,8 @@
 import type { ShowcaseCategorySummary } from "@/src/features/treatments/api/showcase.types";
-import { BookingBand } from "@/src/features/treatments/components/booking-band";
-import { Breadcrumbs } from "@/src/features/treatments/components/breadcrumbs";
+import { BookingBand } from "@/src/features/landing/components/booking-band";
+import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
 import { CategoryIndexRow } from "@/src/features/treatments/components/category-index-row";
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { Reveal } from "@/src/features/landing/components/reveal";
 import { bookingMessage } from "@/src/features/treatments/lib/showcase-format";
 
 export function TreatmentCategoriesView({ categories }: { categories: ShowcaseCategorySummary[] }) {

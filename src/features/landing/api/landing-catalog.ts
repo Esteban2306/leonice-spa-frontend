@@ -1,8 +1,10 @@
 import {
   fallbackCatalog,
+  productsContent,
   treatmentsContent,
   type LandingCatalog,
   type LandingCategory,
+  type LandingProduct,
   type LandingTreatment,
   type TreatmentCopy,
 } from "@/src/features/landing/content/landing-content";
@@ -10,13 +12,14 @@ import {
 interface ApiTreatment {
   id: string;
   name: string;
+  slug?: string;
   isActive: boolean;
   requiresPriorAssessment: boolean;
   basePriceMin: string | number | null;
   basePriceMax: string | number | null;
   baseDurationMinMinutes: number | null;
   baseDurationMaxMinutes: number | null;
-  category: { id: string; name: string } | null;
+  category: { id: string; name: string; slug?: string } | null;
   activePromotion: { name: string; discountPercentage: string | number } | null;
   effectiveBasePriceMin?: number | null;
 }
@@ -45,6 +48,8 @@ function toLanding(treatment: ApiTreatment): LandingTreatment | null {
   return {
     id: treatment.id,
     name: treatment.name,
+    slug: treatment.slug ?? null,
+    categorySlug: treatment.category.slug ?? null,
     categoryName: treatment.category.name,
     durationMinutes:
       treatment.baseDurationMinMinutes ?? treatment.baseDurationMaxMinutes ?? 60,
@@ -98,6 +103,7 @@ function groupCategories(treatments: LandingTreatment[]): LandingCategory[] {
       return {
         id: name,
         name,
+        slug: list[0]?.categorySlug ?? null,
         treatmentCount: list.length,
         fromThousands: sorted[0]?.priceFromThousands ?? null,
         highlights: sorted.slice(0, 3),
@@ -143,5 +149,85 @@ export async function getLandingCatalog(): Promise<LandingCatalog> {
     };
   } catch {
     return fallbackCatalog;
+  }
+}
+
+interface ApiProductVariant {
+  id: string;
+  brand: string;
+  presentation: string;
+  price: string | number;
+  imageUrl: string | null;
+  isActive: boolean;
+}
+
+interface ApiProduct {
+  id: string;
+  name: string;
+  slug?: string;
+  description: string | null;
+  isActive: boolean;
+  category: { id: string; name: string } | null;
+  variants: ApiProductVariant[];
+  tagAssignments: { tag: { name: string; isActive: boolean } }[];
+}
+
+const ALLOWED_IMAGE_HOST = "res.cloudinary.com";
+const ALLOWED_IMAGE_PATH = "/exyhq5ry/";
+
+function allowedImage(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" &&
+      parsed.hostname === ALLOWED_IMAGE_HOST &&
+      parsed.pathname.startsWith(ALLOWED_IMAGE_PATH)
+      ? url
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function toLandingProduct(product: ApiProduct): LandingProduct {
+  const variants = product.variants
+    .filter((variant) => variant.isActive)
+    .map((variant) => ({
+      id: variant.id,
+      brand: variant.brand,
+      presentation: variant.presentation,
+      pricePesos: toNumber(variant.price),
+      imageUrl: allowedImage(variant.imageUrl),
+    }));
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug ?? null,
+    description: product.description?.trim() || null,
+    categoryName: product.category?.name ?? null,
+    tags: product.tagAssignments
+      .filter((assignment) => assignment.tag.isActive)
+      .map((assignment) => assignment.tag.name),
+    variants,
+    image: variants.find((variant) => variant.imageUrl)?.imageUrl ?? null,
+  };
+}
+
+export async function getLandingProducts(): Promise<LandingProduct[]> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (process.env.NEXT_PUBLIC_LANDING_PRODUCTS_SOURCE !== "api" || !apiUrl) return productsContent.items;
+
+  try {
+    const response = await fetch(`${apiUrl}/products`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!response.ok) return productsContent.items;
+    const payload = (await response.json()) as ApiProduct[] | { data: ApiProduct[] };
+    const list = Array.isArray(payload) ? payload : payload.data;
+    const products = list.filter((product) => product.isActive).map(toLandingProduct);
+    return products.length > 0 ? products : productsContent.items;
+  } catch {
+    return productsContent.items;
   }
 }

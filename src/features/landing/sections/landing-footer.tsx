@@ -11,15 +11,16 @@ import {
   siteContact,
 } from "@/src/features/landing/lib/site-config";
 import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section";
+import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 
 import LogoW from "../../../../public/leonice-logo-w.png";
 
-const LINKS = [
+const LINKS: { label: string; target: string; page?: string }[] = [
   { label: "Inicio", target: SECTION_IDS.home },
   { label: "Por qué Leonice", target: SECTION_IDS.why },
-  { label: "Tratamientos", target: SECTION_IDS.treatments },
+  { label: "Tratamientos", target: SECTION_IDS.treatments, page: TREATMENTS_PAGE },
   { label: "Historias", target: SECTION_IDS.stories },
-  { label: "Productos", target: SECTION_IDS.products },
+  { label: "Productos", target: SECTION_IDS.products, page: PRODUCTS_PAGE },
   { label: "Contacto", target: SECTION_IDS.contact },
 ];
 
@@ -41,8 +42,9 @@ export function LandingFooter() {
             {LINKS.map((link) => (
               <li key={link.target}>
                 <a
-                  href={`#${link.target}`}
+                  href={link.page ?? `/#${link.target}`}
                   onClick={(event) => {
+                    if (link.page) return;
                     event.preventDefault();
                     scrollToSection(link.target);
                   }}

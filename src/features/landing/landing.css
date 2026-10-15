@@ -268,3 +268,45 @@ html:has(.landing) {
   opacity: clamp(0, calc(1 - var(--cc-turn, 0) * var(--cc-turn, 0) * 6), 1);
   transition: opacity 0.2s linear;
 }
+
+.story-face__handle {
+  opacity: clamp(0, calc(1 - var(--cc-turn, 0) * var(--cc-turn, 0) * 6), 1);
+  transition: opacity 0.2s linear;
+}
+
+.treatments-gallery .ag-panel {
+  background: #fdf8f1;
+  box-shadow:
+    calc(var(--sun-dx) * 6px) calc(var(--sun-dy) * 6px) 18px -6px rgb(var(--warm-shadow) / 0.28),
+    0 1px 0 rgb(255 255 255 / 0.8) inset;
+}
+
+.treatments-gallery .ag-panel__text,
+.treatments-gallery .ag-panel__desc {
+  text-shadow: none;
+}
+
+.treatments-gallery .treatment-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  border-radius: 9999px;
+  background: #062112;
+  color: #f2ebdb;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: calc(var(--sun-dx) * 5px) calc(var(--sun-dy) * 5px) 14px -6px rgb(6 33 18 / 0.45);
+  transition:
+    background-color 0.3s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.treatments-gallery .ag-panel:hover .treatment-cta,
+.treatments-gallery .ag-panel:focus-visible .treatment-cta {
+  background: #0d3320;
+  transform: translateX(4px);
+}
+

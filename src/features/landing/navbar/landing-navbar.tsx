@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -10,20 +11,40 @@ import type {
   LandingCategory,
   LandingProduct,
 } from "@/src/features/landing/content/landing-content";
-import { SECTION_IDS, type SectionId } from "@/src/features/landing/lib/site-config";
+import {
+  SECTION_IDS,
+  type SectionId,
+} from "@/src/features/landing/lib/site-config";
 import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section";
-import { ProductsPreview, TreatmentsPreview } from "@/src/features/landing/navbar/nav-previews";
+import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
+import {
+  ProductsPreview,
+  TreatmentsPreview,
+} from "@/src/features/landing/navbar/nav-previews";
 
 import LogoB from "../../../../public/leonice-logo-b.png";
 
 type Preview = "treatments" | "products";
 
-const LINKS: { label: string; target: SectionId; preview?: Preview }[] = [
+type NavLink = { label: string; target: SectionId; preview?: Preview; page?: string };
+
+const LINKS: NavLink[] = [
   { label: "Inicio", target: SECTION_IDS.home },
-  { label: "Tratamientos", target: SECTION_IDS.treatments, preview: "treatments" },
-  { label: "Productos", target: SECTION_IDS.products, preview: "products" },
+  {
+    label: "Tratamientos",
+    target: SECTION_IDS.treatments,
+    preview: "treatments",
+    page: TREATMENTS_PAGE,
+  },
+  { label: "Productos", target: SECTION_IDS.products, preview: "products", page: PRODUCTS_PAGE },
   { label: "Contacto", target: SECTION_IDS.contact },
 ];
+
+function sectionForPath(pathname: string): SectionId | null {
+  if (pathname.startsWith(TREATMENTS_PAGE)) return SECTION_IDS.treatments;
+  if (pathname.startsWith(PRODUCTS_PAGE)) return SECTION_IDS.products;
+  return null;
+}
 
 const TRACKED: SectionId[] = [
   SECTION_IDS.home,
@@ -75,7 +96,12 @@ export function LandingNavbar({
   const [barWidth, setBarWidth] = useState(0);
   const barRef = useRef<HTMLDivElement>(null);
   const idleTimer = useRef<number | null>(null);
-  const [current, setCurrent] = useState<SectionId>(SECTION_IDS.home);
+  const [observedSection, setCurrent] = useState<SectionId>(SECTION_IDS.home);
+  const pathname = usePathname();
+  const router = useRouter();
+  const onHome = pathname === "/";
+  const current = sectionForPath(pathname) ?? observedSection;
+  const hrefFor = (link: NavLink) => link.page ?? (onHome ? `#${link.target}` : `/#${link.target}`);
   const [hovered, setHovered] = useState<SectionId | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -136,7 +162,8 @@ export function LandingNavbar({
     const visible = new Map<string, number>();
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) visible.set(entry.target.id, entry.intersectionRatio);
+        for (const entry of entries)
+          visible.set(entry.target.id, entry.intersectionRatio);
         let best: string | null = null;
         let ratio = 0;
         for (const [id, value] of visible) {
@@ -198,7 +225,9 @@ export function LandingNavbar({
 
   const go = (target: SectionId) => {
     closeAll();
-    scrollToSection(target);
+    const page = LINKS.find((link) => link.target === target)?.page;
+    if (page) router.push(page);
+    else scrollToSection(target);
   };
 
   const pillActive = pill && !mobileOpen && preview === null;
@@ -236,26 +265,35 @@ export function LandingNavbar({
             transition={COMPACT_TRANSITION}
             className="relative grid h-full grid-cols-[1fr_auto_1fr] grid-rows-1 items-center gap-3 px-2 sm:px-3"
           >
-            <div className="flex min-w-0 items-center justify-self-start" inert={pillActive}>
+            <div
+              className="flex min-w-0 items-center justify-self-start"
+              inert={pillActive}
+            >
               <button
                 type="button"
                 onClick={() => setMobileOpen((open) => !open)}
                 aria-expanded={mobileOpen}
                 aria-controls="landing-mobile-menu"
                 aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
-                className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full text-[#062112] transition-colors hover:bg-[#062112]/5 desk:hidden"
+                className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full text-[#062112] transition-colors hover:bg-[#062112]/5 xl:hidden"
               >
-                {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+                {mobileOpen ? (
+                  <X className="size-5" />
+                ) : (
+                  <Menu className="size-5" />
+                )}
               </button>
 
               <ul
                 inert={pillActive}
-                className="hidden items-center gap-1 whitespace-nowrap px-1 desk:flex"
+                className="hidden items-center gap-1 whitespace-nowrap px-1 xl:flex"
                 onMouseLeave={() => setHovered(null)}
               >
                 {LINKS.map((link) => {
                   const active = current === link.target;
-                  const expanded = link.preview ? preview === link.preview : undefined;
+                  const expanded = link.preview
+                    ? preview === link.preview
+                    : undefined;
                   return (
                     <li
                       key={link.target}
@@ -266,7 +304,7 @@ export function LandingNavbar({
                       }}
                     >
                       <a
-                        href={`#${link.target}`}
+                        href={hrefFor(link)}
                         aria-current={active ? "true" : undefined}
                         aria-expanded={expanded}
                         onFocus={() => {
@@ -280,13 +318,20 @@ export function LandingNavbar({
                           go(link.target);
                         }}
                         className={`relative inline-flex h-10 items-center gap-1 rounded-full px-4 font-sans text-[0.95rem] transition-colors duration-300 ${
-                          active ? "text-[#062112]" : "text-[#062112]/65 hover:text-[#062112]"
+                          active
+                            ? "text-[#062112]"
+                            : "text-[#062112]/65 hover:text-[#062112]"
                         }`}
                       >
                         {indicator === link.target && (
                           <motion.span
                             layoutId="landing-nav-indicator"
-                            transition={{ type: "spring", stiffness: 520, damping: 38, mass: 0.6 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 520,
+                              damping: 38,
+                              mass: 0.6,
+                            }}
                             className="absolute inset-x-3 -bottom-0.5 h-[2px] rounded-full bg-[#BF9250] shadow-[0_0_10px_rgb(191_146_80/0.8)]"
                           />
                         )}
@@ -305,7 +350,7 @@ export function LandingNavbar({
             </div>
 
             <a
-              href={`#${SECTION_IDS.home}`}
+              href={onHome ? `#${SECTION_IDS.home}` : "/"}
               onClick={(event) => {
                 event.preventDefault();
                 go(SECTION_IDS.home);
@@ -331,7 +376,12 @@ export function LandingNavbar({
                 </BookingLink>
               </span>
               <span className="sm:hidden">
-                <BookingLink variant="sand" size="sm" arrow={false} className="!shadow-none">
+                <BookingLink
+                  variant="sand"
+                  size="sm"
+                  arrow={false}
+                  className="!shadow-none"
+                >
                   Agendar
                 </BookingLink>
               </span>
@@ -342,26 +392,43 @@ export function LandingNavbar({
             {preview && (
               <motion.div
                 key="preview"
-                initial={{ opacity: 0, y: -8, clipPath: "inset(0 0 100% 0 round 0 0 32px 32px)" }}
-                animate={{ opacity: 1, y: 0, clipPath: "inset(0 0 0% 0 round 0 0 32px 32px)" }}
+                initial={{
+                  opacity: 0,
+                  y: -8,
+                  clipPath: "inset(0 0 100% 0 round 0 0 32px 32px)",
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  clipPath: "inset(0 0 0% 0 round 0 0 32px 32px)",
+                }}
                 exit={{ opacity: 0, y: -6, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.5, ease: EASE }}
                 onMouseEnter={cancelClose}
-                className="absolute inset-x-0 top-full mt-3 hidden desk:block"
+                className="absolute inset-x-0 top-full mt-3 hidden xl:block"
               >
                 <div className="lit rounded-[2rem] border border-white/70 bg-[#FDF8F1]/90 p-6">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={preview}
-                      initial={{ opacity: 0, x: preview === "products" ? 16 : -16 }}
+                      initial={{
+                        opacity: 0,
+                        x: preview === "products" ? 16 : -16,
+                      }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, transition: { duration: 0.12 } }}
                       transition={{ duration: 0.35, ease: EASE }}
                     >
                       {preview === "treatments" ? (
-                        <TreatmentsPreview categories={categories} onNavigate={closeAll} />
+                        <TreatmentsPreview
+                          categories={categories}
+                          onNavigate={closeAll}
+                        />
                       ) : (
-                        <ProductsPreview products={products} onNavigate={closeAll} />
+                        <ProductsPreview
+                          products={products}
+                          onNavigate={closeAll}
+                        />
                       )}
                     </motion.div>
                   </AnimatePresence>
@@ -375,16 +442,31 @@ export function LandingNavbar({
           {mobileOpen && (
             <motion.div
               id="landing-mobile-menu"
-              initial={{ opacity: 0, clipPath: "inset(0 0 100% 0 round 0 0 32px 32px)" }}
-              animate={{ opacity: 1, clipPath: "inset(0 0 0% 0 round 0 0 0 0)" }}
-              exit={{ opacity: 0, clipPath: "inset(0 0 100% 0 round 0 0 32px 32px)", transition: { duration: 0.3 } }}
+              initial={{
+                opacity: 0,
+                clipPath: "inset(0 0 100% 0 round 0 0 32px 32px)",
+              }}
+              animate={{
+                opacity: 1,
+                clipPath: "inset(0 0 0% 0 round 0 0 0 0)",
+              }}
+              exit={{
+                opacity: 0,
+                clipPath: "inset(0 0 100% 0 round 0 0 32px 32px)",
+                transition: { duration: 0.3 },
+              }}
               transition={{ duration: 0.55, ease: EASE }}
-              className="pointer-events-auto fixed inset-x-0 bottom-0 top-0 z-40 flex flex-col bg-[#FDF8F1]/95 px-6 pb-10 pt-28 desk:hidden"
+              className="pointer-events-auto fixed inset-x-0 bottom-0 top-0 z-40 flex flex-col bg-[#FDF8F1]/95 px-6 pb-10 pt-28 xl:hidden"
             >
               <motion.ul
                 initial="hidden"
                 animate="show"
-                variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } } }}
+                variants={{
+                  hidden: {},
+                  show: {
+                    transition: { staggerChildren: 0.06, delayChildren: 0.1 },
+                  },
+                }}
                 className="flex flex-col"
               >
                 {LINKS.map((link) => (
@@ -392,12 +474,16 @@ export function LandingNavbar({
                     key={link.target}
                     variants={{
                       hidden: { opacity: 0, y: 18 },
-                      show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+                      show: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.5, ease: EASE },
+                      },
                     }}
                     className="border-b border-[#BF9250]/25"
                   >
                     <a
-                      href={`#${link.target}`}
+                      href={hrefFor(link)}
                       onClick={(event) => {
                         event.preventDefault();
                         go(link.target);
@@ -406,14 +492,22 @@ export function LandingNavbar({
                     >
                       {link.label}
                       {current === link.target && (
-                        <span className="size-2 rounded-full bg-[#BF9250]" aria-hidden="true" />
+                        <span
+                          className="size-2 rounded-full bg-[#BF9250]"
+                          aria-hidden="true"
+                        />
                       )}
                     </a>
                   </motion.li>
                 ))}
               </motion.ul>
               <div className="mt-auto">
-                <BookingLink variant="ink" size="lg" className="w-full" onClick={closeAll}>
+                <BookingLink
+                  variant="ink"
+                  size="lg"
+                  className="w-full"
+                  onClick={closeAll}
+                >
                   Agendar mi cita
                 </BookingLink>
               </div>

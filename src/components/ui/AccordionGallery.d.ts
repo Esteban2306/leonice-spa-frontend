@@ -6,7 +6,8 @@ export interface AccordionGalleryItem {
   alt?: string;
   link?: string;
   icon?: ReactNode;
-  description?: string;
+  description?: ReactNode;
+  hint?: string;
 }
 
 export interface AccordionGalleryProps {
@@ -15,7 +16,7 @@ export interface AccordionGalleryProps {
   accentColor?: string;
   overlayColor?: string;
   textColor?: string;
-  height?: number;
+  height?: number | string;
   gap?: number;
   radius?: number;
   expandRatio?: number;
@@ -29,6 +30,7 @@ export interface AccordionGalleryProps {
   showLabels?: boolean;
   grayscale?: boolean;
   persistentLabels?: boolean;
+  fill?: boolean;
   renderMedia?: (item: AccordionGalleryItem, index: number) => ReactNode;
   ariaLabel?: string;
   className?: string;

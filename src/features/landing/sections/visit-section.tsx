@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { Clock, MapPin, MessageCircle, Star } from "lucide-react";
+import { Clock, MapPin, MessageCircle } from "lucide-react";
 
+import { ReviewRating } from "@/src/features/landing/components/review-rating";
 import { BookingLink } from "@/src/features/landing/components/action-link";
 import { visitContent } from "@/src/features/landing/content/landing-content";
 import {
@@ -37,7 +38,8 @@ function MapPanel() {
         title={`Mapa de ${SPA_NAME}`}
         src={siteContact.mapEmbedUrl}
         loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
         className="absolute inset-0 h-full w-full border-0"
       />
     );
@@ -78,17 +80,31 @@ export function VisitSection() {
       MOTION_OK,
       () => {
         const heading = root.querySelector<HTMLElement>("[data-heading]");
-        const split = heading ? SplitText.create(heading, { type: "lines", mask: "lines" }) : null;
+        const split = heading
+          ? SplitText.create(heading, { type: "lines", mask: "lines" })
+          : null;
         gsap
           .timeline({
             defaults: { ease: EASE_OUT },
-            scrollTrigger: { trigger: root, start: "top 70%", once: true },
+            scrollTrigger: { trigger: root, start: "top 70%" },
           })
-          .from(split?.lines ?? [], { yPercent: 105, duration: 1.1, stagger: 0.1 })
-          .from("[data-visit-item]", { opacity: 0, y: 18, duration: 0.9, stagger: 0.08 }, 0.3)
+          .from(split?.lines ?? [], {
+            yPercent: 105,
+            duration: 1.1,
+            stagger: 0.1,
+          })
+          .from(
+            "[data-visit-item]",
+            { opacity: 0, y: 18, duration: 0.9, stagger: 0.08 },
+            0.3,
+          )
           .from(
             "[data-visit-map]",
-            { clipPath: "inset(0 0 0 100% round 32px)", duration: 1.5, ease: "expo.inOut" },
+            {
+              clipPath: "inset(0 0 0 100% round 32px)",
+              duration: 1.5,
+              ease: "expo.inOut",
+            },
             0.2,
           );
         return () => split?.revert();
@@ -134,7 +150,10 @@ export function VisitSection() {
                 Horario
               </dt>
               {OPENING_HOURS.map((slot) => (
-                <dd key={slot.days} className="font-sans text-lg text-[#062112] tabular-nums">
+                <dd
+                  key={slot.days}
+                  className="font-sans text-lg text-[#062112] tabular-nums"
+                >
                   {slot.days} · {slot.hours}
                 </dd>
               ))}
@@ -189,20 +208,10 @@ export function VisitSection() {
             data-visit-item
             className="lit flex max-w-md flex-col gap-3 rounded-[1.5rem] bg-[#F2EBDB]/40 p-5 backdrop-blur-sm"
           >
-            <p className="font-sans font-bold text-[#062112]">{visitContent.reviewTitle}</p>
-            {siteContact.googleReviewUrl ? (
-              <a
-                href={siteContact.googleReviewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-10 w-fit items-center gap-2 rounded-full bg-[#062112] px-4 font-sans text-sm font-bold text-[#F2EBDB] transition-colors hover:bg-[#0d3320]"
-              >
-                <Star className="size-4" aria-hidden="true" />
-                Valorar en Google
-              </a>
-            ) : (
-              <Pending>Próximamente</Pending>
-            )}
+            <p className="font-sans font-bold text-[#062112]">
+              {visitContent.reviewTitle}
+            </p>
+            <ReviewRating />
           </div>
         </div>
 

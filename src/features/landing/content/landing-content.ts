@@ -26,6 +26,8 @@ export interface TreatmentCopy {
 export interface LandingTreatment {
   id: string;
   name: string;
+  slug?: string | null;
+  categorySlug?: string | null;
   categoryName: string;
   durationMinutes: number;
   priceFromThousands: number;
@@ -39,6 +41,7 @@ export interface LandingTreatment {
 export interface LandingCategory {
   id: string;
   name: string;
+  slug?: string | null;
   treatmentCount: number;
   fromThousands: number | null;
   highlights: LandingTreatment[];
@@ -72,12 +75,22 @@ export interface PromiseItem {
   size: "feature" | "tall" | "wide" | "square";
 }
 
+export interface LandingProductVariant {
+  id: string;
+  brand: string;
+  presentation: string;
+  pricePesos: number | null;
+  imageUrl: string | null;
+}
+
 export interface LandingProduct {
   id: string;
   name: string;
-  line: string;
-  benefit: string;
-  priceCop: number | null;
+  slug?: string | null;
+  description: string | null;
+  categoryName: string | null;
+  tags: string[];
+  variants: LandingProductVariant[];
   image: string | null;
 }
 
@@ -341,42 +354,47 @@ export const promiseContent = {
   ] satisfies PromiseItem[],
 };
 
+const DEMO_BRAND = "MAIS";
+
+function demoProduct(
+  id: string,
+  name: string,
+  categoryName: string,
+  description: string,
+  tags: string[],
+  variants: [string, number][],
+): LandingProduct {
+  return {
+    id,
+    name,
+    description,
+    categoryName,
+    tags,
+    variants: variants.map(([presentation, pricePesos]) => ({
+      id: `${id}-${presentation}`,
+      brand: DEMO_BRAND,
+      presentation,
+      pricePesos,
+      imageUrl: null,
+    })),
+    image: null,
+  };
+}
+
 export const productsContent = {
   title: "Continúa tu tratamiento en casa",
   lead: "La misma línea de producto profesional que usamos en cabina, disponible para tu rutina diaria.",
   items: [
-    {
-      id: "shampoo-reparador",
-      name: "Shampoo reparador intensivo",
-      line: "MAIS",
-      benefit: "Reparación",
-      priceCop: null,
-      image: null,
-    },
-    {
-      id: "perfume-capilar",
-      name: "Perfume capilar",
-      line: "MAIS",
-      benefit: "Aroma y brillo",
-      priceCop: null,
-      image: null,
-    },
-    {
-      id: "mascarilla-nutricion",
-      name: "Mascarilla de cuidado y nutrición",
-      line: "MAIS",
-      benefit: "Nutrición",
-      priceCop: null,
-      image: null,
-    },
-    {
-      id: "aceite-vitaminas",
-      name: "Aceite de vitaminas",
-      line: "MAIS",
-      benefit: "Vitaminas",
-      priceCop: null,
-      image: null,
-    },
+    demoProduct("shampoo-reparador", "Shampoo reparador intensivo", "Shampoo", "Limpieza suave que repara la fibra dañada por procesos químicos.", ["Rehidratante", "Reparación"], [["250 ml", 45000], ["1 L", 118000]]),
+    demoProduct("shampoo-detox", "Shampoo detox", "Shampoo", "Equilibra el cuero cabelludo graso con menta y carbón activado.", ["Cabello graso", "Anticaspa"], [["250 ml", 42000]]),
+    demoProduct("acondicionador-hidratante", "Acondicionador hidratante", "Acondicionador", "Desenreda y devuelve la suavidad desde el primer uso.", ["Rehidratante"], [["250 ml", 44000], ["1 L", 112000]]),
+    demoProduct("mascarilla-nutricion", "Mascarilla de cuidado y nutrición", "Mascarilla", "Nutrición profunda para medios y puntas resecos.", ["Nutrición", "Brillo"], [["250 g", 58000], ["500 g", 96000]]),
+    demoProduct("aceite-vitaminas", "Aceite de vitaminas", "Aceite", "Sella la cutícula y controla el frizz con vitaminas A y E.", ["Control de frizz", "Brillo"], [["60 ml", 52000]]),
+    demoProduct("perfume-capilar", "Perfume capilar", "Fragancia", "Aroma duradero y brillo inmediato sin apelmazar.", ["Brillo"], [["100 ml", 39000]]),
+    demoProduct("protector-termico", "Protector térmico", "Estilizado", "Protege la fibra del calor de secador y plancha.", ["Protección térmica"], [["150 ml", 47000]]),
+    demoProduct("tonico-anticaida", "Tónico anticaída", "Tratamiento", "Estimula el cuero cabelludo y fortalece la raíz.", ["Anticaída"], [["120 ml", 65000]]),
+    demoProduct("serum-puntas", "Sérum de puntas", "Sérum", "Sella las puntas abiertas y suaviza sin dejar residuo.", ["Puntas abiertas", "Control de frizz"], [["50 ml", 48000]]),
+    demoProduct("crema-peinar", "Crema para peinar", "Estilizado", "Define el peinado y mantiene el cabello sin frizz todo el día.", ["Definición", "Sin frizz"], [["200 ml", 41000]]),
   ] satisfies LandingProduct[],
 };
 

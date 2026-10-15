@@ -31,7 +31,7 @@ export function WhySection() {
         const split = heading ? SplitText.create(heading, { type: "words", mask: "words" }) : null;
         const tl = gsap.timeline({
           defaults: { ease: EASE_OUT },
-          scrollTrigger: { trigger: root, start: "top 72%", once: true },
+          scrollTrigger: { trigger: root, start: "top 72%" },
         });
         tl.from(split?.words ?? [], { yPercent: 105, duration: 1.1, stagger: 0.04 }).from(
           ".ag-panel",

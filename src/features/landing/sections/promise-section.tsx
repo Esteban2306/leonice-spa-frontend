@@ -3,6 +3,7 @@
 import { useRef } from "react";
 
 import { ActionLink, BookingLink } from "@/src/features/landing/components/action-link";
+import { TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import { LandingIcon } from "@/src/features/landing/components/landing-icon";
 import { MediaFrame } from "@/src/features/landing/components/media-frame";
 import { SectionHeading } from "@/src/features/landing/components/section-heading";
@@ -80,7 +81,7 @@ function PromiseTile({ item }: { item: PromiseItem }) {
             >
               Reservar
             </BookingLink>
-            <ActionLink variant="link-cream" to={SECTION_IDS.treatments}>
+            <ActionLink variant="link-cream" href={TREATMENTS_PAGE}>
               Ver tratamientos
             </ActionLink>
           </div>
@@ -106,7 +107,7 @@ export function PromiseSection() {
         const split = heading ? SplitText.create(heading, { type: "chars", mask: "chars" }) : null;
         const tl = gsap.timeline({
           defaults: { ease: EASE_OUT },
-          scrollTrigger: { trigger: root, start: "top 68%", once: true },
+          scrollTrigger: { trigger: root, start: "top 68%" },
         });
         tl.from(split?.chars ?? [], { yPercent: 110, duration: 0.9, stagger: 0.025 })
           .from("[data-lead]", { opacity: 0, y: 14, duration: 0.9 }, 0.3)

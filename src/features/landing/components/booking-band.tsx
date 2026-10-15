@@ -1,5 +1,5 @@
 import { BookingLink } from "@/src/features/landing/components/action-link";
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { Reveal } from "@/src/features/landing/components/reveal";
 
 interface BookingBandProps {
   title: string;

@@ -282,6 +282,14 @@ Las rutas `/tratamientos` heredan el mismo mundo y todo sale del catálogo (`/sh
 - **Contenido en revisión:** mientras el spa no valide la descripción de un servicio, la ficha muestra el chip discontinuo "Descripción en revisión".
 - **Barra de reserva móvil:** al salir de la portada aparece una píldora verde fija abajo con nombre, duración, precio y la acción arena; solo por debajo de `desk`.
 
+### Carta de productos
+`/productos` es una carta tipográfica, no una rejilla de tienda; todo sale de `/catalog/products` del backend.
+- **Fila de producto:** nombre en Italiana a gran escala, para qué sirve en Inria y precio tabular a la derecha, separadas por hilos dorados al 25 %. Al pasar el puntero (solo con mouse) el nombre se subraya con una línea dorada de 2 px que crece de izquierda a derecha y la fila despliega sus cualidades (estrellas doradas), los pasos de uso y las acciones "Vista rápida" y la flecha arena. En táctil la fila llega desplegada.
+- **Foto flotante:** una sola tarjeta en doble bisel sigue al cursor con interpolación (rAF, solo transform) por encima del puntero y se revela con un círculo de recorte; sin foto muestra el rayado con la marca y el nombre. Se apaga en táctil y con movimiento reducido.
+- **Filtros vivos:** barra de papel al 88 % con desenfoque (fija solo en escritorio), búsqueda, chips de necesidad en píldora con su conteo (el chip activo se inunda de verde de izquierda a derecha y el número rueda al cambiar), categoría, rango de precio con pulgares verdes de borde arena y orden. Al filtrar, una línea dorada recorre el borde superior de la barra y las filas se reordenan con FLIP (solo posición, 600 ms expo out); las que salen se desvanecen con un leve desenfoque.
+- **Vista rápida:** panel lateral de papel que entra un 30 % desde la derecha (500 ms) con su contenido escalonado (solo opacidad y desplazamiento); el fondo se oscurece con verde al 28 % sin desenfoque.
+- **Precio como dato de exhibición:** en el selector de presentación el precio elegido se muestra en Italiana grande; la presentación activa es una tarjeta verde con el precio en arena.
+
 ## Do's and Don'ts
 
 ### Do:

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowRight,
@@ -24,8 +25,13 @@ import type {
   LandingProduct,
 } from "@/src/features/landing/content/landing-content";
 import { formatDuration, formatPesos, formatThousandsCop } from "@/src/features/landing/lib/format";
-import { SECTION_IDS } from "@/src/features/landing/lib/site-config";
-import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section";
+import {
+  landingCategoryHref,
+  landingProductHref,
+  landingTreatmentHref,
+  PRODUCTS_PAGE,
+  TREATMENTS_PAGE,
+} from "@/src/features/landing/lib/catalog-links";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -114,14 +120,11 @@ export function TreatmentsPreview({
           const selected = category.id === active.id;
           return (
             <motion.li key={category.id} variants={item}>
-              <button
-                type="button"
+              <Link
+                href={landingCategoryHref(category)}
                 onMouseEnter={() => setActiveId(category.id)}
                 onFocus={() => setActiveId(category.id)}
-                onClick={() => {
-                  onNavigate();
-                  scrollToSection(SECTION_IDS.treatments);
-                }}
+                onClick={onNavigate}
                 className={`relative flex w-full cursor-pointer flex-col items-start rounded-2xl px-4 py-3 text-left transition-colors duration-300 ${
                   selected ? "text-[#F2EBDB]" : "text-[#062112] hover:bg-[#062112]/5"
                 }`}
@@ -140,7 +143,7 @@ export function TreatmentsPreview({
                   {category.treatmentCount} {category.treatmentCount === 1 ? "servicio" : "servicios"}
                   {category.fromThousands !== null && ` · desde ${formatThousandsCop(category.fromThousands)}`}
                 </span>
-              </button>
+              </Link>
             </motion.li>
           );
         })}
@@ -156,11 +159,12 @@ export function TreatmentsPreview({
           className="grid content-start gap-2"
         >
           {active.highlights.map((treatment) => (
-            <motion.li
-              key={treatment.id}
-              variants={item}
-              className="flex items-center justify-between gap-4 rounded-2xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-3"
-            >
+            <motion.li key={treatment.id} variants={item}>
+              <Link
+                href={landingTreatmentHref(treatment)}
+                onClick={onNavigate}
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-3 transition-colors duration-300 hover:border-[#BF9250]/60 hover:bg-white"
+              >
               <div className="min-w-0">
                 <p className="truncate font-sans font-bold text-[#062112]">{treatment.name}</p>
                 <p className="flex items-center gap-1.5 font-sans text-xs text-[#062112]/65">
@@ -168,23 +172,34 @@ export function TreatmentsPreview({
                   {formatDuration(treatment.durationMinutes)}
                 </p>
               </div>
-              <p className="shrink-0 font-sans text-sm font-bold text-[#7a5a2c] tabular-nums">
-                desde {formatThousandsCop(treatment.promotion?.priceFromThousands ?? treatment.priceFromThousands)}
-              </p>
+              <span className="flex shrink-0 items-center gap-3">
+                <span className="font-sans text-sm font-bold text-[#7a5a2c] tabular-nums">
+                  desde {formatThousandsCop(treatment.promotion?.priceFromThousands ?? treatment.priceFromThousands)}
+                </span>
+                <ArrowUpRight
+                  className="size-4 text-[#062112] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </span>
+              </Link>
             </motion.li>
           ))}
-          <motion.li variants={item}>
-            <button
-              type="button"
-              onClick={() => {
-                onNavigate();
-                scrollToSection(SECTION_IDS.treatments);
-              }}
+          <motion.li variants={item} className="flex flex-wrap gap-x-6 gap-y-2">
+            <Link
+              href={landingCategoryHref(active)}
+              onClick={onNavigate}
               className="group mt-1 inline-flex cursor-pointer items-center gap-2 font-sans text-sm font-bold text-[#062112] underline decoration-[#BF9250] decoration-2 underline-offset-[6px]"
             >
-              Ver todos los tratamientos
+              Ver {active.name}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-            </button>
+            </Link>
+            <Link
+              href={TREATMENTS_PAGE}
+              onClick={onNavigate}
+              className="group mt-1 inline-flex cursor-pointer items-center gap-2 font-sans text-sm font-bold text-[#062112]/70 underline decoration-[#BF9250]/50 decoration-2 underline-offset-[6px] hover:text-[#062112]"
+            >
+              Todos los tratamientos
+            </Link>
           </motion.li>
         </motion.ul>
       </AnimatePresence>
@@ -212,11 +227,6 @@ export function ProductsPreview({
       </p>
     );
   }
-
-  const goToProducts = () => {
-    onNavigate();
-    scrollToSection(SECTION_IDS.products);
-  };
 
   if (!active) {
     return (
@@ -248,14 +258,14 @@ export function ProductsPreview({
             );
           })}
         </motion.ul>
-        <button
-          type="button"
-          onClick={goToProducts}
+        <Link
+          href={PRODUCTS_PAGE}
+          onClick={onNavigate}
           className="group inline-flex cursor-pointer items-center gap-2 self-start font-sans text-sm font-bold text-[#062112] underline decoration-[#BF9250] decoration-2 underline-offset-[6px]"
         >
           Explorar todos los productos
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-        </button>
+        </Link>
       </div>
     );
   }
@@ -328,9 +338,9 @@ export function ProductsPreview({
             const presentations = product.variants.map((variant) => variant.presentation).join(" · ");
             return (
               <motion.li key={product.id} variants={item}>
-                <button
-                  type="button"
-                  onClick={goToProducts}
+                <Link
+                  href={landingProductHref(product)}
+                  onClick={onNavigate}
                   className="group flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-3 text-left transition-colors duration-300 hover:border-[#BF9250]/60 hover:bg-white"
                 >
                   <span className="min-w-0">
@@ -353,7 +363,7 @@ export function ProductsPreview({
                       />
                     </span>
                   </span>
-                </button>
+                </Link>
               </motion.li>
             );
           })}

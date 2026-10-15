@@ -48,7 +48,7 @@ function BeforeAfterFace({ story }: { story: StoryItem }) {
         aria-hidden="true"
         className="story-face__rule absolute inset-y-0 w-[2px] -translate-x-1/2 bg-[#FDF8F1] shadow-[0_0_18px_rgb(255_222_170/0.9)]"
       >
-        <span className="absolute left-1/2 top-1/2 grid size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#FDF8F1] text-[#062112] shadow-lg">
+        <span className="story-face__handle absolute left-1/2 top-1/2 grid size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#FDF8F1] text-[#062112] shadow-lg">
           <MoveHorizontal className="size-4" />
         </span>
       </span>
@@ -90,7 +90,7 @@ export function StoriesSection() {
         gsap
           .timeline({
             defaults: { ease: EASE_OUT },
-            scrollTrigger: { trigger: root, start: "top 70%", once: true },
+            scrollTrigger: { trigger: root, start: "top 70%" },
           })
           .from(split?.words ?? [], { yPercent: 105, duration: 1, stagger: 0.04 })
           .from("[data-story-quote]", { opacity: 0, y: 20, filter: "blur(6px)", duration: 1, clearProps: "filter" }, 0.5);

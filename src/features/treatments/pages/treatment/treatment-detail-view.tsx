@@ -1,11 +1,12 @@
 import type { ShowcaseTreatmentDetail } from "@/src/features/treatments/api/showcase.types";
-import { BookingBand } from "@/src/features/treatments/components/booking-band";
+import { BookingBand } from "@/src/features/landing/components/booking-band";
 import { CareSection } from "@/src/features/treatments/components/care-section";
 import { IdealForList } from "@/src/features/treatments/components/ideal-for-list";
 import { OutcomeBlock } from "@/src/features/treatments/components/outcome-block";
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { RecommendedProducts } from "@/src/features/treatments/components/recommended-products";
+import { Reveal } from "@/src/features/landing/components/reveal";
 import { StepRitual } from "@/src/features/treatments/components/step-ritual";
-import { StickyBookingBar } from "@/src/features/treatments/components/sticky-booking-bar";
+import { StickyBookingBar } from "@/src/features/landing/components/sticky-booking-bar";
 import { TreatmentCard } from "@/src/features/treatments/components/treatment-card";
 import { TreatmentHero } from "@/src/features/treatments/components/treatment-hero";
 import {
@@ -39,6 +40,7 @@ export function TreatmentDetailView({ treatment }: { treatment: ShowcaseTreatmen
         recommendedFrequency={treatment.recommendedFrequency}
       />
       <CareSection aftercare={treatment.aftercare} considerations={treatment.considerations} />
+      <RecommendedProducts products={treatment.recommendedProducts ?? []} />
       <BookingBand
         title={`Tu momento para ${treatment.name.toLowerCase()}`}
         lead={

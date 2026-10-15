@@ -15,6 +15,7 @@ import {
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
 import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section";
+import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
 
 interface HeroMediaProps {
@@ -46,6 +47,11 @@ function HeroMedia({ videoSrc, poster }: HeroMediaProps) {
   );
 }
 
+const PORTAL_PAGES: Record<string, string> = {
+  [SECTION_IDS.treatments]: TREATMENTS_PAGE,
+  [SECTION_IDS.products]: PRODUCTS_PAGE,
+};
+
 function PortalCard({
   title,
   target,
@@ -65,8 +71,9 @@ function PortalCard({
     <a
       ref={glowRef}
       data-hero-portal
-      href={`#${target}`}
+      href={PORTAL_PAGES[target] ?? `#${target}`}
       onClick={(event) => {
+        if (PORTAL_PAGES[target]) return;
         event.preventDefault();
         scrollToSection(target);
       }}

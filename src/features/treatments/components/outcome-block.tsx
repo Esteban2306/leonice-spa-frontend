@@ -1,6 +1,6 @@
 import { Sparkle } from "lucide-react";
 
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { Reveal } from "@/src/features/landing/components/reveal";
 
 interface OutcomeBlockProps {
   benefits: string[];

@@ -1,4 +1,4 @@
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { Reveal } from "@/src/features/landing/components/reveal";
 
 export function IdealForList({ items }: { items: string[] }) {
   if (items.length === 0) return null;

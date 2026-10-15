@@ -2,8 +2,8 @@ import { Clock, Stethoscope } from "lucide-react";
 
 import { ActionLink, BookingLink } from "@/src/features/landing/components/action-link";
 import type { ShowcaseTreatmentDetail } from "@/src/features/treatments/api/showcase.types";
-import { Breadcrumbs } from "@/src/features/treatments/components/breadcrumbs";
-import { ReviewPendingChip } from "@/src/features/treatments/components/review-pending-chip";
+import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
+import { ReviewPendingChip } from "@/src/features/landing/components/review-pending-chip";
 import { TreatmentVideo } from "@/src/features/treatments/components/treatment-video";
 import {
   assessmentMessage,

@@ -198,3 +198,24 @@
     transition: opacity 0.2s ease;
   }
 }
+
+.accordion-gallery--fill .ag-panel__media {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.accordion-gallery--fill .ag-panel__media img {
+  object-fit: cover;
+}
+
+@media (max-width: 520px) {
+  .accordion-gallery.accordion-gallery--fill .ag-panel {
+    min-height: 300px;
+  }
+  .accordion-gallery.accordion-gallery--fill .ag-panel__media {
+    width: 100%;
+    height: 100%;
+  }
+}

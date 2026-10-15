@@ -1,6 +1,6 @@
 import { House, Info } from "lucide-react";
 
-import { Reveal } from "@/src/features/treatments/components/reveal";
+import { Reveal } from "@/src/features/landing/components/reveal";
 
 export function CareSection({ aftercare, considerations }: { aftercare: string[]; considerations: string[] }) {
   if (aftercare.length === 0 && considerations.length === 0) return null;

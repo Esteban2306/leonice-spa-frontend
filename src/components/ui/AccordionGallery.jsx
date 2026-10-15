@@ -33,6 +33,7 @@ const AccordionGallery = ({
   showLabels = true,
   grayscale = true,
   persistentLabels = false,
+  fill = false,
   renderMedia,
   ariaLabel = 'Image accordion gallery',
   className = ''
@@ -87,10 +88,10 @@ const AccordionGallery = ({
           tl.to(
             media,
             {
-              xPercent: -50,
-              yPercent: -50,
-              x: vertical ? 0 : isActive ? 0 : shift,
-              y: vertical ? (isActive ? 0 : shift) : 0,
+              xPercent: fill ? 0 : -50,
+              yPercent: fill ? 0 : -50,
+              x: fill || vertical || isActive ? 0 : shift,
+              y: fill ? 0 : vertical ? (isActive ? 0 : shift) : 0,
               '--ag-gray': gray,
               '--ag-dim': isActive ? 0 : 0.35,
               duration: dur,
@@ -127,7 +128,8 @@ const AccordionGallery = ({
       showLabels,
       persistentLabels,
       stagger,
-      prefersReduced
+      prefersReduced,
+      fill
     ]
   );
 
@@ -187,14 +189,14 @@ const AccordionGallery = ({
   return (
     <div
       ref={rootRef}
-      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${persistentLabels ? ' accordion-gallery--persistent' : ''}${className ? ` ${className}` : ''}`}
+      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${persistentLabels ? ' accordion-gallery--persistent' : ''}${fill ? ' accordion-gallery--fill' : ''}${className ? ` ${className}` : ''}`}
       style={{
         '--ag-accent': accentColor,
         '--ag-overlay': overlayColor,
         '--ag-text': textColor,
         '--ag-gap': `${gap}px`,
         '--ag-radius': `${radius}px`,
-        height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
+        height: typeof height === 'number' ? (vertical ? `${Math.round(height * 1.6)}px` : `${height}px`) : height
       }}
       role="list"
       aria-label={ariaLabel}
@@ -211,7 +213,9 @@ const AccordionGallery = ({
             href={item.link || undefined}
             onClick={e => handleClick(i, e)}
             onMouseEnter={() => handleEnter(i)}
-            onFocus={() => setActive(i)}
+            onFocus={e => {
+              if (e.currentTarget.matches(':focus-visible')) setActive(i);
+            }}
             onKeyDown={e => handleKeyDown(i, e)}
             role="listitem"
             tabIndex={0}

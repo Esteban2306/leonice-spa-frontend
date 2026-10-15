@@ -14,18 +14,17 @@ export const SECTION_IDS = {
 export type SectionId = (typeof SECTION_IDS)[keyof typeof SECTION_IDS];
 
 export const OPENING_HOURS = [
-  { days: "Lun – Vie", hours: "9:00 – 19:00", sample: true },
-  { days: "Sáb", hours: "9:00 – 15:00", sample: true },
+  { days: "Lun – Vie", hours: "8:00 am – 6:00 pm", sample: true },
+  { days: "Sáb", hours: "8:00 am – 7:00 pm", sample: true },
 ] as const;
 
-const digits = (value: string | undefined) => (value ?? "").replace(/\D/g, "");
-
 export const siteContact = {
-  whatsappDigits: digits(process.env.NEXT_PUBLIC_SPA_WHATSAPP),
-  address: process.env.NEXT_PUBLIC_SPA_ADDRESS?.trim() || null,
-  mapEmbedUrl: process.env.NEXT_PUBLIC_SPA_MAP_EMBED_URL?.trim() || null,
-  mapsUrl: process.env.NEXT_PUBLIC_SPA_MAPS_URL?.trim() || null,
-  googleReviewUrl: process.env.NEXT_PUBLIC_SPA_GOOGLE_REVIEW_URL?.trim() || null,
+  whatsappDigits: "573144518129",
+  address: "Carrera 9 # 13A - 17, Granada, Meta",
+  mapEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.197628181269!2d-73.70167820000002!3d3.5418277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3de3001cce8af1%3A0xe5a43497196bb4e0!2sSpa%20capilar%20Leonice%20Arenas!5e0!3m2!1ses!2sco!4v1791941118692!5m2!1ses!2sco",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=Spa+capilar+Leonice+Arenas",
+  googleReviewUrl: "https://g.page/r/CeC0axmXNKTlECE/review",
 };
 
 export function whatsappHref(message: string): string | null {

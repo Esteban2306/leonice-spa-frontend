@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { getLandingCatalog } from "@/src/features/landing/api/landing-catalog";
+import { getLandingCatalog, getLandingProducts } from "@/src/features/landing/api/landing-catalog";
 import { LandingPage } from "@/src/features/landing/landing-page";
 
 export const revalidate = 300;
@@ -12,6 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default async function MarketingHomePage() {
-  const catalog = await getLandingCatalog();
-  return <LandingPage catalog={catalog} />;
+  const [catalog, products] = await Promise.all([getLandingCatalog(), getLandingProducts()]);
+  return <LandingPage catalog={catalog} products={products} />;
 }
