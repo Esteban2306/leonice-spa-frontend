@@ -89,7 +89,7 @@
   border-radius: 9999px;
   background: #062112;
   border: 3px solid #e0bc87;
-  box-shadow: calc(var(--sun-dx, 0.8) * 3px) calc(var(--sun-dy, 0.4) * 3px) 8px -2px rgb(74 46 16 / 0.35);
+  box-shadow: calc(var(--sun-dx, -0.9) * 3px) calc(var(--sun-dy, 0.3) * 3px) 8px -2px rgb(74 46 16 / 0.35);
   cursor: grab;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }

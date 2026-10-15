@@ -83,7 +83,7 @@ function barClip(pill: boolean, side: number) {
 }
 
 const GLASS =
-  "border border-white/70 bg-[#FDF8F1]/55 backdrop-blur-2xl backdrop-saturate-[1.8] shadow-[inset_0_1px_0_rgb(255_255_255/0.9),inset_0_-1px_0_rgb(74_46_16/0.08),0_calc(var(--sun-dy)*10px+14px)_40px_-16px_rgb(74_46_16/0.42)] before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-[linear-gradient(180deg,rgb(255_255_255/0.55),rgb(255_255_255/0)_70%)] before:content-['']";
+  "sun-glass border border-white/70 bg-[#FDF8F1]/55 backdrop-blur-2xl backdrop-saturate-[1.8] before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-[linear-gradient(180deg,rgb(255_255_255/0.55),rgb(255_255_255/0)_70%)] before:content-['']";
 
 export function LandingNavbar({
   categories,

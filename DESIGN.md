@@ -215,18 +215,25 @@ El navbar es fijo, mide 5.5 rem y se compacta a 4.5 rem al hacer scroll; las sec
 
 ## Elevation & Depth
 
-Sistema de profundidad direccional: las superficies flotan sobre el papel y su sombra depende de dónde está el sol. Un vector compartido (`--sun-dx`, `--sun-dy`) parte de 30° por la mañana y baja hasta −16° por la tarde según el avance del scroll; todas las sombras se desplazan en la dirección del vector y todos los filos encendidos aparecen en el lado opuesto. La altura de cada superficie es una propiedad registrada (`--lift`, 18 px en reposo, 30 px en hover o foco interno) que se anima, de modo que la sombra crece suave en lugar de saltar. Sobre la página, un lavado de luz fijo entra por la izquierda con bandas diagonales de persiana, a la altura del sol, sin capturar eventos.
+El sol vive en la barra de desplazamiento. Está justo fuera del borde derecho de la ventana, a la altura del pulgar de la barra (`scrollThumbCenter`), y se desliza hacia esa altura con una inercia suave (14 % por frame) para que la luz nunca salte. Cada superficie visible recibe su propia relación con ese sol: dirección normalizada desde el sol hacia su centro (`--sx`, `--sy`) y distancia relativa a la diagonal de la ventana (`--sd`). Con esos tres números la sombra exterior cae hacia el lado contrario al sol y un brillo interno aparece en el borde que lo mira; un componente arriba y otro abajo se iluminan distinto, y al bajar por la página el sol baja con la barra y las sombras giran. Las páginas del admin no usan este sistema.
+
+Implementación: `useScrollSun` (en `SunlightStage`) observa con `IntersectionObserver` solo las superficies visibles, mide todas las posiciones y después escribe, y solo reescribe una variable cuando su valor cuantizado cambia (dirección en pasos de 0.04, distancia en 0.05). `--sx`, `--sy` y `--sd` están registradas con `@property` como no heredables, así un cambio solo recalcula esa superficie. La raíz guarda una versión gruesa (`--sun-dx`, `--sun-dy`) para el texto iluminado y controles pequeños. Con movimiento reducido el sol queda fijo al 25 % del recorrido.
 
 ### Shadow Vocabulary
-- **Superficie iluminada clara** (`.lit`): sombra tostada larga proporcional a `--lift`, sombra de contacto corta, filo interior crema en el lado del sol y un filo interior oscuro en el lado contrario. Para tarjetas sobre papel o dorado.
-- **Superficie iluminada oscura** (`.lit-dark`): igual en geometría, sombra negra al 45 % y filo interior de arena. Para tarjetas verdes.
-- **Acción con sombra solar**: desplazamiento de 6 px en la dirección del sol, 18 px de desenfoque, −6 px de extensión, teñida del color de su propia superficie.
-- **Navbar sólido**: sombra hacia abajo que crece con `--sun-dy`, con papel al 88 % y desenfoque de fondo.
-- **Brillo al puntero** (`.glow`): círculo radial de luz cálida de 320 px que sigue al cursor en modo soft-light; solo en dispositivos con hover.
-- **Texto iluminado** (`.sunlit-text`): sombra de texto mínima (8 % de opacidad) en la dirección del sol para titulares.
+Todas las sombras salen de una sola receta en `src/features/landing/sunlight.css` (un único `box-shadow` de cinco capas: sombra proyectada que se alarga y suaviza con la distancia, sombra de contacto, filo encendido del lado del sol, filo oscuro del lado contrario y resplandor interno hacia el sol). Las clases solo cambian sus parámetros (`--lift`, `--sun-tint`, `--sun-cast`, `--sun-rim`, `--sun-shine`, `--sun-glow`):
+- **`.lit`**: superficie clara sobre papel o dorado; sombra tostada `rgb(74 46 16)`, filo crema, resplandor crema cálido.
+- **`.lit-dark`**: superficie verde; sombra negra, filo y resplandor arena.
+- **`.sun-shadow`**: acciones y piezas pequeñas claras (botones sand y cream, el asa de las historias); `--lift` 7 px.
+- **`.sun-shadow-ink`**: acciones y barras verdes (botón ink, CTA de galería, barra de reserva móvil, número activo del ritual).
+- **`.sun-glass`**: vidrio flotante (navbar, barras de filtros); filo blanco y sombra más amplia.
+- **`.sun-panel`**: paneles grandes; las galerías (`.why-gallery`, `.treatments-gallery`) usan la misma receta con sus parámetros.
+- **`.lit-hover`**: sube `--lift` de 18 a 30 px en hover o foco, solo con puntero fino; la elevación se anima por ser una propiedad registrada.
+- **Halo del sol** (`.sun-halo`): disco de luz cálida con núcleo que respira (7 s) y rayos cónicos que giran muy lento (140 s), anclado al borde derecho y movido solo con `transform` (sin repintar). En escritorio se mezcla en soft-light; en táctil queda tenue.
+- **Barra de desplazamiento**: pulgar dorado con degradado radial y resplandor propio; pista de papel. Firefox usa `scrollbar-color` dorado.
+- **Brillo al puntero** (`.glow`) y **texto iluminado** (`.sunlit-text`) se mantienen.
 
 ### Named Rules
-**The One Sun Rule.** Toda sombra, filo y reflejo se calcula a partir del mismo vector de sol. Una sombra con desplazamiento fijo que ignore `--sun-dx`/`--sun-dy` rompe el mundo.
+**The Scrollbar Sun Rule.** Ninguna sombra lleva desplazamiento fijo: toda superficie que proyecte sombra usa una de las clases solares y queda registrada en `SUN_SURFACES`. Un `shadow-[…]` de Tailwind en la web pública rompe el mundo; los únicos brillos permitidos fuera del sistema son emisiones de luz (el indicador del navbar, la línea de las historias) y anillos de foco.
 
 **The Lift On Intent Rule.** Las superficies se elevan (de 18 a 30 px de `--lift`) solo ante hover o foco interno, y solo en dispositivos con hover. En táctil la elevación queda en reposo.
 
@@ -268,7 +275,7 @@ Píldoras tácticas y cálidas que reaccionan a la luz.
 El `MediaFrame` muestra la foto cuando existe y, si no, un estado "Sin imagen" con rayado diagonal de 1 px cada 14 px sobre un degradado tostado (o verde en tono oscuro), un chip discontinuo con icono y la descripción de la foto que falta. Es un estado del sistema, no un placeholder temporal: cualquier superficie con imagen lo hereda.
 
 ### Sol del escenario (signature)
-El `SunlightStage` envuelve la landing, define el vector de sol y lo recalcula con el scroll (de 30° a −16°, en pasos de 0.5°, con un amortiguado de 1.2 s). Sobre todo el contenido dibuja un lavado de luz fijo; en escritorio con hover se mezcla en soft-light con más intensidad, en móvil queda tenue.
+El `SunlightStage` envuelve todas las páginas públicas (landing, tratamientos y productos), pone el sol en el pulgar de la barra de desplazamiento y da a cada superficie visible su propia luz (ver Elevation & Depth). El halo del sol nace del borde derecho a la altura de la barra; en escritorio con hover se mezcla en soft-light con más intensidad, en móvil queda tenue.
 
 ### Galerías
 La galería en acordeón del "porqué" y el carrusel circular de historias son componentes vendorizados que la landing tiñe con el mismo sistema: los paneles del acordeón usan sombra solar y filo de arena (el activo sube a una elevación mayor con un halo interior cálido) y el carrusel divide cada cara en antes/después según el giro, ocultando los rótulos mientras gira.
@@ -295,7 +302,7 @@ Las rutas `/tratamientos` heredan el mismo mundo y todo sale del catálogo (`/sh
 ## Do's and Don'ts
 
 ### Do:
-- **Do** derivar cada sombra, filo y reflejo de `--sun-dx`/`--sun-dy`, usando las clases de superficie iluminada en lugar de sombras fijas.
+- **Do** derivar cada sombra, filo y reflejo del sol de la barra de desplazamiento usando las clases solares (`.lit`, `.lit-dark`, `.sun-shadow`, `.sun-shadow-ink`, `.sun-glass`, `.sun-panel`) en lugar de sombras fijas.
 - **Do** teñir las sombras sobre claro con el marrón tostado `rgb(74 46 16)` y opacidades de 0.18 a 0.36.
 - **Do** usar el estado "Sin imagen" del marco de imagen cuando falte una foto y nombrar en el texto alternativo la imagen esperada.
 - **Do** marcar con un chip discontinuo cualquier dato o recurso pendiente en lugar de ocultarlo o inventarlo.

@@ -11,10 +11,6 @@
 }
 
 .landing {
-  --sun-dx: 0.866;
-  --sun-dy: 0.5;
-  --sun-angle: 30deg;
-  --sun-y: 15%;
   --warm-shadow: 74 46 16;
   --warm-light: 255 222 170;
   --ink: #062112;
@@ -40,80 +36,6 @@
 
 .landing section[id] {
   scroll-margin-top: var(--nav-height);
-}
-
-html:has(.landing) {
-  scrollbar-color: rgb(191 146 80 / 0.55) var(--paper, #fdf8f1);
-}
-
-.landing-sun {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      90% 70% at -8% var(--sun-y),
-      rgb(var(--warm-light) / 0.26),
-      rgb(var(--warm-light) / 0.08) 38%,
-      transparent 66%
-    ),
-    repeating-linear-gradient(
-      calc(var(--sun-angle) + 90deg),
-      transparent 0 72px,
-      rgb(var(--warm-light) / 0.07) 72px 128px
-    );
-  -webkit-mask-image: radial-gradient(85% 75% at 0% var(--sun-y), #000 0%, transparent 72%);
-  mask-image: radial-gradient(85% 75% at 0% var(--sun-y), #000 0%, transparent 72%);
-}
-
-@media (hover: hover) and (min-width: 64rem) {
-  .landing-sun {
-    mix-blend-mode: soft-light;
-    background:
-      radial-gradient(
-        90% 70% at -8% var(--sun-y),
-        rgb(var(--warm-light) / 0.65),
-        rgb(var(--warm-light) / 0.18) 40%,
-        transparent 68%
-      ),
-      repeating-linear-gradient(
-        calc(var(--sun-angle) + 90deg),
-        transparent 0 72px,
-        rgb(var(--warm-light) / 0.2) 72px 128px
-      );
-  }
-}
-
-.lit {
-  box-shadow:
-    calc(var(--sun-dx) * var(--lift) * 1.5) calc(var(--sun-dy) * var(--lift) * 1.5)
-      calc(var(--lift) * 1.7) calc(var(--lift) * -0.45) rgb(var(--warm-shadow) / 0.26),
-    calc(var(--sun-dx) * 4px) calc(var(--sun-dy) * 4px) 8px -2px rgb(var(--warm-shadow) / 0.18),
-    inset calc(var(--sun-dx) * 2px) calc(var(--sun-dy) * 2px) 0 rgb(255 246 226 / 0.95),
-    inset calc(var(--sun-dx) * -1.5px) calc(var(--sun-dy) * -1.5px) 0 rgb(var(--warm-shadow) / 0.12);
-  transition:
-    --lift 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.lit-dark {
-  box-shadow:
-    calc(var(--sun-dx) * var(--lift) * 1.5) calc(var(--sun-dy) * var(--lift) * 1.5)
-      calc(var(--lift) * 1.7) calc(var(--lift) * -0.4) rgb(0 0 0 / 0.45),
-    inset calc(var(--sun-dx) * 2px) calc(var(--sun-dy) * 2px) 0 rgb(224 188 135 / 0.75),
-    inset calc(var(--sun-dx) * -1.5px) calc(var(--sun-dy) * -1.5px) 0 rgb(0 0 0 / 0.25);
-  transition:
-    --lift 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (hover: hover) {
-  .lit-hover:hover,
-  .lit-hover:focus-within {
-    --lift: 30px;
-  }
 }
 
 .glow {
@@ -175,27 +97,9 @@ html:has(.landing) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lit,
-  .lit-dark,
   .glow {
     transition: none;
   }
-}
-
-.why-gallery .ag-panel {
-  --lift: 18px;
-  box-shadow:
-    calc(var(--sun-dx) * var(--lift)) calc(var(--sun-dy) * var(--lift)) calc(var(--lift) * 2.4)
-      calc(var(--lift) * -0.5) rgb(var(--warm-shadow) / 0.32),
-    inset calc(var(--sun-dx) * 2px) calc(var(--sun-dy) * 2px) 0 rgb(224 188 135 / 0.7);
-}
-
-.why-gallery .ag-panel--active {
-  --lift: 30px;
-  box-shadow:
-    calc(var(--sun-dx) * 45px) calc(var(--sun-dy) * 45px) 52px -14px rgb(var(--warm-shadow) / 0.36),
-    inset calc(var(--sun-dx) * 3px) calc(var(--sun-dy) * 3px) 0 rgb(240 210 160 / 0.95),
-    inset 0 0 90px -30px rgb(var(--warm-light) / 0.45);
 }
 
 .why-gallery .ag-panel__bar {
@@ -276,9 +180,6 @@ html:has(.landing) {
 
 .treatments-gallery .ag-panel {
   background: #fdf8f1;
-  box-shadow:
-    calc(var(--sun-dx) * 6px) calc(var(--sun-dy) * 6px) 18px -6px rgb(var(--warm-shadow) / 0.28),
-    0 1px 0 rgb(255 255 255 / 0.8) inset;
 }
 
 .treatments-gallery .ag-panel__text,
@@ -298,8 +199,8 @@ html:has(.landing) {
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 700;
-  box-shadow: calc(var(--sun-dx) * 5px) calc(var(--sun-dy) * 5px) 14px -6px rgb(6 33 18 / 0.45);
   transition:
+    --lift 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.3s ease,
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }

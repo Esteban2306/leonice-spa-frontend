@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { RotateCcw, SlidersHorizontal } from "lucide-react";
 
 import type {
   CatalogFilters,
   CatalogResult,
   CatalogSort,
 } from "@/src/features/products-catalog/api/catalog.types";
+import { CatalogSearchField } from "@/src/features/products-catalog/components/catalog-search-field";
 import { NeedChip } from "@/src/features/products-catalog/components/need-chip";
 import { PriceRange } from "@/src/features/products-catalog/components/price-range";
 import {
@@ -15,8 +17,6 @@ import {
   SORT_OPTIONS,
   toggleTag,
 } from "@/src/features/products-catalog/lib/catalog-filters";
-
-const SEARCH_DELAY_MS = 280;
 
 interface CatalogFilterBarProps {
   filters: CatalogFilters;
@@ -35,52 +35,110 @@ export function CatalogFilterBar({
   onChange,
   onReset,
 }: CatalogFilterBarProps) {
-  const [query, setQuery] = useState(filters.q);
-  const [syncedQuery, setSyncedQuery] = useState(filters.q);
   const [showMore, setShowMore] = useState(false);
-  const [stuck, setStuck] = useState(false);
-  const sentinel = useRef<HTMLDivElement>(null);
+  const [pinned, setPinned] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
   const active = activeFilterCount(filters);
+  const commitQuery = useCallback(
+    (q: string) => onChange({ ...filters, q }),
+    [filters, onChange],
+  );
 
   useEffect(() => {
-    const node = sentinel.current;
+    const node = barRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setStuck(!entry.isIntersecting),
-      {
-        rootMargin: "-90px 0px 0px 0px",
-      },
+      ([entry]) =>
+        setPinned(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+      { rootMargin: "-88px 0px 0px 0px" },
     );
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  if (syncedQuery !== filters.q) {
-    setSyncedQuery(filters.q);
-    setQuery(filters.q);
-  }
-
-  useEffect(() => {
-    if (query === filters.q) return;
-    const timer = window.setTimeout(
-      () => onChange({ ...filters, q: query }),
-      SEARCH_DELAY_MS,
-    );
-    return () => window.clearTimeout(timer);
-  }, [query, filters, onChange]);
+  const backToFilters = () => {
+    const node = barRef.current;
+    if (!node) return;
+    const top = node.getBoundingClientRect().top + window.scrollY - 104;
+    window.scrollTo({
+      top,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
 
   const priceBounds =
     facets.price.minPesos !== null && facets.price.maxPesos !== null
       ? { min: facets.price.minPesos, max: facets.price.maxPesos }
       : null;
 
-  const moreClass = showMore ? "flex" : stuck ? "hidden" : "hidden desk:flex";
+  const moreClass = showMore ? "flex" : "hidden desk:flex";
+  const sortSelect = (compact: boolean) => (
+    <select
+      aria-label="Ordenar"
+      value={filters.sort}
+      onChange={(event) =>
+        onChange({ ...filters, sort: event.target.value as CatalogSort })
+      }
+      className={`cursor-pointer rounded-full border border-[#062112]/15 bg-white/70 px-4 font-sans text-sm font-bold text-[#062112] focus:border-[#BF9250] focus:outline-none ${
+        compact ? "h-10" : "h-11"
+      }`}
+    >
+      {SORT_OPTIONS.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
 
   return (
     <>
-      <div ref={sentinel} aria-hidden="true" className="h-px" />
-      <div className="relative z-20 px-5 sm:px-8 desk:sticky desk:top-[5.25rem]">
-        <div className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[1.75rem] border border-white/70 bg-[#FDF8F1]/97 shadow-[0_calc(var(--sun-dy)*8px+12px)_32px_-18px_rgb(74_46_16/0.4)]">
+      <AnimatePresence>
+        {pinned && (
+          <motion.div
+            key="pinned"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-x-0 top-[5.5rem] z-30 hidden px-5 sm:px-8 desk:block"
+          >
+            <div className="sun-glass relative mx-auto flex max-w-[1440px] items-center gap-3 overflow-hidden rounded-full border border-white/70 bg-[#FDF8F1]/97 py-2 pl-2 pr-3">
+              <div
+                aria-hidden="true"
+                data-loading={loading}
+                className="catalog-progress absolute inset-x-0 top-0 h-[2px] bg-[#BF9250]"
+              />
+              <CatalogSearchField
+                value={filters.q}
+                onCommit={commitQuery}
+                compact
+              />
+              {sortSelect(true)}
+              <button
+                type="button"
+                onClick={backToFilters}
+                className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-[#062112]/15 px-4 font-sans text-sm font-bold text-[#062112] transition-colors hover:border-[#062112]/50"
+              >
+                <SlidersHorizontal className="size-4" aria-hidden="true" />
+                Filtros
+                {active > 0 && (
+                  <span className="grid size-6 place-items-center rounded-full bg-[#062112] text-xs text-[#E0BC87] tabular-nums">
+                    {active}
+                  </span>
+                )}
+              </button>
+              <p className="shrink-0 font-sans text-sm text-[#062112]/60 tabular-nums">
+                {total} {total === 1 ? "producto" : "productos"}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div ref={barRef} className="relative z-20 px-5 sm:px-8">
+        <div className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[1.75rem] sun-glass border border-white/70 bg-[#FDF8F1]/97">
           <div
             aria-hidden="true"
             data-loading={loading}
@@ -88,49 +146,21 @@ export function CatalogFilterBar({
           />
           <div className="flex flex-col gap-4 p-4 sm:p-5">
             <div className="flex flex-wrap items-center gap-3">
-              <label className="relative flex min-w-0 flex-1 basis-56 items-center">
-                <span className="sr-only">Buscar productos</span>
-                <Search
-                  className="pointer-events-none absolute left-4 size-4 text-[#7a5a2c]"
-                  aria-hidden="true"
-                />
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Busca por nombre o necesidad"
-                  className="h-11 w-full rounded-full border border-[#062112]/15 bg-white/70 pl-11 pr-4 font-sans text-[0.95rem] text-[#062112] placeholder:text-[#062112]/45 transition-[border-color,box-shadow] duration-300 focus:border-[#BF9250] focus:shadow-[0_0_0_4px_rgb(191_146_80/0.18)] focus:outline-none"
-                />
-              </label>
+              <CatalogSearchField value={filters.q} onCommit={commitQuery} />
 
-              <label className="flex items-center gap-2 font-sans text-sm text-[#062112]/70">
-                <span className="hidden sm:inline">Ordenar</span>
-                <select
-                  value={filters.sort}
-                  onChange={(event) =>
-                    onChange({
-                      ...filters,
-                      sort: event.target.value as CatalogSort,
-                    })
-                  }
-                  className="h-11 cursor-pointer rounded-full border border-[#062112]/15 bg-white/70 px-4 font-sans text-sm font-bold text-[#062112] focus:border-[#BF9250] focus:outline-none"
-                >
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <div className="flex items-center gap-2 font-sans text-sm text-[#062112]/70">
+                <span aria-hidden="true" className="hidden sm:inline">
+                  Ordenar
+                </span>
+                {sortSelect(false)}
+              </div>
 
               <button
                 type="button"
                 aria-expanded={showMore}
                 aria-controls="catalog-more-filters"
                 onClick={() => setShowMore((value) => !value)}
-                className={`inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-[#062112]/15 px-4 font-sans text-sm font-bold text-[#062112] transition-colors hover:border-[#062112]/50 ${
-                  stuck ? "" : "desk:hidden"
-                }`}
+                className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-[#062112]/15 px-4 font-sans text-sm font-bold text-[#062112] transition-colors hover:border-[#062112]/50 desk:hidden"
               >
                 <SlidersHorizontal className="size-4" aria-hidden="true" />
                 Filtros

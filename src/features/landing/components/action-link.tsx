@@ -20,12 +20,12 @@ export type ActionVariant =
   | "link-cream";
 
 const BASE =
-  "group/action relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap font-sans font-bold transition-[transform,background-color,color,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50";
+  "group/action relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap font-sans font-bold transition-[transform,background-color,color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50";
 
 const VARIANTS: Record<ActionVariant, string> = {
-  sand: "rounded-full bg-[#E0BC87] text-[#062112] shadow-[calc(var(--sun-dx)*6px)_calc(var(--sun-dy)*6px)_18px_-6px_rgb(74_46_16/0.35)] hover:bg-[#d4aa6a]",
-  ink: "rounded-full bg-[#062112] text-[#F2EBDB] shadow-[calc(var(--sun-dx)*6px)_calc(var(--sun-dy)*6px)_18px_-6px_rgb(6_33_18/0.45)] hover:bg-[#0d3320]",
-  cream: "rounded-full bg-[#F2EBDB] text-[#062112] shadow-[calc(var(--sun-dx)*6px)_calc(var(--sun-dy)*6px)_18px_-6px_rgb(74_46_16/0.3)] hover:bg-white",
+  sand: "sun-shadow rounded-full bg-[#E0BC87] text-[#062112] hover:bg-[#d4aa6a]",
+  ink: "sun-shadow-ink rounded-full bg-[#062112] text-[#F2EBDB] hover:bg-[#0d3320]",
+  cream: "sun-shadow rounded-full bg-[#F2EBDB] text-[#062112] hover:bg-white",
   "outline-ink":
     "rounded-full border border-[#062112]/70 text-[#062112] hover:border-[#062112] hover:bg-[#062112] hover:text-[#F2EBDB]",
   "outline-cream":

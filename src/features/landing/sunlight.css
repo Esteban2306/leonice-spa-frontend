@@ -1,0 +1,273 @@
+@property --sx {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: -0.94;
+}
+
+@property --sy {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.34;
+}
+
+@property --sd {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.5;
+}
+
+.landing {
+  --sun-dx: var(--sx);
+  --sun-dy: var(--sy);
+}
+
+.lit,
+.lit-dark,
+.sun-shadow,
+.sun-shadow-ink,
+.sun-panel,
+.sun-glass,
+.why-gallery .ag-panel,
+.treatments-gallery .ag-panel,
+.treatments-gallery .treatment-cta {
+  --sun-reach: calc(var(--lift) * (0.8 + var(--sd) * 0.6));
+  --sun-strength: calc(1 - var(--sd) * 0.45);
+  --sun-glow: 26px;
+  --sun-tint: 74 46 16;
+  --sun-cast: 0.24;
+  --sun-contact: 0.14;
+  --sun-rim: 255 246 226;
+  --sun-rim-alpha: 0.9;
+  --sun-far: 74 46 16;
+  --sun-far-alpha: 0.1;
+  --sun-shine: 255 234 196;
+  --sun-shine-alpha: 0.5;
+  box-shadow:
+    calc(var(--sx) * var(--sun-reach)) calc(var(--sy) * var(--sun-reach)) calc(var(--lift) * (1.3 + var(--sd)))
+      calc(var(--lift) * -0.45) rgb(var(--sun-tint) / calc(var(--sun-cast) * var(--sun-strength))),
+    calc(var(--sx) * 3px) calc(var(--sy) * 3px) 7px -2px rgb(var(--sun-tint) / var(--sun-contact)),
+    inset calc(var(--sx) * 1.5px) calc(var(--sy) * 1.5px) 0 rgb(var(--sun-rim) / calc(var(--sun-rim-alpha) * var(--sun-strength))),
+    inset calc(var(--sx) * -1.5px) calc(var(--sy) * -1.5px) 0 rgb(var(--sun-far) / var(--sun-far-alpha)),
+    inset calc(var(--sx) * var(--sun-glow)) calc(var(--sy) * var(--sun-glow)) calc(var(--sun-glow) * 1.8)
+      calc(var(--sun-glow) * -0.7) rgb(var(--sun-shine) / calc(var(--sun-shine-alpha) * var(--sun-strength)));
+}
+
+.lit,
+.lit-dark,
+.sun-panel {
+  transition:
+    --lift 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lit-dark,
+.sun-shadow-ink,
+.treatments-gallery .treatment-cta {
+  --sun-tint: 0 0 0;
+  --sun-cast: 0.4;
+  --sun-contact: 0.22;
+  --sun-rim: 224 188 135;
+  --sun-rim-alpha: 0.7;
+  --sun-far: 0 0 0;
+  --sun-far-alpha: 0.25;
+  --sun-shine: 224 188 135;
+  --sun-shine-alpha: 0.26;
+}
+
+.sun-shadow,
+.sun-shadow-ink,
+.treatments-gallery .treatment-cta {
+  --lift: 7px;
+  --sun-glow: 10px;
+  --sun-rim-alpha: 0.6;
+  --sun-shine-alpha: 0.4;
+}
+
+.sun-shadow-ink,
+.treatments-gallery .treatment-cta {
+  --sun-tint: 6 33 18;
+  --sun-cast: 0.5;
+  --sun-shine-alpha: 0.32;
+}
+
+.sun-panel,
+.why-gallery .ag-panel {
+  --lift: 18px;
+  --sun-glow: 34px;
+}
+
+.why-gallery .ag-panel {
+  --sun-cast: 0.3;
+  --sun-rim: 224 188 135;
+  --sun-rim-alpha: 0.7;
+  --sun-shine-alpha: 0.35;
+}
+
+.why-gallery .ag-panel--active {
+  --lift: 30px;
+  --sun-cast: 0.36;
+  --sun-rim: 240 210 160;
+  --sun-rim-alpha: 0.95;
+  --sun-glow: 70px;
+  --sun-shine-alpha: 0.6;
+}
+
+.treatments-gallery .ag-panel {
+  --lift: 6px;
+  --sun-glow: 18px;
+}
+
+.sun-glass {
+  --lift: 14px;
+  --sun-glow: 22px;
+  --sun-cast: 0.34;
+  --sun-rim: 255 255 255;
+  --sun-rim-alpha: 0.95;
+  --sun-shine-alpha: 0.45;
+}
+
+@media (hover: hover) {
+  .lit-hover:hover,
+  .lit-hover:focus-within {
+    --lift: 30px;
+  }
+}
+
+.sun-halo {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 40;
+  width: min(92vw, 68rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  transform: translate3d(50%, -50%, 0);
+  will-change: transform;
+  contain: strict;
+}
+
+.sun-halo__light {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgb(255 233 190 / 0.42) 0%,
+    rgb(255 226 176 / 0.2) 14%,
+    rgb(255 222 170 / 0.08) 32%,
+    rgb(255 222 170 / 0.025) 50%,
+    transparent 64%
+  );
+}
+
+.sun-halo__rays {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: repeating-conic-gradient(
+    from 180deg at 50% 50%,
+    rgb(255 228 182 / 0.07) 0deg 2.5deg,
+    transparent 2.5deg 9deg
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 6%, rgb(0 0 0 / 0.5) 26%, transparent 58%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 6%, rgb(0 0 0 / 0.5) 26%, transparent 58%);
+}
+
+.sun-halo__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7rem;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgb(255 246 222 / 0.75) 0%, rgb(255 226 170 / 0.3) 35%, transparent 70%);
+}
+
+@media (hover: hover) and (min-width: 64rem) {
+  .sun-halo {
+    mix-blend-mode: soft-light;
+  }
+
+  .sun-halo__light {
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgb(255 236 196 / 0.95) 0%,
+      rgb(255 228 180 / 0.5) 14%,
+      rgb(255 222 170 / 0.22) 32%,
+      rgb(255 222 170 / 0.07) 50%,
+      transparent 64%
+    );
+  }
+
+  .sun-halo__rays {
+    background: repeating-conic-gradient(
+      from 180deg at 50% 50%,
+      rgb(255 228 182 / 0.22) 0deg 2.5deg,
+      transparent 2.5deg 9deg
+    );
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sun-halo__rays {
+    animation: sun-rays-drift 140s linear infinite;
+  }
+
+  .sun-halo__core {
+    animation: sun-core-breathe 7s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
+  }
+}
+
+@keyframes sun-rays-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sun-core-breathe {
+  from {
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+html:has(.landing)::-webkit-scrollbar {
+  width: 12px;
+}
+
+html:has(.landing)::-webkit-scrollbar-track {
+  background: linear-gradient(90deg, #fdf8f1, #f6eedf);
+}
+
+html:has(.landing)::-webkit-scrollbar-thumb {
+  border: 3px solid #fdf8f1;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 50% 50%, #fff6df 0%, #f6d9a0 32%, #e0bc87 62%, #bf9250 100%);
+  box-shadow:
+    inset 0 0 6px rgb(255 248 228 / 0.9),
+    0 0 14px rgb(255 214 140 / 0.9);
+}
+
+html:has(.landing)::-webkit-scrollbar-thumb:hover {
+  background: radial-gradient(circle at 50% 50%, #fffaf0 0%, #f9e0ad 32%, #e6c38e 62%, #c79a58 100%);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html:has(.landing) {
+    scrollbar-color: #d9b277 #fdf8f1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lit,
+  .lit-dark,
+  .sun-panel {
+    transition: none;
+  }
+}

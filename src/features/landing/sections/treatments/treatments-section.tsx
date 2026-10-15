@@ -119,7 +119,7 @@ export function TreatmentsSection({ catalog }: { catalog: LandingCatalog }) {
                 aria-expanded={showAll}
                 aria-controls="all-treatments"
                 onClick={() => setShowAll((value) => !value)}
-                className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-[#062112] px-6 font-sans text-[0.95rem] font-bold text-[#F2EBDB] shadow-[calc(var(--sun-dx)*6px)_calc(var(--sun-dy)*6px)_18px_-6px_rgb(6_33_18/0.45)] transition-colors duration-300 hover:bg-[#0d3320]"
+                className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-full sun-shadow-ink bg-[#062112] px-6 font-sans text-[0.95rem] font-bold text-[#F2EBDB] transition-colors duration-300 hover:bg-[#0d3320]"
               >
                 {showAll ? "Ocultar catálogo" : "Ver todos los tratamientos"}
                 <ChevronDown

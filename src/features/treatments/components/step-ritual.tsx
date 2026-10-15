@@ -86,16 +86,16 @@ export function StepRitual({ steps, treatmentName, durationLabel, bookingMessage
                 className="relative grid grid-cols-[auto_1fr] gap-6 py-6 sm:gap-8"
               >
                 <span
-                  className={`relative z-[1] grid size-14 place-items-center rounded-full font-heading text-2xl transition-[background-color,color,box-shadow,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:size-[4.375rem] sm:text-3xl ${
+                  className={`relative z-[1] grid size-14 place-items-center rounded-full font-heading text-2xl transition-[background-color,color,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:size-[4.375rem] sm:text-3xl ${
                     lit
-                      ? "bg-[#062112] text-[#E0BC87] shadow-[calc(var(--sun-dx)*6px)_calc(var(--sun-dy)*6px)_18px_-6px_rgb(6_33_18/0.45)]"
+                      ? "sun-shadow-ink bg-[#062112] text-[#E0BC87]"
                       : "bg-[#FDF8F1] text-[#7a5a2c]"
                   } ${current ? "scale-105" : ""}`}
                 >
                   {index + 1}
                 </span>
                 <div
-                  className={`flex flex-col gap-2 rounded-[1.5rem] p-5 transition-[background-color,opacity,box-shadow] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:p-6 ${
+                  className={`flex flex-col gap-2 rounded-[1.5rem] p-5 transition-[background-color,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:p-6 ${
                     current ? "lit bg-[#FDF8F1] [--lift:14px]" : lit ? "opacity-100" : "opacity-60"
                   }`}
                 >

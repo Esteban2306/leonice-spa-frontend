@@ -48,7 +48,7 @@ function BeforeAfterFace({ story }: { story: StoryItem }) {
         aria-hidden="true"
         className="story-face__rule absolute inset-y-0 w-[2px] -translate-x-1/2 bg-[#FDF8F1] shadow-[0_0_18px_rgb(255_222_170/0.9)]"
       >
-        <span className="story-face__handle absolute left-1/2 top-1/2 grid size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#FDF8F1] text-[#062112] shadow-lg">
+        <span className="story-face__handle absolute left-1/2 top-1/2 grid size-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#FDF8F1] text-[#062112] sun-shadow">
           <MoveHorizontal className="size-4" />
         </span>
       </span>
