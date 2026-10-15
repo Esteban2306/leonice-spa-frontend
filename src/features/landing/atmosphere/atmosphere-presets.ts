@@ -1,79 +1,104 @@
-import type { BranchSpec, StrandSpec } from "@/src/features/landing/atmosphere/atmosphere-geometry";
-
 export type AtmosphereTone = "hero" | "paper" | "cream" | "forest" | "gold";
 
-export type WindowPlacement = {
-  side: "left" | "right";
-  top: string;
-  width: string;
+export type ColorField = {
+  color: string;
+  x: number;
+  y: number;
+  size: number;
+  depth: number;
+  drift: number;
 };
 
 export type AtmospherePreset = {
   tone: AtmosphereTone;
-  window?: WindowPlacement;
-  sprig?: readonly BranchSpec[];
-  strands: readonly StrandSpec[];
+  fields: readonly ColorField[];
+  sun?: string;
 };
 
-export const OLIVE_SPRIG: readonly BranchSpec[] = [
-  { origin: [400, 10], angle: 148, length: 340, leaves: 11, size: 1.3, bend: 46 },
-  { origin: [400, 150], angle: 172, length: 230, leaves: 7, size: 1.05, bend: -34 },
-];
+const SAND = "224 188 135";
+const GOLD = "191 146 80";
+const SAGE = "143 163 120";
+const BLUSH = "232 196 168";
+const CREAM = "253 248 241";
+const UMBER = "122 90 44";
+const EMERALD = "34 92 58";
 
-export const EUCALYPTUS_SPRIG: readonly BranchSpec[] = [
-  { origin: [400, 60], angle: 160, length: 360, leaves: 9, size: 1.5, bend: -40 },
-  { origin: [300, 0], angle: 120, length: 210, leaves: 6, size: 1.1, bend: 26 },
-];
+const tint = (rgb: string, alpha: number) => `rgb(${rgb} / ${alpha})`;
 
 export const ATMOSPHERES = {
   hero: {
     tone: "hero",
-    strands: [{ from: [-60, 820], c1: [420, 660], c2: [820, 1010], to: [1500, 690], count: 6, spread: 7 }],
+    fields: [{ color: tint(SAND, 0.51), x: 78, y: 28, size: 62, depth: 0.5, drift: 0 }],
   },
   why: {
     tone: "paper",
-    window: { side: "right", top: "-4%", width: "clamp(18rem, 34vw, 34rem)" },
-    sprig: OLIVE_SPRIG,
-    strands: [{ from: [-60, 300], c1: [280, 80], c2: [880, 460], to: [1500, 170], count: 5, spread: 6 }],
+    fields: [
+      { color: tint(SAND, 0.54), x: 12, y: 22, size: 58, depth: 0.6, drift: 0 },
+      { color: tint(SAGE, 0.32), x: 88, y: 70, size: 54, depth: 1, drift: 1 },
+      { color: tint(BLUSH, 0.38), x: 52, y: 92, size: 46, depth: 0.4, drift: 2 },
+    ],
+    sun: tint(GOLD, 0.38),
   },
   treatments: {
     tone: "cream",
-    window: { side: "right", top: "-12%", width: "clamp(16rem, 30vw, 30rem)" },
-    sprig: EUCALYPTUS_SPRIG,
-    strands: [{ from: [1500, 80], c1: [1100, 260], c2: [620, -40], to: [-60, 210], count: 5, spread: 6 }],
+    fields: [
+      { color: tint(CREAM, 0.85), x: 70, y: 18, size: 56, depth: 0.5, drift: 1 },
+      { color: tint(GOLD, 0.32), x: 6, y: 74, size: 52, depth: 1, drift: 2 },
+      { color: tint(SAGE, 0.26), x: 46, y: 50, size: 44, depth: 0.7, drift: 0 },
+    ],
+    sun: tint(SAND, 0.51),
   },
   stories: {
     tone: "paper",
-    window: { side: "right", top: "18%", width: "clamp(18rem, 32vw, 32rem)" },
-    sprig: EUCALYPTUS_SPRIG,
-    strands: [{ from: [-60, 760], c1: [360, 900], c2: [980, 560], to: [1500, 780], count: 6, spread: 6 }],
+    fields: [
+      { color: tint(BLUSH, 0.48), x: 84, y: 26, size: 56, depth: 0.7, drift: 2 },
+      { color: tint(SAND, 0.48), x: 14, y: 64, size: 60, depth: 0.5, drift: 0 },
+      { color: tint(SAGE, 0.26), x: 60, y: 96, size: 48, depth: 1, drift: 1 },
+    ],
+    sun: tint(GOLD, 0.35),
   },
   promise: {
     tone: "forest",
-    window: { side: "right", top: "8%", width: "clamp(18rem, 34vw, 36rem)" },
-    sprig: OLIVE_SPRIG,
-    strands: [{ from: [-60, 180], c1: [500, -20], c2: [940, 420], to: [1500, 120], count: 6, spread: 7 }],
+    fields: [
+      { color: tint(EMERALD, 0.7), x: 20, y: 30, size: 62, depth: 0.6, drift: 0 },
+      { color: tint(SAND, 0.12), x: 86, y: 74, size: 52, depth: 1, drift: 1 },
+      { color: tint(GOLD, 0.1), x: 46, y: 6, size: 44, depth: 0.4, drift: 2 },
+    ],
+    sun: tint(SAND, 0.14),
   },
   products: {
     tone: "cream",
-    window: { side: "right", top: "-10%", width: "clamp(16rem, 28vw, 28rem)" },
-    strands: [{ from: [-60, 660], c1: [400, 860], c2: [1000, 520], to: [1500, 700], count: 5, spread: 6 }],
+    fields: [
+      { color: tint(GOLD, 0.32), x: 88, y: 24, size: 54, depth: 0.8, drift: 2 },
+      { color: tint(CREAM, 0.85), x: 22, y: 70, size: 58, depth: 0.5, drift: 0 },
+      { color: tint(BLUSH, 0.35), x: 56, y: 88, size: 42, depth: 1, drift: 1 },
+    ],
+    sun: tint(SAND, 0.48),
   },
   metrics: {
     tone: "paper",
-    window: { side: "left", top: "40%", width: "clamp(16rem, 28vw, 28rem)" },
-    sprig: OLIVE_SPRIG,
-    strands: [{ from: [1500, 760], c1: [1040, 940], c2: [560, 600], to: [-60, 820], count: 5, spread: 6 }],
+    fields: [
+      { color: tint(SAGE, 0.29), x: 10, y: 30, size: 52, depth: 1, drift: 1 },
+      { color: tint(SAND, 0.51), x: 74, y: 56, size: 62, depth: 0.5, drift: 0 },
+      { color: tint(BLUSH, 0.35), x: 34, y: 94, size: 44, depth: 0.7, drift: 2 },
+    ],
+    sun: tint(GOLD, 0.35),
   },
   visit: {
     tone: "gold",
-    window: { side: "right", top: "-6%", width: "clamp(18rem, 32vw, 34rem)" },
-    sprig: EUCALYPTUS_SPRIG,
-    strands: [{ from: [-60, 760], c1: [460, 600], c2: [900, 960], to: [1500, 640], count: 6, spread: 7 }],
+    fields: [
+      { color: tint(CREAM, 0.54), x: 16, y: 18, size: 56, depth: 0.6, drift: 0 },
+      { color: tint(UMBER, 0.45), x: 90, y: 86, size: 58, depth: 1, drift: 1 },
+      { color: tint(SAND, 0.58), x: 58, y: 52, size: 46, depth: 0.4, drift: 2 },
+    ],
+    sun: tint(CREAM, 0.48),
   },
   footer: {
     tone: "forest",
-    strands: [{ from: [-60, 300], c1: [420, 120], c2: [1000, 520], to: [1500, 260], count: 5, spread: 6 }],
+    fields: [
+      { color: tint(EMERALD, 0.6), x: 80, y: 20, size: 56, depth: 0.5, drift: 1 },
+      { color: tint(SAND, 0.08), x: 12, y: 90, size: 48, depth: 0.8, drift: 0 },
+    ],
   },
 } satisfies Record<string, AtmospherePreset>;
 

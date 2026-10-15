@@ -279,12 +279,12 @@ El `MediaFrame` muestra la foto cuando existe y, si no, un estado "Sin imagen" c
 El `SunlightStage` envuelve todas las páginas públicas (landing, tratamientos y productos), pone el sol en el pulgar de la barra de desplazamiento y da a cada superficie visible su propia luz (ver Elevation & Depth). El halo del sol nace del borde derecho a la altura de la barra; en escritorio con hover se mezcla en soft-light con más intensidad, en móvil queda tenue.
 
 ### Atmósfera de sección (signature)
-Cada sección de la landing y el footer llevan detrás del contenido una `SectionAtmosphere` (preset por sección en `atmosphere-presets.ts`, tonos `hero`, `paper`, `cream`, `forest` y `gold`) que hace visible la sala con ventana:
-- **Luz de ventana:** cuatro paños de luz cálida separados por el parteluz, inclinados y desenfocados (16 px), con un resplandor radial alrededor. Con el scroll la mancha cruza la sección en diagonal, gira unos grados y se enciende hacia el centro de la sección, como el sol moviéndose por la tarde.
-- **Sombra de hojas:** dentro de la luz, una rama de olivo o eucalipto (geometría generada en `atmosphere-geometry.ts`) en marrón tostado o negro sobre verde, desenfocada 2.5 px, que se mece ±2° en 9 s solo mientras la sección está en pantalla.
-- **Hebras doradas:** un mechón de 5 a 6 hebras de 1 px (oro sobre claro, arena sobre verde, crema sobre el campo dorado) que se dibuja con el scroll al entrar la sección; un brillo corto recorre la hebra central a medida que avanzas.
-- **Grano de papel:** ruido fino tostado (crema sobre verde) al 5–8 %.
-Solo se animan `transform`, `opacity` y `stroke-dashoffset`; la capa usa `contain: strict` y queda en `z-index: -1` dentro de la sección aislada. Con movimiento reducido las hebras aparecen dibujadas y nada se mueve.
+Cada sección de la landing y el footer llevan detrás del contenido una `SectionAtmosphere` (preset por sección en `atmosphere-presets.ts`): un gradiente vivo sin figuras ni líneas.
+- **Campos de color:** dos o tres manchas radiales muy difusas por sección, de la familia cálida (arena, oro, rubor, salvia y crema sobre claro; esmeralda y arena sobre verde; crema y tierra sobre el campo dorado). Respiran despacio (19–27 s, desplazamiento y escala suaves) solo mientras la sección está en pantalla y se mueven con el scroll a distinta profundidad (parallax de hasta 18 %).
+- **Calor del sol:** del lado derecho, donde vive el sol de la barra, un campo cálido sube con el scroll y se enciende hacia el centro de la sección.
+- **Grano fino:** ruido tostado (crema sobre verde) al 4.5–7 %.
+- **Costuras:** la capa se desvanece arriba y abajo (máscara del 14 %) para que el color nunca corte en el borde entre secciones.
+Solo se anima `transform` y `opacity`, la capa usa `contain: strict` y queda en `z-index: -1` dentro de la sección aislada. Con movimiento reducido el color queda quieto.
 
 ### Transición del hero
 Solo el paso del hero a "Por qué Leonice" se monta: el hero es `position: sticky` y queda fijo, sin achicarse ni oscurecerse, mientras la sección siguiente sube por encima con las esquinas superiores redondeadas (2.5 rem). Cuando la sección cubre por completo, `useSectionStack` marca el hero como cubierto (`visibility: hidden`) y el motor del sol lo ignora. Las demás secciones se desplazan normalmente. Con movimiento reducido el hero no se fija. `scrollToSection` aterriza en la posición natural y el navbar elige la sección activa con `currentLayerId`.
