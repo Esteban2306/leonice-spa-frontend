@@ -22,6 +22,7 @@ interface ActionDialogProps {
   canSubmit?: boolean;
   onSubmit: () => Promise<boolean>;
   onOpenChange?: (open: boolean) => void;
+  contentClassName?: string;
   children?: ReactNode;
 }
 
@@ -36,6 +37,7 @@ export function ActionDialog({
   canSubmit = true,
   onSubmit,
   onOpenChange,
+  contentClassName,
   children,
 }: ActionDialogProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -63,7 +65,12 @@ export function ActionDialog({
     <Dialog open={open} onOpenChange={changeOpen}>
       {trigger && <DialogTrigger render={trigger} />}
 
-      <DialogContent className="gap-0 rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB] p-0 sm:max-w-md">
+      <DialogContent
+        className={cn(
+          "gap-0 rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB] p-0 sm:max-w-md",
+          contentClassName,
+        )}
+      >
         <form onSubmit={(event) => void handleSubmit(event)} className="flex flex-col">
           <div className="flex flex-col gap-2 p-6 pb-4">
             <DialogTitle className="font-heading text-2xl text-secondary">

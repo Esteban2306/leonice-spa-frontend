@@ -1,78 +1,75 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
-  AssignProductTagsRequest,
+  AdminProduct,
+  AdminProductCategory,
+  AdminProductDetail,
+  AdminProductTag,
   CreateProductCategoryRequest,
   CreateProductRequest,
   CreateProductTagRequest,
   CreateProductVariantRequest,
   CreateRecommendationRequest,
-  FindProductsParams,
-  LogProductViewRequest,
+  FindAdminProductsParams,
+  ProductRecommendation,
+  ProductTag,
+  ProductVariant,
   UpdateProductCategoryRequest,
   UpdateProductRequest,
+  UpdateProductTagRequest,
   UpdateProductVariantRequest,
 } from "../types/products.types";
 
 export const productsApi = {
-  categories: {
-    findMany() {
-      return httpClient.request("/products/categories", "GET");
-    },
-
-    create(data: CreateProductCategoryRequest) {
-      return httpClient.request("/products/categories", "POST", data);
-    },
-
-    update(categoryId: string, data: UpdateProductCategoryRequest) {
-      return httpClient.request(
-        `/products/categories/${categoryId}`,
-        "PATCH",
-        data,
-      );
-    },
+  findManyForAdmin(params?: FindAdminProductsParams) {
+    return httpClient.request<AdminProduct[]>(
+      "/products/admin",
+      "GET",
+      undefined,
+      {
+        params: params ? { ...params } : undefined,
+      },
+    );
   },
 
-  recommendations: {
-    findByTreatment(treatmentId: string) {
-      return httpClient.request(
-        `/products/recommendations/${treatmentId}`,
-        "GET",
-      );
-    },
-
-    create(data: CreateRecommendationRequest) {
-      return httpClient.request("/products/recommendations", "POST", data);
-    },
-
-    remove(recommendationId: string) {
-      return httpClient.request(
-        `/products/recommendations/${recommendationId}`,
-        "DELETE",
-      );
-    },
-  },
-
-  findMany(params?: FindProductsParams) {
-    return httpClient.request("/products", "GET", {
-      params,
-    });
-  },
-
-  findOne(productId: string) {
-    return httpClient.request(`/products/${productId}`, "GET");
+  findOneForAdmin(productId: string) {
+    return httpClient.request<AdminProductDetail>(
+      `/products/admin/${productId}`,
+      "GET",
+    );
   },
 
   create(data: CreateProductRequest) {
-    return httpClient.request("/products", "POST", data);
+    return httpClient.request<AdminProduct>("/products", "POST", data);
   },
 
   update(productId: string, data: UpdateProductRequest) {
-    return httpClient.request(`/products/${productId}`, "PATCH", data);
+    return httpClient.request<AdminProduct>(
+      `/products/${productId}`,
+      "PATCH",
+      data,
+    );
+  },
+
+  toggleActive(productId: string) {
+    return httpClient.request<AdminProduct>(
+      `/products/${productId}/toggle`,
+      "PATCH",
+    );
+  },
+
+  remove(productId: string) {
+    return httpClient.request<null>(`/products/${productId}`, "DELETE");
+  },
+
+  assignTags(productId: string, tagIds: string[]) {
+    return httpClient.request<null>(`/products/${productId}/tags`, "PATCH", {
+      tagIds,
+    });
   },
 
   variants: {
     create(productId: string, data: CreateProductVariantRequest) {
-      return httpClient.request(
+      return httpClient.request<ProductVariant>(
         `/products/${productId}/variants`,
         "POST",
         data,
@@ -80,43 +77,109 @@ export const productsApi = {
     },
 
     update(variantId: string, data: UpdateProductVariantRequest) {
-      return httpClient.request(
+      return httpClient.request<ProductVariant>(
         `/products/variants/${variantId}`,
         "PATCH",
         data,
       );
     },
+
+    remove(variantId: string) {
+      return httpClient.request<null>(
+        `/products/variants/${variantId}`,
+        "DELETE",
+      );
+    },
+
+    uploadImage(variantId: string, file: File) {
+      const form = new FormData();
+      form.append("image", file);
+      return httpClient.request<ProductVariant>(
+        `/products/variants/${variantId}/image`,
+        "POST",
+        form,
+      );
+    },
+
+    removeImage(variantId: string) {
+      return httpClient.request<ProductVariant>(
+        `/products/variants/${variantId}/image`,
+        "DELETE",
+      );
+    },
+  },
+
+  categories: {
+    findManyForAdmin() {
+      return httpClient.request<AdminProductCategory[]>(
+        "/products/categories/admin",
+        "GET",
+      );
+    },
+
+    create(data: CreateProductCategoryRequest) {
+      return httpClient.request<AdminProductCategory>(
+        "/products/categories",
+        "POST",
+        data,
+      );
+    },
+
+    update(categoryId: string, data: UpdateProductCategoryRequest) {
+      return httpClient.request<AdminProductCategory>(
+        `/products/categories/${categoryId}`,
+        "PATCH",
+        data,
+      );
+    },
+
+    remove(categoryId: string) {
+      return httpClient.request<null>(
+        `/products/categories/${categoryId}`,
+        "DELETE",
+      );
+    },
   },
 
   tags: {
-    findMany() {
-      return httpClient.request("/products/tags", "GET");
+    findManyForAdmin() {
+      return httpClient.request<AdminProductTag[]>(
+        "/products/tags/admin",
+        "GET",
+      );
     },
 
     create(data: CreateProductTagRequest) {
-      return httpClient.request("/products/tags", "POST", data);
+      return httpClient.request<ProductTag>("/products/tags", "POST", data);
+    },
+
+    update(tagId: string, data: UpdateProductTagRequest) {
+      return httpClient.request<ProductTag>(
+        `/products/tags/${tagId}`,
+        "PATCH",
+        data,
+      );
+    },
+
+    remove(tagId: string) {
+      return httpClient.request<null>(`/products/tags/${tagId}`, "DELETE");
     },
   },
 
-  findRecommendedForClient(phone: string) {
-    return httpClient.request("/products/recommended-for-client", "GET", {
-      params: { phone },
-    });
-  },
+  recommendations: {
+    create(data: CreateRecommendationRequest) {
+      return httpClient.request<ProductRecommendation>(
+        "/products/recommendations",
+        "POST",
+        data,
+      );
+    },
 
-  toggleActive(productId: string) {
-    return httpClient.request(`/products/${productId}/toggle`, "PATCH");
-  },
-
-  assignTags(productId: string, data: AssignProductTagsRequest) {
-    return httpClient.request(`/products/${productId}/tags`, "PATCH", data);
-  },
-
-  findRelated(productId: string) {
-    return httpClient.request(`/products/${productId}/related`, "GET");
-  },
-
-  logView(productId: string, data: LogProductViewRequest) {
-    return httpClient.request(`/products/${productId}/view`, "POST", data);
+    remove(recommendationId: string) {
+      return httpClient.request<null>(
+        `/products/recommendations/${recommendationId}`,
+        "DELETE",
+      );
+    },
   },
 };

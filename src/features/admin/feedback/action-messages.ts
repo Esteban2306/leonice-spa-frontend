@@ -78,7 +78,8 @@ export const ADMIN_ACTION_MESSAGES = {
     error: "No se pudo quitar la excepción de horario",
   },
   conduitConnect: {
-    success: "Conexión iniciada. Escanea el código QR desde el teléfono del spa.",
+    success:
+      "Conexión iniciada. Escanea el código QR desde el teléfono del spa.",
     error: "No se pudo iniciar la conexión",
   },
   conduitReconnect: {
@@ -276,6 +277,82 @@ export const ADMIN_ACTION_MESSAGES = {
   deactivatePromotion: {
     success: "Promoción desactivada.",
     error: "No se pudo desactivar la promoción",
+  },
+  createProduct: {
+    success: "Producto creado.",
+    error: "No se pudo crear el producto",
+  },
+  updateProduct: {
+    success: "Producto actualizado.",
+    error: "No se pudo actualizar el producto",
+  },
+  activateProduct: {
+    success: "Producto activado. Vuelve a mostrarse en la web.",
+    error: "No se pudo activar el producto",
+  },
+  deactivateProduct: {
+    success: "Producto desactivado. Ya no se muestra en la web.",
+    error: "No se pudo desactivar el producto",
+  },
+  removeProduct: {
+    success: "Producto eliminado junto con sus fotos.",
+    error: "No se pudo eliminar el producto",
+  },
+  saveProductTags: {
+    success: "Etiquetas del producto guardadas.",
+    error: "No se pudieron guardar las etiquetas",
+  },
+  createProductVariant: {
+    success: "Variante agregada.",
+    error: "No se pudo agregar la variante",
+  },
+  updateProductVariant: {
+    success: "Variante actualizada.",
+    error: "No se pudo actualizar la variante",
+  },
+  removeProductVariant: {
+    success: "Variante eliminada.",
+    error: "No se pudo eliminar la variante",
+  },
+  uploadVariantImage: {
+    success: "Foto guardada.",
+    error: "No se pudo subir la foto",
+  },
+  removeVariantImage: {
+    success: "Foto quitada.",
+    error: "No se pudo quitar la foto",
+  },
+  createProductCategory: {
+    success: "Categoría de productos creada.",
+    error: "No se pudo crear la categoría",
+  },
+  updateProductCategory: {
+    success: "Categoría de productos actualizada.",
+    error: "No se pudo actualizar la categoría",
+  },
+  removeProductCategory: {
+    success: "Categoría eliminada.",
+    error: "No se pudo eliminar la categoría",
+  },
+  createProductTag: {
+    success: "Etiqueta creada.",
+    error: "No se pudo crear la etiqueta",
+  },
+  updateProductTag: {
+    success: "Etiqueta actualizada.",
+    error: "No se pudo actualizar la etiqueta",
+  },
+  removeProductTag: {
+    success: "Etiqueta eliminada de todos los productos.",
+    error: "No se pudo eliminar la etiqueta",
+  },
+  createProductRecommendation: {
+    success: "Recomendación agregada al servicio.",
+    error: "No se pudo agregar la recomendación",
+  },
+  removeProductRecommendation: {
+    success: "Recomendación quitada.",
+    error: "No se pudo quitar la recomendación",
   },
 } as const satisfies Record<string, ActionMessages>;
 
