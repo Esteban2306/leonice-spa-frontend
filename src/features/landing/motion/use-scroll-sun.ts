@@ -25,11 +25,16 @@ function writeLight(target: HTMLElement, light: SurfaceLight) {
   target.style.setProperty("--sd", light.sd.toFixed(2));
 }
 
-export function useScrollSun(rootRef: RefObject<HTMLElement | null>, haloRef: RefObject<HTMLElement | null>) {
+export function useScrollSun(
+  rootRef: RefObject<HTMLElement | null>,
+  haloRef: RefObject<HTMLElement | null>,
+  shadeRef: RefObject<HTMLElement | null>,
+) {
   useEffect(() => {
     const root = rootRef.current;
     const halo = haloRef.current;
-    if (!root || !halo) return;
+    const shade = shadeRef.current;
+    if (!root || !halo || !shade) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const visible = new Set<HTMLElement>();
@@ -37,6 +42,7 @@ export function useScrollSun(rootRef: RefObject<HTMLElement | null>, haloRef: Re
     let rootLight: SurfaceLight | undefined;
     let viewport = { width: window.innerWidth, height: window.innerHeight };
     let haloHeight = halo.offsetHeight;
+    let shadeHeight = shade.offsetHeight;
     let targetY = 0;
     let sunY = 0;
     let frame = 0;
@@ -45,6 +51,7 @@ export function useScrollSun(rootRef: RefObject<HTMLElement | null>, haloRef: Re
     const measureTarget = () => {
       viewport = { width: window.innerWidth, height: window.innerHeight };
       haloHeight = halo.offsetHeight;
+      shadeHeight = shade.offsetHeight;
       const documentHeight = document.documentElement.scrollHeight;
       const scrollY = reduced
         ? STATIC_PROGRESS * Math.max(documentHeight - viewport.height, 0)
@@ -63,6 +70,7 @@ export function useScrollSun(rootRef: RefObject<HTMLElement | null>, haloRef: Re
       const rects = surfaces.map((surface) => surface.getBoundingClientRect());
 
       halo.style.transform = `translate3d(50%, ${(sunY - haloHeight / 2).toFixed(1)}px, 0)`;
+      shade.style.transform = `translate3d(50%, ${(sunY - shadeHeight / 2).toFixed(1)}px, 0)`;
 
       const center = coarseLight(lightFor(sun, { x: viewport.width / 2, y: viewport.height / 2 }, viewport));
       if (!sameLight(rootLight, center)) {
@@ -168,5 +176,5 @@ export function useScrollSun(rootRef: RefObject<HTMLElement | null>, haloRef: Re
       if (scanFrame) cancelAnimationFrame(scanFrame);
       delete root.dataset.sun;
     };
-  }, [rootRef, haloRef]);
+  }, [rootRef, haloRef, shadeRef]);
 }

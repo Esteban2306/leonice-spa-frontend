@@ -228,7 +228,8 @@ Todas las sombras salen de una sola receta en `src/features/landing/sunlight.css
 - **`.sun-glass`**: vidrio flotante (navbar, barras de filtros); filo blanco y sombra más amplia.
 - **`.sun-panel`**: paneles grandes; las galerías (`.why-gallery`, `.treatments-gallery`) usan la misma receta con sus parámetros.
 - **`.lit-hover`**: sube `--lift` de 18 a 30 px en hover o foco, solo con puntero fino; la elevación se anima por ser una propiedad registrada.
-- **Halo del sol** (`.sun-halo`): disco de luz cálida con núcleo que respira (7 s) y rayos cónicos que giran muy lento (140 s), anclado al borde derecho y movido solo con `transform` (sin repintar). En escritorio se mezcla en soft-light; en táctil queda tenue.
+- **Halo del sol** (`.sun-halo`): luz ámbar cálida que nace del borde derecho a la altura de la barra; núcleo difuso que respira (7 s) y cinco haces anchos y desiguales sin bordes, desenfocados con blur (26–32 px) para que lean como luz real y no como rayos; los haces se balancean ±5° en 22 s desde un contenedor, sin re-rasterizar el blur. Se mueve solo con `transform`. En escritorio se mezcla en soft-light; en táctil queda tenue.
+- **Penumbra** (`.sun-shade`): degradado radial tostado (`rgb(74 46 16)` de 0 a 11–14 %) centrado en el sol, que oscurece suavemente la página lejos de la luz para que la iluminación se note; mezcla normal y movida solo con `transform`.
 - **Barra de desplazamiento**: pulgar dorado con degradado radial y resplandor propio; pista de papel. Firefox usa `scrollbar-color` dorado.
 - **Brillo al puntero** (`.glow`) y **texto iluminado** (`.sunlit-text`) se mantienen.
 
