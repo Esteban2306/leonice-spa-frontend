@@ -22,6 +22,7 @@ import {
   SplitText,
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 function Pending({ children }: { children: string }) {
   return (
@@ -121,8 +122,9 @@ export function VisitSection() {
       id={SECTION_IDS.contact}
       tabIndex={-1}
       aria-labelledby="visit-title"
-      className="relative overflow-hidden bg-[#BF9250] py-24 outline-none sm:py-28"
+      className="relative isolate overflow-hidden bg-[#BF9250] py-24 outline-none sm:py-28"
     >
+      <SectionAtmosphere name="visit" />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-32 -top-32 h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgb(255_226_180/0.45),transparent_65%)] blur-2xl"

@@ -21,6 +21,7 @@ import {
   SplitText,
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 
 function describe(treatment: LandingTreatment) {
@@ -96,8 +97,9 @@ export function TreatmentsSection({ catalog }: { catalog: LandingCatalog }) {
       id={SECTION_IDS.treatments}
       tabIndex={-1}
       aria-labelledby="treatments-title"
-      className="relative bg-[#F2EBDB] py-16 outline-none sm:py-12 desk:flex desk:min-h-[calc(100svh-var(--nav-height))] desk:items-center"
+      className="relative isolate bg-[#F2EBDB] py-16 outline-none sm:py-12 desk:flex desk:min-h-[calc(100svh-var(--nav-height))] desk:items-center"
     >
+      <SectionAtmosphere name="treatments" />
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-5 sm:px-8">
         <SectionHeading
           id="treatments-title"

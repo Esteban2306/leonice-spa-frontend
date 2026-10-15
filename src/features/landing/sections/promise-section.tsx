@@ -20,6 +20,7 @@ import {
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 const SIZE_CLASSES: Record<PromiseItem["size"], string> = {
   feature: "desk:row-span-2 min-h-[26rem] desk:min-h-0",
@@ -140,8 +141,9 @@ export function PromiseSection() {
       id={SECTION_IDS.promise}
       tabIndex={-1}
       aria-labelledby="promise-title"
-      className="relative overflow-hidden bg-[#062112] py-24 outline-none sm:py-32"
+      className="relative isolate overflow-hidden bg-[#062112] py-24 outline-none sm:py-32"
     >
+      <SectionAtmosphere name="promise" />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-40 top-1/4 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgb(224_188_135/0.18),transparent_65%)] blur-2xl"

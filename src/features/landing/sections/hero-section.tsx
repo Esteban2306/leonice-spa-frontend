@@ -17,6 +17,7 @@ import {
 import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section";
 import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 interface HeroMediaProps {
   videoSrc?: string | null;
@@ -191,6 +192,7 @@ export function HeroSection({ videoSrc = null }: { videoSrc?: string | null }) {
       aria-labelledby="hero-title"
       className="relative isolate flex min-h-[100svh] items-center overflow-hidden pb-20 pt-[calc(var(--nav-height)+3rem)] outline-none"
     >
+      <SectionAtmosphere name="hero" />
       <HeroMedia videoSrc={videoSrc} />
 
       <div

@@ -21,6 +21,7 @@ import {
   SplitText,
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -108,8 +109,9 @@ export function StoriesSection() {
       id={SECTION_IDS.stories}
       tabIndex={-1}
       aria-labelledby="stories-title"
-      className="relative overflow-hidden bg-[#FDF8F1] py-24 outline-none sm:py-32"
+      className="relative isolate overflow-hidden bg-[#FDF8F1] py-24 outline-none sm:py-32"
     >
+      <SectionAtmosphere name="stories" />
       <div className="mx-auto flex max-w-[1440px] flex-col gap-10 px-5 sm:px-8">
         <SectionHeading
           id="stories-title"

@@ -14,6 +14,7 @@ import {
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 const number = new Intl.NumberFormat("es-CO");
 
@@ -101,8 +102,9 @@ export function MetricsSection() {
       id={SECTION_IDS.metrics}
       tabIndex={-1}
       aria-labelledby="metrics-title"
-      className="relative bg-[#FDF8F1] py-24 outline-none sm:py-32"
+      className="relative isolate bg-[#FDF8F1] py-24 outline-none sm:py-32"
     >
+      <SectionAtmosphere name="metrics" />
       <div className="mx-auto grid max-w-[1440px] items-center gap-14 px-5 sm:px-8 desk:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div className="flex flex-col gap-6">
           <h2

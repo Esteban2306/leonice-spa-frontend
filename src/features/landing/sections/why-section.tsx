@@ -14,6 +14,7 @@ import {
   SplitText,
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 export function WhySection() {
   const rootRef = useRef<HTMLElement>(null);
@@ -66,8 +67,9 @@ export function WhySection() {
       id={SECTION_IDS.why}
       tabIndex={-1}
       aria-labelledby="why-title"
-      className="stack-over relative bg-[#FDF8F1] py-24 outline-none sm:py-32"
+      className="stack-over relative isolate bg-[#FDF8F1] py-24 outline-none sm:py-32"
     >
+      <SectionAtmosphere name="why" />
       <div className="mx-auto flex max-w-[1440px] flex-col gap-14 px-5 sm:px-8">
         <SectionHeading id="why-title" title={whyContent.title} align="center" />
         <AccordionGallery

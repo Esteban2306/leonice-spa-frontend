@@ -18,6 +18,7 @@ import {
 import { useMediaQuery } from "@/src/features/landing/motion/use-media-query";
 import { ProductCard } from "@/src/features/landing/sections/products/product-card";
 import { ProductCarouselFooter } from "@/src/features/landing/sections/products/product-carousel-footer";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 const OPTIONS = {
   align: "start",
@@ -94,8 +95,9 @@ export function ProductsSection({
       id={SECTION_IDS.products}
       tabIndex={-1}
       aria-labelledby="products-title"
-      className="relative overflow-hidden bg-[#F2EBDB] py-14 outline-none sm:py-8"
+      className="relative isolate overflow-hidden bg-[#F2EBDB] py-14 outline-none sm:py-8"
     >
+      <SectionAtmosphere name="products" />
       <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-5 sm:px-8">
         <SectionHeading
           id="products-title"

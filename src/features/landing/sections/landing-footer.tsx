@@ -14,6 +14,7 @@ import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section
 import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 
 import LogoW from "../../../../public/leonice-logo-w.png";
+import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
 
 const LINKS: { label: string; target: string; page?: string }[] = [
   { label: "Inicio", target: SECTION_IDS.home },
@@ -27,7 +28,8 @@ const LINKS: { label: string; target: string; page?: string }[] = [
 export function LandingFooter() {
   const whatsapp = formatWhatsappDisplay();
   return (
-    <footer className="relative bg-[#062112] text-[#F2EBDB]">
+    <footer className="relative isolate bg-[#062112] text-[#F2EBDB]">
+      <SectionAtmosphere name="footer" />
       <div className="mx-auto grid max-w-[1440px] gap-12 px-5 py-16 sm:px-8 desk:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div className="flex flex-col gap-5">
           <Image src={LogoW} alt={SPA_NAME} className="h-auto w-36" />
