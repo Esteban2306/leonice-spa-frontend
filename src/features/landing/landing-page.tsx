@@ -1,4 +1,5 @@
 import type { LandingCatalog, LandingProduct } from "@/src/features/landing/content/landing-content";
+import { SectionStack } from "@/src/features/landing/components/section-stack";
 import { SunlightStage } from "@/src/features/landing/motion/sunlight-stage";
 import { LandingNavbar } from "@/src/features/landing/navbar/landing-navbar";
 import { HeroSection } from "@/src/features/landing/sections/hero-section";
@@ -21,7 +22,7 @@ export function LandingPage({
   return (
     <SunlightStage>
       <LandingNavbar categories={catalog.categories} products={products} />
-      <main>
+      <SectionStack>
         <HeroSection />
         <WhySection />
         <TreatmentsSection catalog={catalog} />
@@ -30,7 +31,7 @@ export function LandingPage({
         <ProductsSection products={products} />
         <MetricsSection />
         <VisitSection />
-      </main>
+      </SectionStack>
       <LandingFooter />
     </SunlightStage>
   );

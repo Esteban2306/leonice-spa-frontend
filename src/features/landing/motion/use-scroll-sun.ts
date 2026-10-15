@@ -68,7 +68,7 @@ export function useScrollSun(
       sunY = moving ? sunY + delta * EASE : targetY;
       const sun = sunPosition(sunY, viewport);
 
-      const surfaces = [...visible];
+      const surfaces = [...visible].filter((surface) => !surface.closest("[data-covered], [data-moving]"));
       const rects = surfaces.map((surface) => surface.getBoundingClientRect());
 
       halo.style.transform = `translate3d(50%, ${(sunY - haloHeight / 2).toFixed(1)}px, 0)`;
@@ -162,12 +162,14 @@ export function useScrollSun(
     root.dataset.sun = "ready";
     paint();
 
+    window.addEventListener("sun:refresh", refresh);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     root.addEventListener("transitionend", onSettle);
     root.addEventListener("animationend", onSettle);
 
     return () => {
+      window.removeEventListener("sun:refresh", refresh);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       root.removeEventListener("transitionend", onSettle);

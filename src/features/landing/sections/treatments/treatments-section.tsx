@@ -22,7 +22,6 @@ import {
   useIsomorphicLayoutEffect,
 } from "@/src/features/landing/motion/gsap";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
 
 function describe(treatment: LandingTreatment) {
   const price = treatment.promotion?.priceFromThousands ?? treatment.priceFromThousands;

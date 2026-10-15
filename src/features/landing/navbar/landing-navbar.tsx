@@ -16,6 +16,7 @@ import {
   type SectionId,
 } from "@/src/features/landing/lib/site-config";
 import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section";
+import { currentLayerId } from "@/src/features/landing/motion/section-stack";
 import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import {
   ProductsPreview,
@@ -159,31 +160,32 @@ export function LandingNavbar({
   }, []);
 
   useEffect(() => {
-    const visible = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries)
-          visible.set(entry.target.id, entry.intersectionRatio);
-        let best: string | null = null;
-        let ratio = 0;
-        for (const [id, value] of visible) {
-          if (value > ratio) {
-            ratio = value;
-            best = id;
-          }
-        }
-        if (best) {
-          const section = best as SectionId;
-          setCurrent(LINK_FOR_SECTION[section] ?? section);
-        }
-      },
-      { rootMargin: "-35% 0px -45% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
-    );
-    for (const id of TRACKED) {
-      const node = document.getElementById(id);
-      if (node) observer.observe(node);
-    }
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const layers = TRACKED.flatMap((id) => {
+        const node = document.getElementById(id);
+        if (!node) return [];
+        const rect = node.getBoundingClientRect();
+        return [{ id, top: rect.top, left: rect.left, right: rect.right }];
+      });
+      const best = currentLayerId(layers, window.innerWidth, window.innerHeight);
+      if (best) {
+        const section = best as SectionId;
+        setCurrent(LINK_FOR_SECTION[section] ?? section);
+      }
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
