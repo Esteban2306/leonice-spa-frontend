@@ -7,7 +7,7 @@ const NAV_OFFSET = 88;
 
 function restingTop(target: HTMLElement): number {
   const parent = target.parentElement;
-  if (!parent || !target.classList.contains("stack-layer")) {
+  if (!parent || !target.classList.contains("stack-base")) {
     return target.getBoundingClientRect().top + window.scrollY;
   }
   const heights: number[] = [];

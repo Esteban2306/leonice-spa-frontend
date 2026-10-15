@@ -4,64 +4,19 @@
   initial-value: 0px;
 }
 
-@property --stack-shade {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@property --stack-rim {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@property --stack-r {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-
-.landing .stack-layer {
+.landing .stack-base {
   position: sticky;
   top: var(--stack-top, 0px);
-  border-top-left-radius: var(--stack-r, 0px);
-  border-top-right-radius: var(--stack-r, 0px);
+  z-index: 1;
 }
 
-.landing .stack-layer[data-covered="1"] {
+.landing .stack-base[data-covered="1"] {
   visibility: hidden;
 }
 
-.landing .stack-layer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  border-radius: inherit;
-  background: rgb(38 24 8);
-  opacity: var(--stack-shade, 0);
-  will-change: opacity;
-}
-
-.landing .stack-layer::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 61;
-  height: 2px;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent 2%, rgb(255 238 204 / 0.95) 30%, rgb(255 226 176 / 0.95) 70%, transparent 98%);
-  opacity: var(--stack-rim, 0);
-  will-change: opacity;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing .stack-layer {
-    position: relative;
-    top: auto;
-  }
+.landing .stack-over {
+  position: relative;
+  z-index: 2;
+  border-top-left-radius: 2.5rem;
+  border-top-right-radius: 2.5rem;
 }

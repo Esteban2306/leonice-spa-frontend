@@ -66,7 +66,7 @@ export function WhySection() {
       id={SECTION_IDS.why}
       tabIndex={-1}
       aria-labelledby="why-title"
-      className="relative bg-[#FDF8F1] py-24 outline-none sm:py-32"
+      className="stack-over relative bg-[#FDF8F1] py-24 outline-none sm:py-32"
     >
       <div className="mx-auto flex max-w-[1440px] flex-col gap-14 px-5 sm:px-8">
         <SectionHeading id="why-title" title={whyContent.title} align="center" />
