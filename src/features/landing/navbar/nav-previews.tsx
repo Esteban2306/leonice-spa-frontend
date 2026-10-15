@@ -233,8 +233,6 @@ export function ProductsPreview({
               <motion.li key={group.key} variants={item}>
                 <button
                   type="button"
-                  onMouseEnter={() => setActiveKey(group.key)}
-                  onFocus={() => setActiveKey(group.key)}
                   onClick={() => setActiveKey(group.key)}
                   className="group flex w-full cursor-pointer flex-col items-center gap-3 rounded-3xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-6 text-center transition-colors duration-300 hover:bg-[#062112] hover:text-[#F2EBDB] focus-visible:bg-[#062112] focus-visible:text-[#F2EBDB]"
                 >
