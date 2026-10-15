@@ -34,6 +34,7 @@ import { CatalogSwitch } from "./catalog-switch";
 import { HairPricingEditor } from "./hair-pricing-editor";
 import { PromotionsSection } from "./promotions-section";
 import { TreatmentFields } from "./treatment-fields";
+import { TreatmentVideoSlot } from "./treatment-video-slot";
 
 export type DrawerFocus = "details" | "hair";
 
@@ -44,6 +45,7 @@ interface TreatmentDrawerProps {
   promotions: readonly Promotion[];
   isPromotionsLoading: boolean;
   isSaving: boolean;
+  isVideoUploading: boolean;
   nowMs: number;
   onClose: () => void;
   onSave: (
@@ -55,6 +57,8 @@ interface TreatmentDrawerProps {
     treatmentId: string,
     input: HairPricingInput,
   ) => Promise<boolean>;
+  onUploadVideo: (treatmentId: string, file: File) => Promise<boolean>;
+  onRemoveVideo: (treatmentId: string) => Promise<boolean>;
   onCreatePromotion: (treatment: AdminTreatment) => void;
   onEditPromotion: (promotion: Promotion) => void;
   onDeactivatePromotion: (promotion: Promotion) => void;
@@ -107,10 +111,13 @@ function DrawerBody({
   promotions,
   isPromotionsLoading,
   isSaving,
+  isVideoUploading,
   nowMs,
   onSave,
   onToggleActive,
   onSaveHairPricing,
+  onUploadVideo,
+  onRemoveVideo,
   onCreatePromotion,
   onEditPromotion,
   onDeactivatePromotion,
@@ -227,6 +234,17 @@ function DrawerBody({
             errors={errors}
             categories={categories}
             onChange={setDraft}
+          />
+        </Section>
+
+        <Section id="drawer-video" title="Video del procedimiento">
+          <TreatmentVideoSlot
+            treatmentName={treatment.name}
+            videoUrl={treatment.videoUrl ?? null}
+            posterUrl={treatment.posterUrl ?? null}
+            isUploading={isVideoUploading}
+            onUpload={(file) => void onUploadVideo(treatment.id, file)}
+            onRemove={() => void onRemoveVideo(treatment.id)}
           />
         </Section>
 

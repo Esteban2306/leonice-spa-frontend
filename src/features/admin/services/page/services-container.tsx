@@ -370,11 +370,14 @@ export function ServicesContainer() {
         promotions={drawerPromotions}
         isPromotionsLoading={drawerPromotionsQuery.isLoading}
         isSaving={actions.isSaving}
+        isVideoUploading={actions.isVideoUploading}
         nowMs={nowMs}
         onClose={() => replaceParams({ servicio: null })}
         onSave={actions.updateTreatment}
         onToggleActive={toggleTreatment}
         onSaveHairPricing={actions.saveHairPricing}
+        onUploadVideo={actions.uploadTreatmentVideo}
+        onRemoveVideo={actions.removeTreatmentVideo}
         onCreatePromotion={(treatment) =>
           openPromotion(promotionTargetFor(treatment), null)
         }

@@ -45,6 +45,23 @@ export const treatmentsApi = {
     );
   },
 
+  uploadVideo(treatmentId: string, file: File) {
+    const form = new FormData();
+    form.append("video", file);
+    return httpClient.request<Treatment>(
+      `/treatments/${treatmentId}/video`,
+      "POST",
+      form,
+    );
+  },
+
+  removeVideo(treatmentId: string) {
+    return httpClient.request<Treatment>(
+      `/treatments/${treatmentId}/video`,
+      "DELETE",
+    );
+  },
+
   getHairLengthPricing(treatmentId: string) {
     return httpClient.request<HairLengthPricingRow[]>(
       `/treatments/${treatmentId}/hair-length-pricing`,

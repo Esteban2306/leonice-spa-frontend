@@ -250,6 +250,14 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Precios por cabello guardados.",
     error: "No se pudieron guardar los precios por cabello",
   },
+  uploadTreatmentVideo: {
+    success: "Video guardado. Ya se ve en la página del servicio.",
+    error: "No se pudo subir el video",
+  },
+  removeTreatmentVideo: {
+    success: "Video quitado.",
+    error: "No se pudo quitar el video",
+  },
   createCapacityPool: {
     success: "Capacidad agregada a la estación.",
     error: "No se pudo crear la capacidad",

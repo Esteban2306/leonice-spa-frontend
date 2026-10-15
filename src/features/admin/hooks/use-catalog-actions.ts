@@ -14,9 +14,11 @@ import {
 import { useSingleFlight } from "./use-single-flight";
 import {
   useCreateTreatment,
+  useRemoveTreatmentVideo,
   useSetTreatmentHairColorSurcharges,
   useSetTreatmentHairLengthPricing,
   useUpdateTreatment,
+  useUploadTreatmentVideo,
 } from "./use-treatments";
 
 import type {
@@ -56,6 +58,9 @@ export interface CatalogActions {
   ) => Promise<boolean>;
   setTreatmentActive: (id: string, isActive: boolean) => Promise<boolean>;
   saveHairPricing: (id: string, input: HairPricingInput) => Promise<boolean>;
+  uploadTreatmentVideo: (id: string, file: File) => Promise<boolean>;
+  removeTreatmentVideo: (id: string) => Promise<boolean>;
+  isVideoUploading: boolean;
   createCapacityPool: (data: CreateCapacityPoolRequest) => Promise<boolean>;
   updateCapacityPool: (
     id: string,
@@ -80,6 +85,8 @@ export function useCatalogActions(): CatalogActions {
   const updateTreatment = useUpdateTreatment();
   const setLengths = useSetTreatmentHairLengthPricing();
   const setColors = useSetTreatmentHairColorSurcharges();
+  const uploadVideo = useUploadTreatmentVideo();
+  const removeVideo = useRemoveTreatmentVideo();
   const createPool = useCreateCapacityPool();
   const updatePool = useUpdateCapacityPool();
   const createPromotion = useCreatePromotion();
@@ -92,6 +99,8 @@ export function useCatalogActions(): CatalogActions {
   const { mutateAsync: updateTreatmentAsync } = updateTreatment;
   const { mutateAsync: setLengthsAsync } = setLengths;
   const { mutateAsync: setColorsAsync } = setColors;
+  const { mutateAsync: uploadVideoAsync } = uploadVideo;
+  const { mutateAsync: removeVideoAsync } = removeVideo;
   const { mutateAsync: createPoolAsync } = createPool;
   const { mutateAsync: updatePoolAsync } = updatePool;
   const { mutateAsync: createPromotionAsync } = createPromotion;
@@ -164,6 +173,20 @@ export function useCatalogActions(): CatalogActions {
           });
           return outcome.ok;
         }),
+      uploadTreatmentVideo: (id: string, file: File) =>
+        singleFlight(`treatment:video:${id}`, async () => {
+          const outcome = await runAdminAction("uploadTreatmentVideo", () =>
+            uploadVideoAsync({ treatmentId: id, file }),
+          );
+          return outcome.ok;
+        }),
+      removeTreatmentVideo: (id: string) =>
+        singleFlight(`treatment:video:${id}`, async () => {
+          const outcome = await runAdminAction("removeTreatmentVideo", () =>
+            removeVideoAsync(id),
+          );
+          return outcome.ok;
+        }),
       createCapacityPool: (data: CreateCapacityPoolRequest) =>
         singleFlight(`pool:create:${data.categoryId}`, async () => {
           const outcome = await runAdminAction("createCapacityPool", () =>
@@ -216,6 +239,8 @@ export function useCatalogActions(): CatalogActions {
       updateTreatmentAsync,
       setLengthsAsync,
       setColorsAsync,
+      uploadVideoAsync,
+      removeVideoAsync,
       createPoolAsync,
       updatePoolAsync,
       createPromotionAsync,
@@ -226,6 +251,7 @@ export function useCatalogActions(): CatalogActions {
 
   return {
     ...actions,
+    isVideoUploading: uploadVideo.isPending || removeVideo.isPending,
     isSaving:
       createCategory.isPending ||
       updateCategory.isPending ||

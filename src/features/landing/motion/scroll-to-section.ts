@@ -6,7 +6,10 @@ const NAV_OFFSET = 88;
 
 export function scrollToSection(id: string) {
   const target = document.getElementById(id);
-  if (!target) return;
+  if (!target) {
+    window.location.assign(id === "inicio" ? "/" : `/#${id}`);
+    return;
+  }
   const gsap = ensureGsap();
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const distance = Math.abs(target.getBoundingClientRect().top);

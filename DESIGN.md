@@ -273,6 +273,15 @@ El `SunlightStage` envuelve la landing, define el vector de sol y lo recalcula c
 ### Galerías
 La galería en acordeón del "porqué" y el carrusel circular de historias son componentes vendorizados que la landing tiñe con el mismo sistema: los paneles del acordeón usan sombra solar y filo de arena (el activo sube a una elevación mayor con un halo interior cálido) y el carrusel divide cada cara en antes/después según el giro, ocultando los rótulos mientras gira.
 
+### Páginas de tratamientos
+Las rutas `/tratamientos` heredan el mismo mundo y todo sale del catálogo (`/showcase` del backend); ningún tratamiento tiene diseño propio.
+- **Carta de categorías:** una fila por categoría sobre papel, con icono en círculo arena, nombre en Italiana a gran escala, frase guía y datos (servicios, duración, desde) en cifras tabulares. Al pasar, un barrido verde de izquierda a derecha inunda la fila (700 ms, expo out) y el texto cambia a crema y arena. La primera categoría lleva más aire.
+- **Doble bisel:** las tarjetas de video viven dentro de una bandeja de 0.375 rem (`.bezel`, ink al 5 % con trazo interior al 6 %) y el núcleo usa el radio concéntrico `calc(2rem - 0.375rem)` con un filo crema superior. Solo para medios (video) y tarjetas de tratamiento.
+- **Video del procedimiento:** se reproduce en silencio al estar visible en más del 55 % (portada) o al pasar el puntero (tarjeta), con controles circulares crema translúcidos, barra de progreso arena de 2 px y pantalla completa. Sin video, el marco usa el estado rayado verde con el chip discontinuo "Video en preparación" y anima los títulos reales de los pasos, uno tras otro; nunca un video de relleno.
+- **Ritual paso a paso (signature):** columna izquierda fija con el título y la acción; a la derecha, pasos numerados sobre una línea dorada que se llena con el scroll. El paso en lectura se enciende (círculo ink con número arena y tarjeta iluminada); los anteriores quedan encendidos y los siguientes al 60 %.
+- **Contenido en revisión:** mientras el spa no valide la descripción de un servicio, la ficha muestra el chip discontinuo "Descripción en revisión".
+- **Barra de reserva móvil:** al salir de la portada aparece una píldora verde fija abajo con nombre, duración, precio y la acción arena; solo por debajo de `desk`.
+
 ## Do's and Don'ts
 
 ### Do:

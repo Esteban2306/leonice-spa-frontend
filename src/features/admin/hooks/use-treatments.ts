@@ -148,3 +148,24 @@ export function useSetTreatmentHairColorSurcharges() {
     onSuccess: () => invalidateCatalogDomain(queryClient),
   });
 }
+
+export function useUploadTreatmentVideo() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "treatments", "upload-video"],
+    mutationFn: ({ treatmentId, file }: { treatmentId: string; file: File }) =>
+      treatmentsApi.uploadVideo(treatmentId, file),
+    onSuccess: () => invalidateCatalogDomain(queryClient),
+  });
+}
+
+export function useRemoveTreatmentVideo() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "treatments", "remove-video"],
+    mutationFn: (treatmentId: string) => treatmentsApi.removeVideo(treatmentId),
+    onSuccess: () => invalidateCatalogDomain(queryClient),
+  });
+}

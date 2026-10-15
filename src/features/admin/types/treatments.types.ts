@@ -44,6 +44,8 @@ export interface Treatment {
   activePromotion?: TreatmentPromotionSummary | null;
   effectiveBasePriceMin?: number | null;
   effectiveBasePriceMax?: number | null;
+  videoUrl?: string | null;
+  posterUrl?: string | null;
 }
 
 export interface HairLengthPricingRow {
