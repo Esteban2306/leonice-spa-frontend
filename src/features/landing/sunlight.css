@@ -32,19 +32,19 @@
 .treatments-gallery .treatment-cta {
   --sun-near: calc(1 - var(--sd));
   --sun-heat: calc(var(--sun-near) * var(--sun-near));
-  --sun-reach: calc(var(--lift) * (0.75 + var(--sd) * 1.6));
-  --sun-blur: calc(var(--lift) * (1.1 + var(--sd) * 1.8));
+  --sun-reach: calc(var(--lift) * (0.7 + var(--sd) * 1.05));
+  --sun-blur: calc(var(--lift) * (1.1 + var(--sd) * 1.25));
   --sun-glow: 30px;
   --sun-shade: calc(var(--sun-glow) * 1.3);
   --sun-tint: 74 46 16;
-  --sun-cast: 0.38;
-  --sun-contact: 0.22;
+  --sun-cast: 0.3;
+  --sun-contact: 0.17;
   --sun-rim: 255 244 220;
   --sun-rim-alpha: 1;
   --sun-far: 74 46 16;
-  --sun-far-alpha: 0.16;
+  --sun-far-alpha: 0.12;
   --sun-shine: 255 200 120;
-  --sun-shine-alpha: 0.6;
+  --sun-shine-alpha: 0.5;
   --sun-bloom: 255 224 176;
   box-shadow:
     calc(var(--sx) * var(--sun-reach)) calc(var(--sy) * var(--sun-reach)) var(--sun-blur)
@@ -54,7 +54,7 @@
     inset calc(var(--sx) * -1 * var(--sun-shade)) calc(var(--sy) * -1 * var(--sun-shade)) calc(var(--sun-shade) * 1.1) 0
       rgb(var(--sun-far) / var(--sun-far-alpha)),
     inset calc(var(--sx) * var(--sun-glow) * 0.7) calc(var(--sy) * var(--sun-glow) * 0.7) calc(var(--sun-glow) * 0.55) 0
-      rgb(var(--sun-bloom) / calc(0.3 + var(--sun-heat) * 0.75)),
+      rgb(var(--sun-bloom) / calc(0.22 + var(--sun-heat) * 0.6)),
     inset calc(var(--sx) * var(--sun-glow) * 2.1) calc(var(--sy) * var(--sun-glow) * 2.1) calc(var(--sun-glow) * 1.7) 0
       rgb(var(--sun-shine) / calc(var(--sun-shine-alpha) * var(--sun-heat) * 0.5));
 }
@@ -71,31 +71,32 @@
 .sun-shadow-ink,
 .treatments-gallery .treatment-cta {
   --sun-tint: 0 0 0;
-  --sun-cast: 0.5;
-  --sun-contact: 0.28;
+  --sun-cast: 0.4;
+  --sun-contact: 0.22;
   --sun-rim: 232 196 140;
   --sun-rim-alpha: 0.9;
   --sun-far: 0 0 0;
-  --sun-far-alpha: 0.32;
+  --sun-far-alpha: 0.26;
   --sun-shine: 236 190 118;
-  --sun-shine-alpha: 0.6;
+  --sun-shine-alpha: 0.48;
   --sun-bloom: 246 214 160;
 }
 
 .sun-shadow,
 .sun-shadow-ink,
 .treatments-gallery .treatment-cta {
-  --lift: 8px;
-  --sun-glow: 11px;
-  --sun-shine-alpha: 0.65;
-  --sun-far-alpha: 0.07;
+  --lift: 6px;
+  --sun-glow: 10px;
+  --sun-cast: 0.24;
+  --sun-shine-alpha: 0.5;
+  --sun-far-alpha: 0.06;
 }
 
 .sun-shadow-ink,
 .treatments-gallery .treatment-cta {
   --sun-tint: 6 33 18;
-  --sun-cast: 0.55;
-  --sun-shine-alpha: 0.55;
+  --sun-cast: 0.34;
+  --sun-shine-alpha: 0.45;
 }
 
 .treatments-gallery .treatment-cta {
