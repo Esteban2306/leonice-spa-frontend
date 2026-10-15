@@ -191,7 +191,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
+  margin: 14px 10px 10px;
   border-radius: 9999px;
   background: #062112;
   color: #f2ebdb;

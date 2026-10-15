@@ -90,6 +90,12 @@
   --sun-shine-alpha: 0.32;
 }
 
+.treatments-gallery .treatment-cta {
+  --lift: 3px;
+  --sun-glow: 8px;
+  --sun-cast: 0.38;
+}
+
 .sun-panel,
 .why-gallery .ag-panel {
   --lift: 18px;
