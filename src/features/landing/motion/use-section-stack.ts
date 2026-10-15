@@ -30,19 +30,27 @@ export function useSectionStack(mainRef: RefObject<HTMLElement | null>) {
         base.style.setProperty("--stack-top", `${stackTop(window.innerHeight, base.offsetHeight)}px`);
       };
 
+      let frame = 0;
+      let coverStart = Number.POSITIVE_INFINITY;
+      const syncCovered = () => {
+        frame = 0;
+        if (window.scrollY >= coverStart) base.dataset.covered = "1";
+        else delete base.dataset.covered;
+      };
+      const onScroll = () => {
+        if (!frame) frame = window.requestAnimationFrame(syncCovered);
+      };
+
       const cover = ScrollTrigger.create({
         trigger: over,
         start: "top top",
         end: "max",
-        onToggle: (self) => {
-          if (self.isActive) base.dataset.covered = "1";
-          else delete base.dataset.covered;
-        },
         onRefresh: (self) => {
-          if (self.isActive) base.dataset.covered = "1";
-          else delete base.dataset.covered;
+          coverStart = self.start;
+          syncCovered();
         },
       });
+      window.addEventListener("scroll", onScroll, { passive: true });
 
       const onRefresh = () => measure();
       ScrollTrigger.addEventListener("refresh", onRefresh);
@@ -57,6 +65,8 @@ export function useSectionStack(mainRef: RefObject<HTMLElement | null>) {
 
       return () => {
         window.clearTimeout(remeasure);
+        window.cancelAnimationFrame(frame);
+        window.removeEventListener("scroll", onScroll);
         observer.disconnect();
         ScrollTrigger.removeEventListener("refresh", onRefresh);
         cover.kill();

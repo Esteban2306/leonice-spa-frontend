@@ -14,9 +14,12 @@
   visibility: hidden;
 }
 
-.landing .stack-over {
+.landing .stack-base ~ section {
   position: relative;
   z-index: 2;
+}
+
+.landing .stack-over {
   border-top-left-radius: 2.5rem;
   border-top-right-radius: 2.5rem;
 }
