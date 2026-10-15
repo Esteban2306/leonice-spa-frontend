@@ -282,13 +282,15 @@ Las rutas `/tratamientos` heredan el mismo mundo y todo sale del catálogo (`/sh
 - **Contenido en revisión:** mientras el spa no valide la descripción de un servicio, la ficha muestra el chip discontinuo "Descripción en revisión".
 - **Barra de reserva móvil:** al salir de la portada aparece una píldora verde fija abajo con nombre, duración, precio y la acción arena; solo por debajo de `desk`.
 
-### Carta de productos
-`/productos` es una carta tipográfica, no una rejilla de tienda; todo sale de `/catalog/products` del backend.
-- **Fila de producto:** nombre en Italiana a gran escala, para qué sirve en Inria y precio tabular a la derecha, separadas por hilos dorados al 25 %. Al pasar el puntero (solo con mouse) el nombre se subraya con una línea dorada de 2 px que crece de izquierda a derecha y la fila despliega sus cualidades (estrellas doradas), los pasos de uso y las acciones "Vista rápida" y la flecha arena. En táctil la fila llega desplegada.
-- **Foto flotante:** una sola tarjeta en doble bisel sigue al cursor con interpolación (rAF, solo transform) por encima del puntero y se revela con un círculo de recorte; sin foto muestra el rayado con la marca y el nombre. Se apaga en táctil y con movimiento reducido.
-- **Filtros vivos:** barra de papel al 88 % con desenfoque (fija solo en escritorio), búsqueda, chips de necesidad en píldora con su conteo (el chip activo se inunda de verde de izquierda a derecha y el número rueda al cambiar), categoría, rango de precio con pulgares verdes de borde arena y orden. Al filtrar, una línea dorada recorre el borde superior de la barra y las filas se reordenan con FLIP (solo posición, 600 ms expo out); las que salen se desvanecen con un leve desenfoque.
-- **Vista rápida:** panel lateral de papel que entra un 30 % desde la derecha (500 ms) con su contenido escalonado (solo opacidad y desplazamiento); el fondo se oscurece con verde al 28 % sin desenfoque.
+### Vitrina de productos
+`/productos` es una rejilla de tarjetas (1 columna en móvil, 2 desde 480 px, 3 en `desk`, 4 en xl); todo sale de `/catalog/products` del backend.
+- **Tarjeta de producto:** doble bisel con superficie iluminada; foto sobre lino (4:5, 4:3 en una sola columna) con hasta dos necesidades en píldoras de papel; nombre en Inria Sans negrita (dato de catálogo), para qué sirve en dos líneas, dos cualidades con estrella dorada y pie con precio tabular, presentaciones y flecha arena. Toda la tarjeta lleva a la página del producto.
+- **Movimiento de la tarjeta:** se eleva con sombra solar y brilla bajo el puntero; la foto se acerca un 5 % en 1.2 s mientras un barrido de luz crema la cruza; "Vista rápida" sube desde el borde inferior de la foto (550 ms expo out). En táctil la acción está siempre visible. Solo transform y opacidad.
+- **Sin foto:** rayado tostado con la marca en Italiana y el chip discontinuo "Sin foto" abajo; la esquina superior queda para las necesidades.
+- **Filtros vivos:** barra de papel al 97 % sin desenfoque (más barata al hacer scroll); chips de necesidad con conteo que rueda, categoría, rango de precio y orden. Al quedar fija en escritorio se compacta a búsqueda, orden y "Filtros". Al filtrar, una línea dorada recorre su borde y la rejilla se recompone con FLIP (posición, 600 ms) con entrada escalonada de hasta 8 tarjetas.
+- **Vista rápida:** panel lateral de papel que entra un 30 % desde la derecha (500 ms) con su contenido escalonado (opacidad y desplazamiento); fondo verde al 28 % sin desenfoque.
 - **Precio como dato de exhibición:** en el selector de presentación el precio elegido se muestra en Italiana grande; la presentación activa es una tarjeta verde con el precio en arena.
+- **Imágenes:** solo se muestran fotos de la cuenta de Cloudinary configurada en `next.config.ts` (`allowedImageUrl`); cualquier otra URL cae al estado "Sin foto".
 
 ## Do's and Don'ts
 

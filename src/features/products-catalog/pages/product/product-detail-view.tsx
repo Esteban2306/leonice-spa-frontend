@@ -8,13 +8,12 @@ import { ReviewPendingChip } from "@/src/features/landing/components/review-pend
 import { StickyBookingBar } from "@/src/features/landing/components/sticky-booking-bar";
 import { formatPesos } from "@/src/features/landing/lib/format";
 import type { CatalogProductDetail } from "@/src/features/products-catalog/api/catalog.types";
+import { ProductGrid } from "@/src/features/products-catalog/components/product-grid";
 import { ProductMedia } from "@/src/features/products-catalog/components/product-media";
 import { UsageSteps } from "@/src/features/products-catalog/components/usage-steps";
 import { VariantPicker } from "@/src/features/products-catalog/components/variant-picker";
 import {
   PRODUCTS_ROOT,
-  priceRangeLabel,
-  productHref,
   productOrderMessage,
 } from "@/src/features/products-catalog/lib/catalog-format";
 
@@ -198,27 +197,7 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
             <h2 id="relacionados" className="font-heading text-[clamp(2rem,3.6vw,3rem)] leading-[1.05] text-[#062112]">
               Combínalo con
             </h2>
-            <ul className="border-t border-[#BF9250]/25">
-              {product.related.map((related) => (
-                <li key={related.id}>
-                  <Link
-                    href={productHref(related.slug)}
-                    className="catalog-row group/rel grid gap-2 border-b border-[#BF9250]/25 py-6 desk:grid-cols-[1.2fr_1fr_auto] desk:items-baseline desk:gap-8"
-                  >
-                    <span className="catalog-row-name w-fit pb-1 font-heading text-[clamp(1.75rem,3vw,2.5rem)] leading-tight text-[#062112]">
-                      {related.name}
-                    </span>
-                    <span className="font-sans text-[0.95rem] text-[#062112]/70">{related.tagline ?? related.purpose}</span>
-                    <span className="flex items-center gap-3 font-sans text-base font-bold tabular-nums text-[#062112]">
-                      {priceRangeLabel(related.priceMinPesos, related.priceMaxPesos)}
-                      <span className="grid size-9 place-items-center rounded-full bg-[#E0BC87] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/rel:-translate-y-0.5 group-hover/rel:translate-x-0.5">
-                        <ArrowUpRight className="size-4" aria-hidden="true" />
-                      </span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <ProductGrid products={product.related} />
           </div>
         </section>
       )}

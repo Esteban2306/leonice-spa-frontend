@@ -12,8 +12,7 @@ import type {
   CatalogResult,
 } from "@/src/features/products-catalog/api/catalog.types";
 import { CatalogFilterBar } from "@/src/features/products-catalog/components/catalog-filter-bar";
-import { CatalogRow } from "@/src/features/products-catalog/components/catalog-row";
-import { FloatingPreview } from "@/src/features/products-catalog/components/floating-preview";
+import { ProductCard } from "@/src/features/products-catalog/components/product-card";
 import { QuickViewSheet } from "@/src/features/products-catalog/components/quick-view-sheet";
 import { EMPTY_FILTERS, toSearchParams } from "@/src/features/products-catalog/lib/catalog-filters";
 import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
@@ -31,7 +30,6 @@ export function ProductCatalogView({ initialFilters, initialResult }: ProductCat
   const [result, setResult] = useState(initialResult);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [hovered, setHovered] = useState<CatalogProductCard | null>(null);
   const [quickView, setQuickView] = useState<CatalogProductCard | null>(null);
   const controller = useRef<AbortController | null>(null);
 
@@ -112,19 +110,22 @@ export function ProductCatalogView({ initialFilters, initialResult }: ProductCat
           <LayoutGroup>
             <ul
               aria-busy={loading}
-              className={`border-t border-[#BF9250]/25 transition-opacity duration-300 ${loading ? "opacity-55" : "opacity-100"}`}
+              className={`grid grid-cols-1 gap-5 transition-opacity duration-300 min-[480px]:grid-cols-2 desk:grid-cols-3 xl:grid-cols-4 ${
+                loading ? "opacity-55" : "opacity-100"
+              }`}
             >
               <AnimatePresence initial={false} mode="popLayout">
-                {result.items.map((product) => (
+                {result.items.map((product, index) => (
                   <motion.li
                     key={product.id}
                     layout={animateLayout ? "position" : false}
-                    initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
-                    exit={{ opacity: 0, scale: 0.98, filter: "blur(4px)", transition: { duration: 0.25, ease: EASE } }}
-                    transition={{ duration: 0.6, ease: EASE }}
+                    initial={{ opacity: 0, y: 28, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.25, ease: EASE } }}
+                    transition={{ duration: 0.7, ease: EASE, delay: Math.min(index, 8) * 0.045 }}
+                    className="h-full"
                   >
-                    <CatalogRow product={product} onHover={setHovered} onQuickView={setQuickView} />
+                    <ProductCard product={product} priority={index < 4} onQuickView={setQuickView} />
                   </motion.li>
                 ))}
               </AnimatePresence>
@@ -169,7 +170,6 @@ export function ProductCatalogView({ initialFilters, initialResult }: ProductCat
         actionLabel="Agenda tu diagnóstico"
       />
 
-      <FloatingPreview product={quickView ? null : hovered} />
       <QuickViewSheet product={quickView} onClose={() => setQuickView(null)} />
     </MotionConfig>
   );
