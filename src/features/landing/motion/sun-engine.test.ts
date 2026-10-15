@@ -52,4 +52,11 @@ describe("surfaceLight", () => {
     expect(a.sd).toBeGreaterThan(0);
     expect(a.sd).toBeLessThanOrEqual(1);
   });
+
+  it("mide la cercanía hasta el borde más próximo, no hasta el centro", () => {
+    const wide = surfaceLight({ left: 40, top: 60, width: 1360, height: 160 }, sun, viewport);
+    const narrowFar = surfaceLight({ left: 40, top: 60, width: 200, height: 160 }, sun, viewport);
+    expect(wide.sd).toBeLessThan(0.1);
+    expect(narrowFar.sd).toBeGreaterThan(0.6);
+  });
 });

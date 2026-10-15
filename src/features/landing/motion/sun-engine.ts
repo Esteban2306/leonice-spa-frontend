@@ -44,20 +44,45 @@ export function sunPosition(thumbCenter: number, viewport: Viewport): SunPoint {
   return { x: viewport.width + SUN_OUTSET, y: thumbCenter };
 }
 
-export function lightFor(point: SunPoint, target: { x: number; y: number }, viewport: Viewport): SurfaceLight {
+export interface LightSteps {
+  direction: number;
+  distance: number;
+}
+
+export const FINE_STEPS: LightSteps = { direction: 0.04, distance: 0.05 };
+export const MOVING_STEPS: LightSteps = { direction: 0.1, distance: 0.1 };
+
+export function lightFor(
+  point: SunPoint,
+  target: { x: number; y: number },
+  viewport: Viewport,
+  steps: LightSteps = FINE_STEPS,
+): SurfaceLight {
   const vx = target.x - point.x;
   const vy = target.y - point.y;
   const length = Math.hypot(vx, vy) || 1;
   const reach = Math.hypot(viewport.width, viewport.height) || 1;
   return {
-    sx: round(vx / length, 0.04),
-    sy: round(vy / length, 0.04),
-    sd: round(clamp(length / reach, 0, 1), 0.05),
+    sx: round(vx / length, steps.direction),
+    sy: round(vy / length, steps.direction),
+    sd: round(clamp(length / reach, 0, 1), steps.distance),
   };
 }
 
-export function surfaceLight(rect: SurfaceRect, sun: SunPoint, viewport: Viewport): SurfaceLight {
-  return lightFor(sun, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }, viewport);
+const NEAR_REACH = 0.62;
+
+export function surfaceLight(
+  rect: SurfaceRect,
+  sun: SunPoint,
+  viewport: Viewport,
+  steps: LightSteps = FINE_STEPS,
+): SurfaceLight {
+  const center = lightFor(sun, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }, viewport, steps);
+  const nearestX = clamp(sun.x, rect.left, rect.left + rect.width);
+  const nearestY = clamp(sun.y, rect.top, rect.top + rect.height);
+  const gap = Math.hypot(sun.x - nearestX, sun.y - nearestY);
+  const reach = Math.hypot(viewport.width, viewport.height) * NEAR_REACH || 1;
+  return { ...center, sd: round(clamp(gap / reach, 0, 1), steps.distance) };
 }
 
 export function sameLight(a: SurfaceLight | undefined, b: SurfaceLight): boolean {

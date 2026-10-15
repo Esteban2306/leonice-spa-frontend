@@ -30,26 +30,33 @@
 .why-gallery .ag-panel,
 .treatments-gallery .ag-panel,
 .treatments-gallery .treatment-cta {
-  --sun-reach: calc(var(--lift) * (0.8 + var(--sd) * 0.6));
-  --sun-strength: calc(1 - var(--sd) * 0.45);
-  --sun-glow: 26px;
+  --sun-near: calc(1 - var(--sd));
+  --sun-heat: calc(var(--sun-near) * var(--sun-near));
+  --sun-reach: calc(var(--lift) * (0.75 + var(--sd) * 1.6));
+  --sun-blur: calc(var(--lift) * (1.1 + var(--sd) * 1.8));
+  --sun-glow: 30px;
+  --sun-shade: calc(var(--sun-glow) * 1.3);
   --sun-tint: 74 46 16;
-  --sun-cast: 0.32;
-  --sun-contact: 0.18;
-  --sun-rim: 255 246 226;
-  --sun-rim-alpha: 0.9;
+  --sun-cast: 0.38;
+  --sun-contact: 0.22;
+  --sun-rim: 255 244 220;
+  --sun-rim-alpha: 1;
   --sun-far: 74 46 16;
-  --sun-far-alpha: 0.1;
-  --sun-shine: 255 222 172;
+  --sun-far-alpha: 0.16;
+  --sun-shine: 255 200 120;
   --sun-shine-alpha: 0.6;
+  --sun-bloom: 255 224 176;
   box-shadow:
-    calc(var(--sx) * var(--sun-reach)) calc(var(--sy) * var(--sun-reach)) calc(var(--lift) * (1.3 + var(--sd)))
-      calc(var(--lift) * -0.45) rgb(var(--sun-tint) / calc(var(--sun-cast) * var(--sun-strength))),
-    calc(var(--sx) * 3px) calc(var(--sy) * 3px) 7px -2px rgb(var(--sun-tint) / var(--sun-contact)),
-    inset calc(var(--sx) * 1.5px) calc(var(--sy) * 1.5px) 0 rgb(var(--sun-rim) / calc(var(--sun-rim-alpha) * var(--sun-strength))),
-    inset calc(var(--sx) * -1.5px) calc(var(--sy) * -1.5px) 0 rgb(var(--sun-far) / var(--sun-far-alpha)),
-    inset calc(var(--sx) * var(--sun-glow)) calc(var(--sy) * var(--sun-glow)) calc(var(--sun-glow) * 1.8)
-      calc(var(--sun-glow) * -0.7) rgb(var(--sun-shine) / calc(var(--sun-shine-alpha) * var(--sun-strength)));
+    calc(var(--sx) * var(--sun-reach)) calc(var(--sy) * var(--sun-reach)) var(--sun-blur)
+      calc(var(--lift) * -0.3) rgb(var(--sun-tint) / calc(var(--sun-cast) * (0.8 + var(--sun-near) * 0.4))),
+    calc(var(--sx) * 4px) calc(var(--sy) * 4px) 10px -3px rgb(var(--sun-tint) / var(--sun-contact)),
+    inset calc(var(--sx) * 2px) calc(var(--sy) * 2px) 0 rgb(var(--sun-rim) / calc(var(--sun-rim-alpha) * (0.4 + var(--sun-heat) * 0.6))),
+    inset calc(var(--sx) * -1 * var(--sun-shade)) calc(var(--sy) * -1 * var(--sun-shade)) calc(var(--sun-shade) * 1.1) 0
+      rgb(var(--sun-far) / var(--sun-far-alpha)),
+    inset calc(var(--sx) * var(--sun-glow) * 0.7) calc(var(--sy) * var(--sun-glow) * 0.7) calc(var(--sun-glow) * 0.55) 0
+      rgb(var(--sun-bloom) / calc(0.3 + var(--sun-heat) * 0.75)),
+    inset calc(var(--sx) * var(--sun-glow) * 2.1) calc(var(--sy) * var(--sun-glow) * 2.1) calc(var(--sun-glow) * 1.7) 0
+      rgb(var(--sun-shine) / calc(var(--sun-shine-alpha) * var(--sun-heat) * 0.5));
 }
 
 .lit,
@@ -64,30 +71,31 @@
 .sun-shadow-ink,
 .treatments-gallery .treatment-cta {
   --sun-tint: 0 0 0;
-  --sun-cast: 0.4;
-  --sun-contact: 0.22;
-  --sun-rim: 224 188 135;
-  --sun-rim-alpha: 0.7;
+  --sun-cast: 0.5;
+  --sun-contact: 0.28;
+  --sun-rim: 232 196 140;
+  --sun-rim-alpha: 0.9;
   --sun-far: 0 0 0;
-  --sun-far-alpha: 0.25;
-  --sun-shine: 224 188 135;
-  --sun-shine-alpha: 0.26;
+  --sun-far-alpha: 0.32;
+  --sun-shine: 236 190 118;
+  --sun-shine-alpha: 0.6;
+  --sun-bloom: 246 214 160;
 }
 
 .sun-shadow,
 .sun-shadow-ink,
 .treatments-gallery .treatment-cta {
-  --lift: 7px;
-  --sun-glow: 10px;
-  --sun-rim-alpha: 0.6;
-  --sun-shine-alpha: 0.4;
+  --lift: 8px;
+  --sun-glow: 11px;
+  --sun-shine-alpha: 0.65;
+  --sun-far-alpha: 0.07;
 }
 
 .sun-shadow-ink,
 .treatments-gallery .treatment-cta {
   --sun-tint: 6 33 18;
-  --sun-cast: 0.5;
-  --sun-shine-alpha: 0.32;
+  --sun-cast: 0.55;
+  --sun-shine-alpha: 0.55;
 }
 
 .treatments-gallery .treatment-cta {
@@ -98,15 +106,15 @@
 
 .sun-panel,
 .why-gallery .ag-panel {
-  --lift: 18px;
-  --sun-glow: 34px;
+  --lift: 20px;
+  --sun-glow: 36px;
 }
 
 .why-gallery .ag-panel {
-  --sun-cast: 0.3;
-  --sun-rim: 224 188 135;
-  --sun-rim-alpha: 0.7;
-  --sun-shine-alpha: 0.35;
+  --sun-cast: 0.4;
+  --sun-rim: 232 196 140;
+  --sun-rim-alpha: 0.85;
+  --sun-shine-alpha: 0.55;
 }
 
 .why-gallery .ag-panel--active {
@@ -114,8 +122,8 @@
   --sun-cast: 0.36;
   --sun-rim: 240 210 160;
   --sun-rim-alpha: 0.95;
-  --sun-glow: 70px;
-  --sun-shine-alpha: 0.6;
+  --sun-glow: 48px;
+  --sun-shine-alpha: 0.8;
 }
 
 .treatments-gallery .ag-panel {
@@ -125,17 +133,20 @@
 
 .sun-glass {
   --lift: 14px;
-  --sun-glow: 22px;
-  --sun-cast: 0.34;
+  --sun-glow: 24px;
+  --sun-cast: 0.38;
   --sun-rim: 255 255 255;
-  --sun-rim-alpha: 0.95;
-  --sun-shine-alpha: 0.45;
+  --sun-rim-alpha: 1;
+  --sun-far-alpha: 0.07;
+  --sun-shine-alpha: 0.55;
 }
 
 @media (hover: hover) {
   .lit-hover:hover,
   .lit-hover:focus-within {
     --lift: 30px;
+    --sun-shine-alpha: 0.9;
+    --sun-rim-alpha: 1;
   }
 }
 

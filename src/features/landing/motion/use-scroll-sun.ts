@@ -4,6 +4,8 @@ import { useEffect, type RefObject } from "react";
 
 import {
   coarseLight,
+  FINE_STEPS,
+  MOVING_STEPS,
   lightFor,
   sameLight,
   scrollThumbCenter,
@@ -15,7 +17,7 @@ import {
 export const SUN_SURFACES =
   ".lit, .lit-dark, .sun-shadow, .sun-shadow-ink, .sun-panel, .sun-glass, .why-gallery .ag-panel, .treatments-gallery .ag-panel, .treatments-gallery .treatment-cta";
 
-const EASE = 0.14;
+const EASE = 0.24;
 const SETTLE_PX = 0.4;
 const STATIC_PROGRESS = 0.25;
 
@@ -79,7 +81,7 @@ export function useScrollSun(
       }
 
       surfaces.forEach((surface, index) => {
-        const light = surfaceLight(rects[index], sun, viewport);
+        const light = surfaceLight(rects[index], sun, viewport, moving ? MOVING_STEPS : FINE_STEPS);
         if (sameLight(written.get(surface), light)) return;
         written.set(surface, light);
         writeLight(surface, light);
