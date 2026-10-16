@@ -197,21 +197,31 @@ function toLandingProduct(product: ApiProduct): LandingProduct {
   };
 }
 
-export async function getLandingProducts(): Promise<LandingProduct[]> {
+async function fetchApiProducts(path: string): Promise<LandingProduct[] | null> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (process.env.NEXT_PUBLIC_LANDING_PRODUCTS_SOURCE !== "api" || !apiUrl) return productsContent.items;
+  if (!apiUrl) return null;
 
   try {
-    const response = await fetch(`${apiUrl}/products`, {
+    const response = await fetch(`${apiUrl}${path}`, {
       next: { revalidate: REVALIDATE_SECONDS },
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (!response.ok) return productsContent.items;
+    if (!response.ok) return null;
     const payload = (await response.json()) as ApiProduct[] | { data: ApiProduct[] };
     const list = Array.isArray(payload) ? payload : payload.data;
-    const products = list.filter((product) => product.isActive).map(toLandingProduct);
-    return products.length > 0 ? products : productsContent.items;
+    return list.filter((product) => product.isActive).map(toLandingProduct);
   } catch {
-    return productsContent.items;
+    return null;
   }
+}
+
+export async function getLandingProducts(): Promise<LandingProduct[]> {
+  if (process.env.NEXT_PUBLIC_LANDING_PRODUCTS_SOURCE !== "api") return productsContent.items;
+  const products = await fetchApiProducts("/products");
+  return products && products.length > 0 ? products : productsContent.items;
+}
+
+export async function getFeaturedLandingProducts(): Promise<LandingProduct[]> {
+  const products = await fetchApiProducts("/products?isFeatured=true");
+  return products && products.length > 0 ? products : productsContent.items;
 }

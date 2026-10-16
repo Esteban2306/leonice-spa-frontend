@@ -24,6 +24,7 @@ export interface AdminProduct {
   name: string;
   description: string | null;
   isActive: boolean;
+  isFeatured: boolean;
   createdAt: string;
   updatedAt: string;
   variants: ProductVariant[];
@@ -70,6 +71,7 @@ export interface CreateProductRequest {
   productCategoryId: string;
   name: string;
   description?: string | null;
+  isFeatured?: boolean;
   tagIds?: string[];
   variants?: CreateProductVariantRequest[];
 }
@@ -79,6 +81,7 @@ export interface UpdateProductRequest {
   name?: string;
   description?: string | null;
   isActive?: boolean;
+  isFeatured?: boolean;
 }
 
 export interface CreateProductCategoryRequest {

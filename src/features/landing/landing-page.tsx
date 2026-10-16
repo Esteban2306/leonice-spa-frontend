@@ -15,9 +15,11 @@ import { WhySection } from "@/src/features/landing/sections/why-section";
 export function LandingPage({
   catalog,
   products,
+  featuredProducts,
 }: {
   catalog: LandingCatalog;
   products: LandingProduct[];
+  featuredProducts: LandingProduct[];
 }) {
   return (
     <SunlightStage>
@@ -28,7 +30,7 @@ export function LandingPage({
         <TreatmentsSection catalog={catalog} />
         <StoriesSection />
         <PromiseSection />
-        <ProductsSection products={products} />
+        <ProductsSection products={featuredProducts} />
         <MetricsSection />
         <VisitSection />
       </SectionStack>

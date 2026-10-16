@@ -11,6 +11,7 @@ import {
   PanelRightOpen,
   Plus,
   Power,
+  Star,
   Trash2,
 } from "lucide-react";
 
@@ -39,6 +40,7 @@ export interface ProductRowHandlers {
   onToggleExpanded: (productId: string) => void;
   onOpen: (productId: string) => void;
   onToggleActive: (product: AdminProduct, isActive: boolean) => void;
+  onToggleFeatured: (product: AdminProduct, isFeatured: boolean) => void;
   onAddVariant: (product: AdminProduct) => void;
   onDelete: (product: AdminProduct) => void;
   variant: VariantHandlers;
@@ -184,6 +186,15 @@ function ProductMenu({
           icon: Plus,
           label: "Agregar variante",
           onSelect: () => handlers.onAddVariant(product),
+        },
+        {
+          key: "featured",
+          icon: Star,
+          label: product.isFeatured
+            ? "Quitar de destacados"
+            : "Destacar en la landing",
+          onSelect: () =>
+            handlers.onToggleFeatured(product, !product.isFeatured),
         },
         {
           key: "toggle",
@@ -389,6 +400,18 @@ export function ProductsTable({
                         >
                           {product.name}
                         </button>
+                        {product.isFeatured && (
+                          <span
+                            title="Destacado en la landing"
+                            className="ml-1.5 inline-flex translate-y-0.5 text-tertiary"
+                          >
+                            <Star
+                              aria-label="Destacado en la landing"
+                              className="size-3.5 fill-current"
+                              strokeWidth={1.6}
+                            />
+                          </span>
+                        )}
                         <p className="truncate font-sans text-xs text-secondary/60">
                           {brands.length > 0 ? brands.join(" · ") : "Sin marca"}
                           {" · "}

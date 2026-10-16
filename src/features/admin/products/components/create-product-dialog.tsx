@@ -26,6 +26,7 @@ import {
   type VariantDraft,
   type VariantDraftErrors,
 } from "../lib/product-catalog";
+import { CatalogSwitch } from "@/src/features/admin/services/components/catalog-switch";
 import { SelectControl } from "./select-control";
 import { VariantPhotoSlot } from "./variant-photo-slot";
 
@@ -78,6 +79,7 @@ export function CreateProductDialog({
   const [name, setName] = useState("");
   const [productCategoryId, setProductCategoryId] = useState(defaultCategoryId);
   const [description, setDescription] = useState("");
+  const [isFeatured, setIsFeatured] = useState(false);
   const [variants, setVariants] = useState<VariantDraft[]>([emptyVariant()]);
   const [photos, setPhotos] = useState<Record<string, PendingPhoto>>({});
   const photosRef = useRef(photos);
@@ -122,6 +124,7 @@ export function CreateProductDialog({
       name,
       productCategoryId,
       description,
+      isFeatured,
     });
     setErrors(product.errors);
 
@@ -220,6 +223,22 @@ export function CreateProductDialog({
         />
         <FieldError message={errors.description} />
       </Field>
+
+      <div className="flex items-center justify-between gap-4 rounded-2xl border border-secondary/10 bg-white/60 px-4 py-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="font-sans text-sm font-semibold text-secondary">
+            Destacar en la landing
+          </span>
+          <span className="font-sans text-xs text-secondary/60">
+            Aparece en el bloque de productos de la página principal.
+          </span>
+        </div>
+        <CatalogSwitch
+          checked={isFeatured}
+          label={isFeatured ? "Quitar de destacados" : "Destacar en la landing"}
+          onChange={setIsFeatured}
+        />
+      </div>
 
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1.5 font-sans text-xs tracking-[0.16em] text-secondary/55 uppercase">

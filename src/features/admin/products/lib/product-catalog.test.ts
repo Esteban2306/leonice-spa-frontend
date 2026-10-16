@@ -39,6 +39,7 @@ const product = (overrides: Partial<AdminProduct> = {}): AdminProduct => ({
   name: "Shampoo reparador",
   description: null,
   isActive: true,
+  isFeatured: false,
   createdAt: "2026-10-14T00:00:00.000Z",
   updatedAt: "2026-10-14T00:00:00.000Z",
   variants: [variant()],
@@ -186,7 +187,23 @@ describe("validateProductDraft", () => {
         productCategoryId: "c1",
         description: "   ",
       }).data,
-    ).toEqual({ name: "Shampoo", productCategoryId: "c1", description: null });
+    ).toEqual({
+      name: "Shampoo",
+      productCategoryId: "c1",
+      description: null,
+      isFeatured: false,
+    });
+  });
+
+  it("conserva si el producto se destaca en la landing", () => {
+    expect(
+      validateProductDraft({
+        name: "Shampoo",
+        productCategoryId: "c1",
+        description: "",
+        isFeatured: true,
+      }).data?.isFeatured,
+    ).toBe(true);
   });
 
   it("pide nombre y categoría", () => {

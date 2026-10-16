@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 
-import { getLandingCatalog, getLandingProducts } from "@/src/features/landing/api/landing-catalog";
+import {
+  getFeaturedLandingProducts,
+  getLandingCatalog,
+  getLandingProducts,
+} from "@/src/features/landing/api/landing-catalog";
 import { LandingPage } from "@/src/features/landing/landing-page";
 
 export const revalidate = 300;
@@ -12,6 +16,10 @@ export const metadata: Metadata = {
 };
 
 export default async function MarketingHomePage() {
-  const [catalog, products] = await Promise.all([getLandingCatalog(), getLandingProducts()]);
-  return <LandingPage catalog={catalog} products={products} />;
+  const [catalog, products, featuredProducts] = await Promise.all([
+    getLandingCatalog(),
+    getLandingProducts(),
+    getFeaturedLandingProducts(),
+  ]);
+  return <LandingPage catalog={catalog} products={products} featuredProducts={featuredProducts} />;
 }

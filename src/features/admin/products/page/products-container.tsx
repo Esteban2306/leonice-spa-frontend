@@ -248,6 +248,8 @@ export function ProductsContainer() {
     onOpen: (productId) => setSelected(productId),
     onToggleActive: (product, isActive) =>
       void actions.setProductActive(product, isActive),
+    onToggleFeatured: (product, isFeatured) =>
+      void actions.updateProduct(product.id, { isFeatured }),
     onAddVariant: (product) => setVariantTarget({ product, variant: null }),
     onDelete: confirmDeleteProduct,
     variant: variantHandlers,

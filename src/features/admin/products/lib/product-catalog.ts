@@ -201,6 +201,7 @@ export interface ProductDraft {
   name: string;
   productCategoryId: string;
   description: string;
+  isFeatured?: boolean;
 }
 
 export type ProductDraftErrors = Partial<Record<keyof ProductDraft, string>>;
@@ -211,6 +212,7 @@ export function validateProductDraft(draft: ProductDraft): {
     name: string;
     productCategoryId: string;
     description: string | null;
+    isFeatured: boolean;
   } | null;
 } {
   const errors: ProductDraftErrors = {};
@@ -231,6 +233,7 @@ export function validateProductDraft(draft: ProductDraft): {
       name,
       productCategoryId: draft.productCategoryId,
       description: description || null,
+      isFeatured: draft.isFeatured === true,
     },
   };
 }

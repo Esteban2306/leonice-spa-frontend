@@ -336,7 +336,8 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
     const result = validateProductDraft(draft);
     setErrors(result.errors);
     if (!result.data) return;
-    await props.onSave(product.id, result.data);
+    const { name, productCategoryId, description } = result.data;
+    await props.onSave(product.id, { name, productCategoryId, description });
   };
 
   return (
@@ -382,17 +383,34 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
               ? "recomendación"
               : "recomendaciones"}
           </p>
-          <label className="flex items-center gap-2 font-sans text-sm text-primary/85">
-            {product.isActive ? "A la venta" : "Desactivado"}
-            <CatalogSwitch
-              tone="dark"
-              checked={product.isActive}
-              label={
-                product.isActive ? "Desactivar producto" : "Activar producto"
-              }
-              onChange={(next) => props.onToggleActive(product, next)}
-            />
-          </label>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <label className="flex items-center gap-2 font-sans text-sm text-primary/85">
+              {product.isFeatured ? "Destacado en la landing" : "No destacado"}
+              <CatalogSwitch
+                tone="dark"
+                checked={product.isFeatured}
+                label={
+                  product.isFeatured
+                    ? "Quitar de destacados"
+                    : "Destacar en la landing"
+                }
+                onChange={(next) =>
+                  void props.onSave(product.id, { isFeatured: next })
+                }
+              />
+            </label>
+            <label className="flex items-center gap-2 font-sans text-sm text-primary/85">
+              {product.isActive ? "A la venta" : "Desactivado"}
+              <CatalogSwitch
+                tone="dark"
+                checked={product.isActive}
+                label={
+                  product.isActive ? "Desactivar producto" : "Activar producto"
+                }
+                onChange={(next) => props.onToggleActive(product, next)}
+              />
+            </label>
+          </div>
         </div>
       </header>
 
