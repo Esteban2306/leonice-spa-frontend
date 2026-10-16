@@ -34,6 +34,7 @@ import type {
   UpdateProductTagRequest,
   UpdateProductVariantRequest,
 } from "../types/products.types";
+import { prepareImageForUpload } from "../products/lib/prepare-image";
 
 export interface ProductActions {
   createProduct: (data: CreateProductRequest) => Promise<AdminProduct | null>;
@@ -176,8 +177,11 @@ export function useProductActions(): ProductActions {
         }),
       uploadVariantImage: (variantId: string, file: File) =>
         singleFlight(`variant:image:${variantId}`, async () => {
-          const outcome = await runAdminAction("uploadVariantImage", () =>
-            uploadImageAsync({ variantId, file }),
+          const outcome = await runAdminAction("uploadVariantImage", async () =>
+            uploadImageAsync({
+              variantId,
+              file: await prepareImageForUpload(file),
+            }),
           );
           return outcome.ok;
         }),
