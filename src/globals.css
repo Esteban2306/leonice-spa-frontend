@@ -45,6 +45,7 @@
   --color-primary: var(--primary);
   --color-tertiary: var(--tertiary);
   --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-tertiary-ink: var(--tertiary-ink);
   --color-quaternary: var(--quaternary);
   --color-quaternary-foreground: var(--quaternary-foreground);
   --color-popover-foreground: var(--popover-foreground);
@@ -72,6 +73,7 @@
   --secondary: #062112;
   --secondary-foreground: #f2ebdb;
   --tertiary: #bf9250;
+  --tertiary-ink: #7d5a1e;
   --tertiary-foreground: #062112;
   --quaternary: #e0bc87;
   --quaternary-foreground: #062112;

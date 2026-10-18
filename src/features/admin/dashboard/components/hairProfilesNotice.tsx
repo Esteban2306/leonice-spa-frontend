@@ -94,7 +94,7 @@ export function HairProfilesNotice({
         </span>
         <ChevronDown
           className={cn(
-            "size-5 shrink-0 text-secondary/60 transition-transform",
+            "size-5 shrink-0 text-secondary/70 transition-transform",
             isExpanded && "rotate-180",
           )}
         />

@@ -144,7 +144,7 @@ function TagsEditor({
   return (
     <div className="flex flex-col gap-3">
       {visibleTags.length === 0 ? (
-        <p className="font-sans text-sm text-secondary/60">
+        <p className="font-sans text-sm text-secondary/70">
           Aún no hay etiquetas. Crea la primera aquí abajo.
         </p>
       ) : (
@@ -248,7 +248,7 @@ function RecommendationsEditor({
   return (
     <div className="flex flex-col gap-3">
       {detail.recommendations.length === 0 ? (
-        <p className="font-sans text-sm text-secondary/60">
+        <p className="font-sans text-sm text-secondary/70">
           Todavía no está asociado a ningún servicio. Elige los servicios para
           los que recomiendas este producto.
         </p>
@@ -264,7 +264,7 @@ function RecommendationsEditor({
                   "font-sans text-sm",
                   recommendation.treatment.isActive
                     ? "text-secondary"
-                    : "text-secondary/55",
+                    : "text-secondary/70",
                 )}
               >
                 {recommendation.treatment.name}
@@ -274,7 +274,7 @@ function RecommendationsEditor({
                 type="button"
                 aria-label={`Quitar recomendación en ${recommendation.treatment.name}`}
                 onClick={() => onRemove(recommendation.id)}
-                className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/55 hover:bg-red-50 hover:text-red-700"
+                className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-red-50 hover:text-red-700"
               >
                 <X className="size-4" />
               </button>
@@ -496,7 +496,7 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
               ))}
             </ul>
           )}
-          <p className="font-sans text-xs text-secondary/55">
+          <p className="font-sans text-xs text-secondary/70">
             Toca o arrastra una imagen sobre la casilla para subir la foto (JPG,
             PNG o WebP, hasta 5 MB). La primera foto activa es la portada.
           </p>

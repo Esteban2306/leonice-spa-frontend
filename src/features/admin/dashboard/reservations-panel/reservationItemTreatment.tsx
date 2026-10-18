@@ -10,7 +10,7 @@ interface ReservationItemTreatmentProps {
   clientName: string;
 }
 
-const LABEL = "font-sans text-xs uppercase tracking-[0.18em] text-secondary/50";
+const LABEL = "font-sans text-xs uppercase tracking-[0.18em] text-secondary/70";
 
 export function ReservationItemTreatment({
   item,
@@ -26,7 +26,7 @@ export function ReservationItemTreatment({
         <p className="mt-2 font-sans text-lg leading-7 text-secondary">
           {item.treatmentName}
         </p>
-        <p className="mt-1 font-sans text-sm text-secondary/55">
+        <p className="mt-1 font-sans text-sm text-secondary/70">
           {item.durationMinutes} min · {item.categoryLabel}
         </p>
       </div>
@@ -57,7 +57,7 @@ export function ReservationItemTreatment({
                 clientName={clientName}
               />
             ) : (
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-dashed border-tertiary/40 p-1 text-center font-sans text-[10px] leading-tight text-secondary/50">
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-dashed border-tertiary/40 p-1 text-center font-sans text-[10px] leading-tight text-secondary/70">
                 Sin comprobante
               </div>
             )}

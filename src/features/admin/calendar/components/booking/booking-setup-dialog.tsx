@@ -171,12 +171,12 @@ export function BookingSetupDialog({
       >
         <div className="flex max-h-56 flex-col gap-1.5 overflow-y-auto pr-1">
           {isLoadingCatalog && (
-            <p className="font-sans text-xs text-secondary/55">
+            <p className="font-sans text-xs text-secondary/70">
               Cargando servicios…
             </p>
           )}
           {!isLoadingCatalog && visibleTreatments.length === 0 && (
-            <p className="font-sans text-xs text-secondary/55">
+            <p className="font-sans text-xs text-secondary/70">
               Esta categoría no tiene servicios activos.
             </p>
           )}
@@ -199,7 +199,7 @@ export function BookingSetupDialog({
                   <span className="block truncate font-sans text-sm text-secondary">
                     {treatment.name}
                   </span>
-                  <span className="block font-sans text-xs text-secondary/55">
+                  <span className="block font-sans text-xs text-secondary/70">
                     {treatmentDuration(treatment)} min
                     {price ? ` · ${price}` : ""}
                   </span>
@@ -218,7 +218,7 @@ export function BookingSetupDialog({
 
       {selectedServices.length > 0 && (
         <div className="rounded-2xl border border-tertiary/30 bg-white/70 p-3">
-          <p className="font-sans text-xs uppercase tracking-[0.16em] text-secondary/55">
+          <p className="font-sans text-xs uppercase tracking-[0.16em] text-secondary/70">
             {kind === "combo" ? "Combo" : "Seleccionado"} ·{" "}
             {totalDuration(selectedServices)} min
           </p>
@@ -243,7 +243,7 @@ export function BookingSetupDialog({
             </div>
           )}
           {kind === "combo" && selectedServices.length < 2 && (
-            <p className="mt-2 font-sans text-xs text-secondary/60">
+            <p className="mt-2 font-sans text-xs text-secondary/70">
               Agrega un servicio de otra categoría para formar el combo.
             </p>
           )}

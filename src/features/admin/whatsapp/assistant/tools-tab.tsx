@@ -81,7 +81,7 @@ export function ToolsTab({
                 <p className="mt-0.5 font-sans text-sm text-secondary/75">
                   {tool.description}
                 </p>
-                <p className="mt-1 font-mono text-[11px] text-secondary/60">
+                <p className="mt-1 font-mono text-[11px] text-secondary/70">
                   {tool.httpMethod} {toolPath(tool.endpointUrl)}
                 </p>
                 <div className="mt-1.5 flex flex-wrap gap-1.5">

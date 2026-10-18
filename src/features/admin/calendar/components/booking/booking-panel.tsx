@@ -32,7 +32,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", {
 });
 
 const SECTION_LABEL =
-  "font-sans text-xs uppercase tracking-[0.16em] text-secondary/50";
+  "font-sans text-xs uppercase tracking-[0.16em] text-secondary/70";
 
 export function BookingPanel({
   booking,
@@ -71,12 +71,12 @@ export function BookingPanel({
         {!hasDay && (
           <div className="flex min-h-48 flex-1 flex-col items-center justify-center text-center">
             <span className="mb-3 grid size-10 place-items-center rounded-full bg-secondary/5">
-              <CalendarSearch className="size-4 text-secondary/50" />
+              <CalendarSearch className="size-4 text-secondary/70" />
             </span>
             <p className="font-sans text-sm text-secondary">
               Los días en verde tienen horario para lo que quieres agendar.
             </p>
-            <p className="mt-1 max-w-60 font-sans text-xs text-secondary/50">
+            <p className="mt-1 max-w-60 font-sans text-xs text-secondary/70">
               Los demás están deshabilitados: cerrados, sin cupo o fuera del
               plazo de reserva.
             </p>

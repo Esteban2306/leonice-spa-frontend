@@ -89,7 +89,7 @@ function Cover({ product, size }: { product: AdminProduct; size: number }) {
 function PhotoCoverage({ product }: { product: AdminProduct }) {
   const { withPhoto, total } = photoCoverage(product);
   if (total === 0)
-    return <span className="font-sans text-sm text-secondary/45">—</span>;
+    return <span className="font-sans text-sm text-secondary/70">—</span>;
   const complete = withPhoto === total;
   return (
     <span
@@ -143,7 +143,7 @@ function SortHeader({
         }
         className={cn(
           "-mx-1 inline-flex cursor-pointer items-center gap-1 rounded-full px-1 font-sans leading-none text-xs tracking-[0.12em] uppercase transition-colors hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary",
-          isActive ? "text-secondary" : "text-secondary/55",
+          isActive ? "text-secondary" : "text-secondary/70",
         )}
       >
         {label}
@@ -169,7 +169,7 @@ function ProductMenu({
       trigger={
         <button
           type="button"
-          className="grid size-9 cursor-pointer place-items-center rounded-full text-secondary/60 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+          className="grid size-9 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
         >
           <Ellipsis className="size-4.5" />
         </button>
@@ -291,7 +291,7 @@ function ExpandButton({
           : `Ver variantes de ${product.name}`
       }
       onClick={onToggle}
-      className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/60 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+      className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
     >
       <ChevronDown
         className={cn(
@@ -331,7 +331,7 @@ export function ProductsTable({
               />
               <th
                 scope="col"
-                className="hidden py-3 pr-3 font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/55 uppercase lg:table-cell"
+                className="hidden py-3 pr-3 font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/70 uppercase lg:table-cell"
               >
                 Categoría
               </th>
@@ -344,7 +344,7 @@ export function ProductsTable({
               />
               <th
                 scope="col"
-                className="py-3 pr-3 font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/55 uppercase"
+                className="py-3 pr-3 font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/70 uppercase"
               >
                 Fotos
               </th>
@@ -357,7 +357,7 @@ export function ProductsTable({
               />
               <th
                 scope="col"
-                className="py-3 pr-4 text-right font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/55 uppercase"
+                className="py-3 pr-4 text-right font-sans text-xs leading-none font-normal tracking-[0.12em] text-secondary/70 uppercase"
               >
                 A la venta
               </th>
@@ -395,7 +395,7 @@ export function ProductsTable({
                             "block max-w-full cursor-pointer truncate text-left font-sans text-[15px] font-semibold underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary",
                             product.isActive
                               ? "text-secondary"
-                              : "text-secondary/55",
+                              : "text-secondary/70",
                           )}
                         >
                           {product.name}
@@ -412,7 +412,7 @@ export function ProductsTable({
                             />
                           </span>
                         )}
-                        <p className="truncate font-sans text-xs text-secondary/60">
+                        <p className="truncate font-sans text-xs text-secondary/70">
                           {brands.length > 0 ? brands.join(" · ") : "Sin marca"}
                           {" · "}
                           {product.variants.length}{" "}
@@ -436,7 +436,7 @@ export function ProductsTable({
                   <td className="py-3 pr-3">
                     <PhotoCoverage product={product} />
                   </td>
-                  <td className="hidden py-3 pr-3 font-sans text-sm text-secondary/60 tabular-nums xl:table-cell">
+                  <td className="hidden py-3 pr-3 font-sans text-sm text-secondary/70 tabular-nums xl:table-cell">
                     {UPDATED_FORMAT.format(new Date(product.updatedAt))}
                   </td>
                   <td className="py-3 pr-4">
@@ -495,12 +495,12 @@ export function ProductsTable({
                     onClick={() => handlers.onOpen(product.id)}
                     className={cn(
                       "block max-w-full cursor-pointer text-left font-sans text-[15px] leading-snug font-semibold",
-                      product.isActive ? "text-secondary" : "text-secondary/55",
+                      product.isActive ? "text-secondary" : "text-secondary/70",
                     )}
                   >
                     {product.name}
                   </button>
-                  <p className="font-sans text-xs text-secondary/60">
+                  <p className="font-sans text-xs text-secondary/70">
                     {product.category.name}
                   </p>
                   <p className="mt-1 font-sans text-sm text-secondary tabular-nums">

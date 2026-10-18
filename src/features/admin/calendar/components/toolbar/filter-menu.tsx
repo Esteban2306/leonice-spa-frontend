@@ -35,14 +35,14 @@ export function FilterMenu({
         sideOffset={8}
         className="max-h-[70vh] w-72 overflow-y-auto rounded-2xl border border-tertiary/30 bg-primary p-2"
       >
-        <p className="px-2 pb-1 pt-1 font-sans text-[11px] leading-4 text-secondary/50">
+        <p className="px-2 pb-1 pt-1 font-sans text-[11px] leading-4 text-secondary/70">
           Las canceladas se ocultan salvo que actives el filtro
           &quot;Canceladas&quot;.
         </p>
 
         {CALENDAR_FILTER_GROUPS.map((group) => (
           <div key={group.id} className="py-1">
-            <p className="px-2 py-1 font-sans text-[10px] uppercase tracking-[0.18em] text-secondary/45">
+            <p className="px-2 py-1 font-sans text-[10px] uppercase tracking-[0.18em] text-secondary/70">
               {group.label}
             </p>
 

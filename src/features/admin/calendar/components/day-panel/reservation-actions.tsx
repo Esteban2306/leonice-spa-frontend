@@ -159,7 +159,7 @@ export function ReservationActions({
       )}
 
       {status === "CONFIRMADA" && !isToday && (
-        <p className="text-center font-sans text-[11px] text-secondary/50">
+        <p className="text-center font-sans text-[11px] text-secondary/70">
           El check-in se habilita el día de la cita.
         </p>
       )}

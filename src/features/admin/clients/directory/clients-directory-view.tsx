@@ -82,7 +82,7 @@ export function ClientsDirectoryView({
         <section className="flex flex-col gap-4 rounded-[2rem] bg-[#F7F1E3] p-4 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full sm:max-w-md">
-              <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-secondary/45" />
+              <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-secondary/70" />
               <input
                 type="search"
                 value={query}
@@ -97,21 +97,21 @@ export function ClientsDirectoryView({
                   type="button"
                   onClick={() => onQueryChange("")}
                   aria-label="Limpiar búsqueda"
-                  className="absolute right-3 top-1/2 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-secondary/50 hover:bg-secondary/5"
+                  className="absolute right-3 top-1/2 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5"
                 >
                   <X className="size-4" />
                 </button>
               )}
             </div>
 
-            <p className="inline-flex items-center gap-2 font-sans text-sm text-secondary/60">
+            <p className="inline-flex items-center gap-2 font-sans text-sm text-secondary/70">
               <Users className="size-4" />
               {total} {total === 1 ? "cliente" : "clientes"}
             </p>
           </div>
 
           {isQueryTooShort && (
-            <p className="font-sans text-xs text-secondary/55">
+            <p className="font-sans text-xs text-secondary/70">
               Escribe al menos 2 letras o 4 dígitos para filtrar.
             </p>
           )}
@@ -146,7 +146,7 @@ export function ClientsDirectoryView({
           </div>
 
           {!isLoading && !isError && clients.length === 0 && (
-            <p className="py-12 text-center font-sans text-secondary/60">
+            <p className="py-12 text-center font-sans text-secondary/70">
               {query
                 ? "No hay clientes que coincidan con la búsqueda."
                 : "Aún no hay clientes registrados."}
@@ -155,7 +155,7 @@ export function ClientsDirectoryView({
 
           {totalPages > 1 && (
             <footer className="flex items-center justify-end gap-3 border-t border-tertiary/25 pt-4">
-              <span className="font-sans text-sm text-secondary/60">
+              <span className="font-sans text-sm text-secondary/70">
                 Página {page} de {totalPages}
               </span>
               <button

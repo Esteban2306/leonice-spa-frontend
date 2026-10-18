@@ -41,7 +41,7 @@ export function ReservationPanelDesktop({
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <ReservationGroupBadge reservation={reservation} />
               {isCombo && (
-                <span className="font-sans text-xs text-secondary/60">
+                <span className="font-sans text-xs text-secondary/70">
                   {items.length} tratamientos
                 </span>
               )}
@@ -60,7 +60,7 @@ export function ReservationPanelDesktop({
         <button
           type="button"
           onClick={() => onViewClient(clientId)}
-          className="mt-3 cursor-pointer font-sans text-sm text-tertiary underline decoration-tertiary/50 underline-offset-4 hover:text-secondary"
+          className="mt-3 cursor-pointer font-sans text-sm text-tertiary-ink underline decoration-tertiary/50 underline-offset-4 hover:text-secondary"
         >
           Historial en CRM
         </button>
@@ -73,7 +73,7 @@ export function ReservationPanelDesktop({
             className="grid divide-y divide-tertiary/25 lg:grid-cols-[1fr_1.3fr_14rem] lg:divide-x lg:divide-y-0"
           >
             <section className="p-4 sm:p-5">
-              <span className="font-sans text-xs uppercase tracking-[0.18em] text-secondary/50">
+              <span className="font-sans text-xs uppercase tracking-[0.18em] text-secondary/70">
                 Fecha
               </span>
               <div className="mt-4">

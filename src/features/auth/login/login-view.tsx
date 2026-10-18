@@ -26,12 +26,12 @@ export function LoginView({
   } = form;
 
   return (
-    <section className="w-full max-w-md bg-black/20 p-10 rounded-2xl">
+    <section className="w-full max-w-md rounded-2xl bg-white/45 p-10 shadow-[0_24px_60px_-30px_rgb(6_33_18/0.35)]">
       <div className="mb-8">
         <div className="flex justify-center">
           <Image
             src={leoniceLogo}
-            alt="Logo de lonice arenas"
+            alt="Leonice Arenas Spa Capilar"
             className="max-w-30"
           ></Image>
         </div>
@@ -40,7 +40,7 @@ export function LoginView({
           Administración
         </h1>
 
-        <p className="mt-2 text-sm text-muted-foreground font-sans">
+        <p className="mt-2 font-sans text-sm text-[#062112]/80">
           Ingresa para acceder al panel administrativo.
         </p>
       </div>

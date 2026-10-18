@@ -63,12 +63,12 @@ export function BookingClientForm({
       {picked ? (
         <div className="flex items-center justify-between gap-3 rounded-2xl border border-secondary/15 bg-white p-3">
           <span className="flex min-w-0 items-center gap-2">
-            <UserRound className="size-4 shrink-0 text-secondary/60" />
+            <UserRound className="size-4 shrink-0 text-secondary/70" />
             <span className="min-w-0">
               <span className="block truncate font-sans text-sm text-secondary">
                 {picked.name}
               </span>
-              <span className="block font-sans text-xs text-secondary/55">
+              <span className="block font-sans text-xs text-secondary/70">
                 {picked.phone}
               </span>
             </span>
@@ -78,7 +78,7 @@ export function BookingClientForm({
               type="button"
               onClick={() => setPicked(null)}
               aria-label="Elegir otro cliente"
-              className="grid size-7 cursor-pointer place-items-center rounded-full text-secondary/60 hover:bg-secondary/5"
+              className="grid size-7 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5"
             >
               <X className="size-3.5" />
             </button>
@@ -88,7 +88,7 @@ export function BookingClientForm({
         <>
           <Field label="Cliente existente" htmlFor="booking-client-search">
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-secondary/45" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-secondary/70" />
               <input
                 id="booking-client-search"
                 type="search"
@@ -103,12 +103,12 @@ export function BookingClientForm({
           {search.query.trim().length >= 2 && (
             <div className="flex max-h-40 flex-col gap-1 overflow-y-auto">
               {search.isSearching && (
-                <p className="px-1 font-sans text-xs text-secondary/55">
+                <p className="px-1 font-sans text-xs text-secondary/70">
                   Buscando…
                 </p>
               )}
               {!search.isSearching && search.results.length === 0 && (
-                <p className="px-1 font-sans text-xs text-secondary/55">
+                <p className="px-1 font-sans text-xs text-secondary/70">
                   Sin coincidencias. Registra los datos del cliente nuevo abajo.
                 </p>
               )}
@@ -126,7 +126,7 @@ export function BookingClientForm({
                   className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-left font-sans text-sm text-secondary hover:bg-quaternary/25"
                 >
                   {client.name}
-                  <span className="text-xs text-secondary/55">
+                  <span className="text-xs text-secondary/70">
                     {client.phone}
                   </span>
                 </button>
@@ -134,7 +134,7 @@ export function BookingClientForm({
             </div>
           )}
 
-          <p className="font-sans text-xs uppercase tracking-[0.16em] text-secondary/45">
+          <p className="font-sans text-xs uppercase tracking-[0.16em] text-secondary/70">
             O cliente nuevo
           </p>
           <Field label="Teléfono" htmlFor="booking-phone">

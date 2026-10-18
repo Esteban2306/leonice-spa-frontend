@@ -38,17 +38,17 @@ export function PaymentsTab({ clientName, deposits, credits, isLoading }: Paymen
         </div>
         <div className="rounded-[2rem] border border-tertiary/40 bg-quaternary/30 p-5 text-secondary">
           <Wallet className="size-5" />
-          <p className="mt-3 font-sans text-xs uppercase tracking-[0.18em] text-secondary/60">Crédito disponible</p>
+          <p className="mt-3 font-sans text-xs uppercase tracking-[0.18em] text-secondary/70">Crédito disponible</p>
           <p className="mt-1 font-heading text-3xl">{formatCopFromThousands(totalCredit)}</p>
-          <p className="mt-1 font-sans text-xs text-secondary/60">Se aplica automáticamente en su próxima reserva.</p>
+          <p className="mt-1 font-sans text-xs text-secondary/70">Se aplica automáticamente en su próxima reserva.</p>
         </div>
       </section>
 
       <section className="flex flex-col gap-3 rounded-[2rem] border border-tertiary/25 bg-[#FCF6EB] p-5">
         <h2 className="font-heading text-xl text-secondary">Depósitos</h2>
-        {isLoading && <p className="font-sans text-sm text-secondary/60">Cargando pagos…</p>}
+        {isLoading && <p className="font-sans text-sm text-secondary/70">Cargando pagos…</p>}
         {!isLoading && deposits.length === 0 && (
-          <p className="font-sans text-sm text-secondary/60">Aún no hay depósitos registrados.</p>
+          <p className="font-sans text-sm text-secondary/70">Aún no hay depósitos registrados.</p>
         )}
         <ul className="flex flex-col gap-2">
           {deposits.map((deposit) => (
@@ -56,13 +56,13 @@ export function PaymentsTab({ clientName, deposits, credits, isLoading }: Paymen
               {deposit.imageUrl ? (
                 <DepositProofViewer proofUrl={deposit.imageUrl} clientName={clientName} />
               ) : (
-                <span className="grid size-14 shrink-0 place-items-center rounded-lg border border-dashed border-tertiary/40 text-center font-sans text-[10px] text-secondary/50">Sin imagen</span>
+                <span className="grid size-14 shrink-0 place-items-center rounded-lg border border-dashed border-tertiary/40 text-center font-sans text-[10px] text-secondary/70">Sin imagen</span>
               )}
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-sans text-sm text-secondary">
                   {deposit.reservation.treatment.name} · {formatBogotaDayLabel(deposit.reservation.scheduledStart)}
                 </span>
-                <span className="block font-sans text-xs text-secondary/55">
+                <span className="block font-sans text-xs text-secondary/70">
                   {deposit.coverage ? COVERAGE[deposit.coverage] : "Cobertura por definir"}
                   {deposit.amount ? ` · ${formatCopFromThousands(deposit.amount)}` : ""}
                   {deposit.rejectionReason ? ` · ${deposit.rejectionReason}` : ""}

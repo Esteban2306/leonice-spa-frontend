@@ -22,10 +22,10 @@ export function BookingRescheduleConfirm({
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-2xl border border-secondary/10 bg-white/70 p-3 font-sans text-sm text-secondary">
-        <p className="text-xs uppercase tracking-[0.16em] text-secondary/50">
+        <p className="text-xs uppercase tracking-[0.16em] text-secondary/70">
           Cambio
         </p>
-        <p className="mt-1 text-secondary/60 line-through">{fromLabel}</p>
+        <p className="mt-1 text-secondary/70 line-through">{fromLabel}</p>
         <p className="mt-0.5 font-medium">{toLabel}</p>
       </div>
 

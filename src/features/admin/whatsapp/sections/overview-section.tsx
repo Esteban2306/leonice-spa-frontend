@@ -60,7 +60,7 @@ function QuickLink({
         >
           {value}
         </span>
-        <ArrowUpRight className="size-4 text-secondary/50 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        <ArrowUpRight className="size-4 text-secondary/70 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
       </span>
     </Link>
   );

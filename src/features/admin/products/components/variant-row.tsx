@@ -94,7 +94,7 @@ export function VariantRow({
           trigger={
             <button
               type="button"
-              className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/60 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+              className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
             >
               <Ellipsis className="size-4.5" />
             </button>

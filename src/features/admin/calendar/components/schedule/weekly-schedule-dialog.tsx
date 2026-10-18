@@ -37,7 +37,7 @@ interface WeeklyScheduleDialogProps {
 }
 
 const ICON_BUTTON =
-  "grid size-9 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/60 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary disabled:cursor-not-allowed disabled:opacity-40";
+  "grid size-9 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary disabled:cursor-not-allowed disabled:opacity-40";
 
 function WeeklyScheduleForm({
   base,
@@ -120,7 +120,7 @@ function WeeklyScheduleForm({
 
               <div className="flex min-w-0 flex-1 flex-col gap-2">
                 {isClosed && (
-                  <p className="hidden pt-2 font-sans text-sm text-secondary/60 sm:block">
+                  <p className="hidden pt-2 font-sans text-sm text-secondary/70 sm:block">
                     Cerrado
                   </p>
                 )}
@@ -145,7 +145,7 @@ function WeeklyScheduleForm({
                     />
                     <span
                       aria-hidden="true"
-                      className="font-sans text-secondary/50"
+                      className="font-sans text-secondary/70"
                     >
                       –
                     </span>

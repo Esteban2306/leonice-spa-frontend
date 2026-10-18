@@ -127,7 +127,7 @@ export function TreatmentVideoSlot({
           </button>
         )}
       </div>
-      <p className="font-sans text-xs text-secondary/60">
+      <p className="font-sans text-xs text-secondary/70">
         Se muestra en la página pública del servicio. Un video vertical corto del procedimiento se ve mejor.
       </p>
     </div>

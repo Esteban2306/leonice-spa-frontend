@@ -25,11 +25,11 @@ const BIRTH_FORMATTER = new Intl.DateTimeFormat("es-CO", {
 function ReadonlyField({ label, value, onCopy }: { label: string; value: string; onCopy?: () => void }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="font-sans text-xs text-secondary/55">{label}</span>
+      <span className="font-sans text-xs text-secondary/70">{label}</span>
       <div className="flex h-11 items-center justify-between rounded-xl border border-secondary/10 bg-white/60 px-3 font-sans text-sm text-secondary">
         <span className="truncate">{value}</span>
         {onCopy && (
-          <button type="button" onClick={onCopy} aria-label={`Copiar ${label}`} className="grid size-7 cursor-pointer place-items-center rounded-full text-secondary/50 hover:bg-secondary/5 hover:text-secondary">
+          <button type="button" onClick={onCopy} aria-label={`Copiar ${label}`} className="grid size-7 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5 hover:text-secondary">
             <Copy className="size-3.5" />
           </button>
         )}
@@ -43,7 +43,7 @@ export function ProfileCard({ client, todayKey, onUpdate, onCopy }: ProfileCardP
     <CardShell
       title="Perfil"
       aside={
-        <span className="inline-flex items-center gap-1 font-sans text-[11px] text-secondary/50">
+        <span className="inline-flex items-center gap-1 font-sans text-[11px] text-secondary/70">
           <Lock className="size-3" /> Edición en línea
         </span>
       }

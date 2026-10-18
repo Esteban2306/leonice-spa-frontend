@@ -45,7 +45,7 @@ export function HistoryTab({ reservations, status, query, onStatusChange, onQuer
         <h2 className="font-heading text-xl text-secondary">Historial · últimas {reservations.length}</h2>
         <div className="flex flex-col gap-2 sm:flex-row">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-secondary/45" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-secondary/70" />
             <input type="search" value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Buscar tratamiento…" aria-label="Buscar en el historial" className={`${INPUT_CLASS} pl-9 sm:w-56`} />
           </div>
           <select value={status} onChange={(event) => onStatusChange(event.target.value as HistoryStatusFilter)} aria-label="Filtrar por estado" className={`${INPUT_CLASS} sm:w-48`}>
@@ -59,7 +59,7 @@ export function HistoryTab({ reservations, status, query, onStatusChange, onQuer
       </header>
 
       {rows.length === 0 ? (
-        <p className="py-8 text-center font-sans text-sm text-secondary/60">No hay reservas con ese filtro.</p>
+        <p className="py-8 text-center font-sans text-sm text-secondary/70">No hay reservas con ese filtro.</p>
       ) : (
         <ol className="flex flex-col divide-y divide-tertiary/20">
           {rows.map((reservation) => (
@@ -71,7 +71,7 @@ export function HistoryTab({ reservations, status, query, onStatusChange, onQuer
                     <span className="block font-sans text-sm text-secondary">
                       {describeReservationStatus(reservation.status, reservation.cancellationSource)} · {reservation.treatment}
                     </span>
-                    <span className="block font-sans text-xs text-secondary/55">
+                    <span className="block font-sans text-xs text-secondary/70">
                       {formatBogotaTime(reservation.scheduledStart)} · {reservation.category} · {formatCopFromThousands(reservation.finalPrice)}
                       {reservation.comboGroupId ? " · combo" : ""}
                     </span>

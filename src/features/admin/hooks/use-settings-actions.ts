@@ -16,6 +16,10 @@ export interface SettingsActions {
     data: CreateNotificationRecipientRequest,
   ) => Promise<boolean>;
   renameRecipient: (recipientId: string, name: string) => Promise<boolean>;
+  setRecipientEmail: (
+    recipientId: string,
+    email: string | null,
+  ) => Promise<boolean>;
   setRecipientActive: (
     recipientId: string,
     isActive: boolean,
@@ -54,6 +58,16 @@ export function useSettingsActions(): SettingsActions {
             (
               await runAdminAction("updateRecipient", () =>
                 updateAsync({ recipientId, data: { name } }),
+              )
+            ).ok,
+        ),
+      setRecipientEmail: (recipientId: string, email: string | null) =>
+        singleFlight(
+          `recipient:update:${recipientId}`,
+          async () =>
+            (
+              await runAdminAction("updateRecipientEmail", () =>
+                updateAsync({ recipientId, data: { email } }),
               )
             ).ok,
         ),

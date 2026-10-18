@@ -27,7 +27,7 @@ const PRIMARY =
 const SECONDARY =
   "inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-4 font-sans text-sm text-red-700 transition-colors hover:bg-red-50";
 
-const NOTE = "font-sans text-xs leading-5 text-secondary/60";
+const NOTE = "font-sans text-xs leading-5 text-secondary/70";
 
 export function ReservationItemActions({
   item,

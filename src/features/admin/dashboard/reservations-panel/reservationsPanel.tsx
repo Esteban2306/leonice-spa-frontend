@@ -117,7 +117,7 @@ export function ReservationsPanel({
             </span>
           </div>
 
-          <p className="mt-2 max-w-2xl font-sans text-lg text-secondary/60">
+          <p className="mt-2 max-w-2xl font-sans text-lg text-secondary/70">
             {config.description}
           </p>
         </div>
@@ -134,7 +134,7 @@ export function ReservationsPanel({
         {isInitialLoad && (
           <p
             role="status"
-            className="py-10 text-center font-sans text-secondary/60"
+            className="py-10 text-center font-sans text-secondary/70"
           >
             Cargando reservas…
           </p>
@@ -157,7 +157,7 @@ export function ReservationsPanel({
         )}
 
         {isEmpty && (
-          <p className="py-10 text-center font-sans text-secondary/60">
+          <p className="py-10 text-center font-sans text-secondary/70">
             {config.emptyMessage}
           </p>
         )}
@@ -176,7 +176,7 @@ export function ReservationsPanel({
 
       {total > 0 && (
         <footer className="flex flex-col gap-5 border-t border-tertiary/30 pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-sans text-sm text-secondary/60">
+          <p className="font-sans text-sm text-secondary/70">
             Mostrando {firstItem}–{lastItem} de {total}{" "}
             {total === 1 ? "cliente" : "clientes"}
           </p>

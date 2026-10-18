@@ -35,11 +35,11 @@ export function HealthCard({ client, hasConsent, isSaving, onUpdate, onRecordCon
         <>
           <dl className="grid grid-cols-1 gap-3 font-sans text-sm">
             <div className="rounded-xl border border-secondary/10 bg-white p-3">
-              <dt className="text-xs text-secondary/55">Alergias</dt>
+              <dt className="text-xs text-secondary/70">Alergias</dt>
               <dd className="mt-1 whitespace-pre-line text-secondary">{client.allergies || "Sin alergias registradas"}</dd>
             </div>
             <div className="rounded-xl border border-secondary/10 bg-white p-3">
-              <dt className="text-xs text-secondary/55">Embarazo</dt>
+              <dt className="text-xs text-secondary/70">Embarazo</dt>
               <dd className="mt-1 text-secondary">{client.isPregnant ? "Sí" : "No"}</dd>
             </div>
           </dl>

@@ -29,7 +29,7 @@ export function DayScheduleSection({
 }: DayScheduleSectionProps) {
   if (isLoading || !schedule) {
     return (
-      <p className="px-1 font-sans text-xs text-secondary/50">
+      <p className="px-1 font-sans text-xs text-secondary/70">
         {isLoading ? "Cargando horario del día…" : null}
       </p>
     );
@@ -50,7 +50,7 @@ export function DayScheduleSection({
           </>
         ) : (
           <>
-            <Clock className="size-4 text-secondary/60" />
+            <Clock className="size-4 text-secondary/70" />
             <span>
               Horario:{" "}
               {schedule.windows
@@ -69,7 +69,7 @@ export function DayScheduleSection({
           <span className="font-sans text-xs text-secondary">
             {describeException(exception)}
             {exception.reason && (
-              <span className="block text-secondary/55">
+              <span className="block text-secondary/70">
                 {exception.reason}
               </span>
             )}

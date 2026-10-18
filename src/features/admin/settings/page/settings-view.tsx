@@ -15,7 +15,7 @@ export function SettingsView({ recipients, password }: SettingsViewProps) {
         <header className="rounded-[2rem] bg-secondary p-6 text-primary sm:p-8">
           <h1 className="font-heading text-4xl sm:text-5xl">Ajustes</h1>
           <p className="mt-2 max-w-xl font-sans text-sm text-primary/70">
-            Quién del equipo recibe los avisos del spa por WhatsApp y la
+            Quién del equipo recibe los avisos del spa por WhatsApp o correo y la
             seguridad de tu cuenta.
           </p>
         </header>

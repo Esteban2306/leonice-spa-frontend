@@ -16,7 +16,7 @@ export function ActiveFilterChips({
 }: ActiveFilterChipsProps) {
   if (activeFilters.length === 0) {
     return (
-      <span className="inline-flex items-center gap-2 font-sans text-xs text-secondary/55">
+      <span className="inline-flex items-center gap-2 font-sans text-xs text-secondary/70">
         <ListFilter className="size-3.5" />
         Sin filtros activos
       </span>

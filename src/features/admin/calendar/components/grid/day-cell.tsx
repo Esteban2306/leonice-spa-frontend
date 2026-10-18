@@ -91,7 +91,7 @@ export function DayCell({
       }${schedule?.isClosed ? ", día bloqueado" : schedule?.hasExceptions ? ", horario modificado" : ""}`}
       className={`flex w-full cursor-pointer flex-col rounded-xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary md:rounded-2xl ${
         LAYOUT[variant]
-      } ${tone} ${isOutsideMonth && !isSelected ? "opacity-50" : ""}`}
+      } ${tone} ${isOutsideMonth && !isSelected ? "opacity-70" : ""}`}
     >
       <span className={`flex items-start ${TOP_ROW[variant]}`}>
         <span className="flex items-center gap-2">
@@ -145,13 +145,13 @@ export function DayCell({
         ))}
 
         {hidden > 0 && (
-          <span className="px-1 font-sans text-[11px] opacity-60">
+          <span className="px-1 font-sans text-[11px] opacity-80">
             + {hidden} más
           </span>
         )}
 
         {total === 0 && !isOutsideMonth && (
-          <span className="px-1 font-sans text-[11px] italic opacity-40">
+          <span className="px-1 font-sans text-[11px] italic opacity-75">
             {schedule?.isClosed ? "Día bloqueado" : "Sin reservas"}
           </span>
         )}

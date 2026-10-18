@@ -60,7 +60,7 @@ export function InlinePrice({
         isSaving && "opacity-60",
       )}
     >
-      <span aria-hidden="true" className="font-sans text-sm text-secondary/50">
+      <span aria-hidden="true" className="font-sans text-sm text-secondary/70">
         $
       </span>
       <input

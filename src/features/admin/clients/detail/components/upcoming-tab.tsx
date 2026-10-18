@@ -12,7 +12,7 @@ interface UpcomingTabProps extends ReservationPanelHandlers {
 
 export function UpcomingTab({ reservations, isLoading, onNewReservation, ...handlers }: UpcomingTabProps) {
   if (isLoading && reservations.length === 0) {
-    return <p className="py-10 text-center font-sans text-sm text-secondary/60">Cargando citas…</p>;
+    return <p className="py-10 text-center font-sans text-sm text-secondary/70">Cargando citas…</p>;
   }
 
   if (reservations.length === 0) {

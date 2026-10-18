@@ -7,6 +7,7 @@ import {
   CircleX,
   Hourglass,
   Plus,
+  UserRound,
 } from "lucide-react";
 
 import {
@@ -18,6 +19,7 @@ import type {
   CreateNotificationRecipientRequest,
 } from "@/src/features/admin/types/settings.types";
 
+import { isPlausibleEmail, normalizeEmail } from "../lib/email";
 import { isPlausiblePhone } from "../lib/phone";
 import { RecipientRow } from "./recipient-row";
 
@@ -29,6 +31,7 @@ interface RecipientsCardProps {
   onRetry: () => void;
   onCreate: (data: CreateNotificationRecipientRequest) => Promise<boolean>;
   onRename: (recipientId: string, name: string) => Promise<boolean>;
+  onChangeEmail: (recipientId: string, email: string | null) => Promise<boolean>;
   onToggle: (recipientId: string, isActive: boolean) => Promise<boolean>;
 }
 
@@ -36,6 +39,7 @@ const NOTICES = [
   { icon: Hourglass, label: "Depósito vencido" },
   { icon: CalendarClock, label: "Reprogramación" },
   { icon: CircleX, label: "Cancelación de la clienta" },
+  { icon: UserRound, label: "Piden hablar con una persona" },
 ] as const;
 
 export function RecipientsCard({
@@ -46,21 +50,45 @@ export function RecipientsCard({
   onRetry,
   onCreate,
   onRename,
+  onChangeEmail,
   onToggle,
 }: RecipientsCardProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [attempted, setAttempted] = useState(false);
   const activeCount = recipients.filter((r) => r.isActive).length;
-  const canAdd = name.trim().length >= 2 && isPlausiblePhone(phone);
-  const showPhoneHint = phone.trim().length > 0 && !isPlausiblePhone(phone);
+  const nameError =
+    (attempted || name.length > 0) && name.trim().length < 2
+      ? "Escribe al menos 2 letras."
+      : null;
+  const phoneError =
+    (attempted || phone.trim().length > 0) && !isPlausiblePhone(phone)
+      ? "Revisa el número: incluye 10 dígitos o el indicativo."
+      : null;
+  const emailError =
+    email.trim().length > 0 && !isPlausibleEmail(email)
+      ? "Revisa el correo, por ejemplo recepcion@gmail.com."
+      : null;
+  const isValid =
+    name.trim().length >= 2 &&
+    isPlausiblePhone(phone) &&
+    (email.trim().length === 0 || isPlausibleEmail(email));
 
   const add = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!canAdd || isSaving) return;
-    const ok = await onCreate({ name: name.trim(), phone: phone.trim() });
+    setAttempted(true);
+    if (!isValid || isSaving) return;
+    const ok = await onCreate({
+      name: name.trim(),
+      phone: phone.trim(),
+      ...(email.trim() ? { email: normalizeEmail(email) } : {}),
+    });
     if (ok) {
       setName("");
       setPhone("");
+      setEmail("");
+      setAttempted(false);
     }
   };
 
@@ -80,19 +108,19 @@ export function RecipientsCard({
                 id="recipients-title"
                 className="font-heading text-2xl leading-tight text-secondary"
               >
-                Avisos por WhatsApp
+                Avisos al equipo
               </h2>
               <p className="font-sans text-sm text-secondary/70">
                 {activeCount === 1
-                  ? "1 número activo"
-                  : `${activeCount} números activos`}
+                  ? "1 destinatario activo"
+                  : `${activeCount} destinatarios activos`}
               </p>
             </div>
           </div>
         </div>
         <p className="font-sans text-sm text-secondary/75">
-          Estos números reciben un WhatsApp del sistema cuando pasa algo que el
-          equipo debe saber:
+          Estas personas reciben un WhatsApp del sistema, y un correo si lo
+          tienen registrado, cuando pasa algo que el equipo debe saber:
         </p>
         <ul className="flex flex-wrap gap-x-5 gap-y-1.5">
           {NOTICES.map(({ icon: Icon, label }) => (
@@ -100,7 +128,7 @@ export function RecipientsCard({
               key={label}
               className="inline-flex items-center gap-1.5 font-sans text-sm text-secondary"
             >
-              <Icon className="size-4 text-tertiary" strokeWidth={1.8} />
+              <Icon aria-hidden="true" className="size-4 text-tertiary" strokeWidth={1.8} />
               {label}
             </li>
           ))}
@@ -152,6 +180,7 @@ export function RecipientsCard({
               recipient={recipient}
               isBusy={isSaving}
               onRename={onRename}
+              onChangeEmail={onChangeEmail}
               onToggle={onToggle}
             />
           ))}
@@ -159,14 +188,15 @@ export function RecipientsCard({
       )}
 
       <form
+        noValidate
         onSubmit={(event) => void add(event)}
         className="flex flex-col gap-3 rounded-[1.5rem] border border-dashed border-tertiary/50 p-4"
       >
         <p className="font-sans text-sm font-semibold text-secondary">
-          Agregar un número
+          Agregar un destinatario
         </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Field label="Nombre" htmlFor="recipient-name">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <Field label="Nombre" htmlFor="recipient-name" error={nameError}>
             <input
               id="recipient-name"
               value={name}
@@ -176,15 +206,7 @@ export function RecipientsCard({
               className={INPUT_CLASS}
             />
           </Field>
-          <Field
-            label="WhatsApp"
-            htmlFor="recipient-phone"
-            hint={
-              showPhoneHint
-                ? "Revisa el número: incluye 10 dígitos o el indicativo."
-                : undefined
-            }
-          >
+          <Field label="WhatsApp" htmlFor="recipient-phone" error={phoneError}>
             <input
               id="recipient-phone"
               inputMode="tel"
@@ -196,6 +218,23 @@ export function RecipientsCard({
               className={`${INPUT_CLASS} tabular-nums`}
             />
           </Field>
+          <Field
+            label="Correo (opcional)"
+            htmlFor="recipient-email"
+            error={emailError}
+          >
+            <input
+              id="recipient-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              value={email}
+              maxLength={254}
+              placeholder="recepcion@gmail.com"
+              onChange={(event) => setEmail(event.target.value)}
+              className={INPUT_CLASS}
+            />
+          </Field>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-sans text-xs text-secondary/70">
@@ -204,7 +243,7 @@ export function RecipientsCard({
           </p>
           <button
             type="submit"
-            disabled={!canAdd || isSaving}
+            disabled={isSaving}
             className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-secondary px-5 font-sans text-sm font-medium text-primary transition-colors hover:bg-secondary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Plus className="size-4" strokeWidth={2} />

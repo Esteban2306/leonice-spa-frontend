@@ -52,7 +52,7 @@ export function KpiButton({
         {value}
       </span>
       <span className="font-sans text-sm">{label}</span>
-      {hint && <span className="font-sans text-xs opacity-60">{hint}</span>}
+      {hint && <span className="font-sans text-xs opacity-80">{hint}</span>}
     </button>
   );
 }

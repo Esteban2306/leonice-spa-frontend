@@ -143,11 +143,11 @@ function UsageCard({
                     <p className="text-secondary">
                       {PURPOSE_COPY[item.name] ?? item.name}
                     </p>
-                    <p className="font-mono text-[11px] text-secondary/60">
+                    <p className="font-mono text-[11px] text-secondary/70">
                       {item.source === "env" ? item.envKey : item.catalogName}
                     </p>
                     {item.source && (
-                      <p className="font-sans text-[11px] text-secondary/60">
+                      <p className="font-sans text-[11px] text-secondary/70">
                         {item.source === "env"
                           ? "Fijada en el servidor"
                           : "Enlazada por nombre"}

@@ -130,7 +130,7 @@ export function ServicesView(props: ServicesViewProps) {
                   )}
                 >
                   {category.name}
-                  <span className="ml-1.5 tabular-nums opacity-60">
+                  <span className="ml-1.5 tabular-nums opacity-80">
                     {treatmentsByCategory.get(category.id)?.length ?? 0}
                   </span>
                 </button>
@@ -153,7 +153,7 @@ export function ServicesView(props: ServicesViewProps) {
             <p className="font-heading text-2xl text-secondary">
               Aún no hay categorías
             </p>
-            <p className="max-w-md font-sans text-sm text-secondary/60">
+            <p className="max-w-md font-sans text-sm text-secondary/70">
               Crea la primera estación (por ejemplo Spa Capilar), agrégale
               capacidad y luego sus servicios.
             </p>

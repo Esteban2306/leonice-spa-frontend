@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+
+import { HttpError } from "@/src/lib/api/http-error";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { getBogotaDayKey } from "@/src/lib/date/bogota";
@@ -145,23 +147,26 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
 
   if (clientQuery.isLoading) {
     return (
-      <main className="grid min-h-full place-items-center bg-primary p-10 font-sans text-secondary/60">
+      <main className="grid min-h-full place-items-center bg-primary p-10 font-sans text-secondary/80" role="status">
         Cargando ficha del cliente…
       </main>
     );
   }
 
   if (!client) {
+    const notFound =
+      !clientQuery.isError ||
+      (clientQuery.error instanceof HttpError && clientQuery.error.status === 404);
     return (
       <main className="grid min-h-full place-items-center bg-primary p-10 text-center">
         <div className="flex flex-col items-center gap-3 font-sans text-secondary">
           <p>
-            {clientQuery.isError
-              ? "No pudimos cargar este cliente."
-              : "El cliente no existe."}
+            {notFound
+              ? "Este cliente no existe o fue eliminado."
+              : "No pudimos cargar este cliente."}
           </p>
           <div className="flex gap-2">
-            {clientQuery.isError && (
+            {!notFound && (
               <button
                 type="button"
                 onClick={() => void clientQuery.refetch()}

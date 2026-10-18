@@ -4,8 +4,10 @@ import { CalendarContainer } from "@/src/features/admin/calendar/page/calendar-c
 
 export default function CalendarPage() {
   return (
-    <Suspense>
-      <CalendarContainer />
-    </Suspense>
+    <main className="contents">
+      <Suspense>
+        <CalendarContainer />
+      </Suspense>
+    </main>
   );
 }

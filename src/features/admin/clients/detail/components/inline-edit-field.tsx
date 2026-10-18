@@ -42,7 +42,7 @@ export function InlineEditField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="font-sans text-xs text-secondary/55">
+      <label htmlFor={id} className="font-sans text-xs text-secondary/70">
         {label}
       </label>
       {isEditing ? (
@@ -66,7 +66,7 @@ export function InlineEditField({
           <button type="button" aria-label="Guardar" disabled={!isValid || isSaving} onClick={() => void save()} className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full bg-secondary text-primary disabled:opacity-50">
             <Check className="size-4" />
           </button>
-          <button type="button" aria-label="Descartar" disabled={isSaving} onClick={() => { setDraft(value); setIsEditing(false); }} className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/60 hover:bg-secondary/5">
+          <button type="button" aria-label="Descartar" disabled={isSaving} onClick={() => { setDraft(value); setIsEditing(false); }} className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5">
             <X className="size-4" />
           </button>
         </div>

@@ -77,7 +77,7 @@ export function TreatmentCard({
           onClick={() => onOpen(treatment.id)}
           className="min-w-0 cursor-pointer text-left font-sans text-[15px] leading-snug font-semibold text-secondary after:absolute after:inset-0 after:rounded-[1.5rem] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-tertiary"
         >
-          <span className={cn(!treatment.isActive && "text-secondary/55")}>
+          <span className={cn(!treatment.isActive && "text-secondary/70")}>
             {treatment.name}
           </span>
         </button>
@@ -98,7 +98,7 @@ export function TreatmentCard({
             trigger={
               <button
                 type="button"
-                className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/60 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+                className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
               >
                 <Ellipsis className="size-4.5" />
               </button>

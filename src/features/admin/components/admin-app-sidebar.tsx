@@ -90,19 +90,20 @@ export default function AdminSidebar() {
       <SidebarContent className="bg-[#062112] px-2">
         <SidebarGroup className="px-0 py-3">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1.5">
-              {ADMIN_NAVIGATION.map((item) => {
-                const Icon = item.icon;
+            <nav aria-label="Secciones del panel">
+              <SidebarMenu className="gap-1.5">
+                {ADMIN_NAVIGATION.map((item) => {
+                  const Icon = item.icon;
 
-                const isActive = isActiveAdminRoute(pathname, item.href);
+                  const isActive = isActiveAdminRoute(pathname, item.href);
 
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      render={<Link href={item.href} />}
-                      isActive={isActive}
-                      tooltip={item.name}
-                      className="
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        render={<Link href={item.href} />}
+                        isActive={isActive}
+                        tooltip={item.name}
+                        className="
                         relative
                         h-11
                         w-full
@@ -114,12 +115,12 @@ export default function AdminSidebar() {
                         data-[active=true]:bg-white/10
                         data-[active=true]:text-[#F2EBDB]
                       "
-                    >
-                      <div className="flex w-full items-center  gap-2.5">
-                        <Icon className="size-4.5 shrink-0" />
+                      >
+                        <div className="flex w-full items-center  gap-2.5">
+                          <Icon className="size-4.5 shrink-0" />
 
-                        <span
-                          className="
+                          <span
+                            className="
                             max-w-40
                             overflow-hidden
                             whitespace-nowrap
@@ -133,23 +134,23 @@ export default function AdminSidebar() {
                             in-data-[collapsible=icon]:max-w-0
                             in-data-[collapsible=icon]:-translate-x-1
                             in-data-[collapsible=icon]:opacity-0"
-                        >
-                          {item.name}
-                        </span>
-                      </div>
+                          >
+                            {item.name}
+                          </span>
+                        </div>
 
-                      {item.href === WHATSAPP_HREF && inbox.pending > 0 && (
-                        <span
-                          aria-label={`${inbox.pending} conversaciones pendientes`}
-                          className="absolute top-1/2 right-6 grid min-w-5 -translate-y-1/2 place-items-center rounded-full bg-red-700 px-1.5 font-sans text-[11px] font-semibold text-white tabular-nums in-data-[collapsible=icon]:top-1 in-data-[collapsible=icon]:right-0 in-data-[collapsible=icon]:min-w-4 in-data-[collapsible=icon]:translate-y-0 in-data-[collapsible=icon]:text-[9px]"
-                        >
-                          {inbox.pending}
-                        </span>
-                      )}
+                        {item.href === WHATSAPP_HREF && inbox.pending > 0 && (
+                          <span
+                            aria-label={`${inbox.pending} conversaciones pendientes`}
+                            className="absolute top-1/2 right-6 grid min-w-5 -translate-y-1/2 place-items-center rounded-full bg-red-700 px-1.5 font-sans text-[11px] font-semibold text-white tabular-nums in-data-[collapsible=icon]:top-1 in-data-[collapsible=icon]:right-0 in-data-[collapsible=icon]:min-w-4 in-data-[collapsible=icon]:translate-y-0 in-data-[collapsible=icon]:text-[9px]"
+                          >
+                            {inbox.pending}
+                          </span>
+                        )}
 
-                      {isActive && (
-                        <span
-                          className="
+                        {isActive && (
+                          <span
+                            className="
                         absolute
                         right-2
                         top-1/2
@@ -157,17 +158,18 @@ export default function AdminSidebar() {
                         -translate-y-1/2
                         in-data-[collapsible=icon]:hidden
                         "
-                        >
-                          <span className="absolute inset-0 animate-ping rounded-full bg-[#BF9250] opacity-60" />
+                          >
+                            <span className="absolute inset-0 animate-ping rounded-full bg-[#BF9250] opacity-60" />
 
-                          <span className="absolute inset-0 rounded-full bg-[#BF9250]" />
-                        </span>
-                      )}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
+                            <span className="absolute inset-0 rounded-full bg-[#BF9250]" />
+                          </span>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </nav>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

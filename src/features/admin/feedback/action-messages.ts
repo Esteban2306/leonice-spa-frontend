@@ -191,12 +191,16 @@ export const ADMIN_ACTION_MESSAGES = {
     error: "No se pudo guardar la regla",
   },
   createRecipient: {
-    success: "Destinatario agregado. Recibirá los avisos por WhatsApp.",
+    success: "Destinatario agregado. Recibirá los avisos del equipo.",
     error: "No se pudo agregar el destinatario",
   },
   updateRecipient: {
     success: "Destinatario actualizado.",
     error: "No se pudo actualizar el destinatario",
+  },
+  updateRecipientEmail: {
+    success: "Correo del destinatario actualizado.",
+    error: "No se pudo actualizar el correo",
   },
   activateRecipient: {
     success: "Avisos activados para este número.",

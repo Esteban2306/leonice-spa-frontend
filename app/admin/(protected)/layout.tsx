@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { SidebarInset, SidebarProvider } from "@/src/components/ui/sidebar";
+import { SkipLink } from "@/src/components/ui/skip-link";
 import { Toaster } from "@/src/components/ui/toast";
 
 import AdminSidebar from "@/src/features/admin/components/admin-app-sidebar";
@@ -58,7 +59,11 @@ export default function ProtectedLayout({
           <AdminSidebar />
         </div>
 
-        <SidebarInset className="min-w-0 has-[>main.bg-primary]:bg-primary pb-(--admin-dock-space) desk:pb-0 max-desk:has-[>main.bg-primary]:bg-primary">
+        <SkipLink />
+        <SidebarInset
+          id="contenido"
+          tabIndex={-1}
+          className="min-w-0 outline-none has-[>main.bg-primary]:bg-primary pb-(--admin-dock-space) desk:pb-0 max-desk:has-[>main.bg-primary]:bg-primary">
           {children}
         </SidebarInset>
 

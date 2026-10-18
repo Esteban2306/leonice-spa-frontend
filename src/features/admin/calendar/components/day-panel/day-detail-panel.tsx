@@ -48,14 +48,14 @@ export function DayDetailPanel({
         {groups.length === 0 ? (
           <div className="flex min-h-48 flex-1 flex-col items-center justify-center text-center">
             <span className="mb-3 grid size-10 place-items-center rounded-full bg-secondary/5">
-              <Info className="size-4 text-secondary/50" />
+              <Info className="size-4 text-secondary/70" />
             </span>
 
             <p className="font-sans text-sm text-secondary">
               No hay reservas para este día.
             </p>
 
-            <p className="mt-1 max-w-56 font-sans text-xs text-secondary/50">
+            <p className="mt-1 max-w-56 font-sans text-xs text-secondary/70">
               Revisa los filtros activos o selecciona otro día.
             </p>
           </div>

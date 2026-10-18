@@ -10,7 +10,7 @@ export function ToolbarHeader({ onCreateReservation }: ToolbarHeaderProps) {
   return (
     <div className="flex min-w-0 items-start justify-between gap-3">
       <div className="min-w-0">
-        <p className="font-sans text-xs uppercase tracking-[0.22em] text-tertiary">
+        <p className="font-sans text-xs uppercase tracking-[0.22em] text-tertiary-ink">
           Panel administrativo
         </p>
 
@@ -18,7 +18,7 @@ export function ToolbarHeader({ onCreateReservation }: ToolbarHeaderProps) {
           Calendario
         </h1>
 
-        <p className="mt-1 font-sans text-xs text-secondary/60 sm:text-sm">
+        <p className="mt-1 font-sans text-xs text-secondary/70 sm:text-sm">
           Gestiona cada cita, el horario del spa y sus bloqueos.
         </p>
       </div>

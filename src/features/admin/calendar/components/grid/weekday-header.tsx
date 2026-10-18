@@ -17,7 +17,7 @@ export function WeekdayHeader({ variant }: WeekdayHeaderProps) {
       {WEEKDAYS.map((weekday) => (
         <span
           key={weekday}
-          className="text-center font-sans text-[10px] uppercase tracking-widest text-secondary/45 md:text-[11px] md:tracking-[0.18em]"
+          className="text-center font-sans text-[10px] uppercase tracking-widest text-secondary/70 md:text-[11px] md:tracking-[0.18em]"
         >
           {weekday}
         </span>

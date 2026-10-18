@@ -101,7 +101,7 @@ export function ReservationPanelMobile({
             <button
               type="button"
               onClick={() => onViewClient(clientId)}
-              className="w-fit cursor-pointer font-sans text-sm text-tertiary underline underline-offset-4"
+              className="w-fit cursor-pointer font-sans text-sm text-tertiary-ink underline underline-offset-4"
             >
               Historial en CRM
             </button>

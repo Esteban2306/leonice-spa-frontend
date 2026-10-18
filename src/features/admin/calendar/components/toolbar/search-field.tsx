@@ -10,7 +10,7 @@ export function SearchField({ value, onChange }: SearchFieldProps) {
     <div className="relative w-full sm:w-64">
       <Search
         aria-hidden="true"
-        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-secondary/45"
+        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-secondary/70"
       />
       <input
         type="search"
@@ -25,7 +25,7 @@ export function SearchField({ value, onChange }: SearchFieldProps) {
           type="button"
           onClick={() => onChange("")}
           aria-label="Limpiar búsqueda"
-          className="absolute right-2 top-1/2 grid size-6 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-secondary/50 hover:bg-secondary/5"
+          className="absolute right-2 top-1/2 grid size-6 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5"
         >
           <X className="size-3.5" />
         </button>

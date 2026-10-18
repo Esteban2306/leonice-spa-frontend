@@ -38,6 +38,7 @@ export function SettingsContainer() {
         onRetry: () => void recipientsQuery.refetch(),
         onCreate: actions.createRecipient,
         onRename: actions.renameRecipient,
+        onChangeEmail: actions.setRecipientEmail,
         onToggle: actions.setRecipientActive,
       }}
       password={{

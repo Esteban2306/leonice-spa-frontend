@@ -1,31 +1,63 @@
-import type { ReactNode, TextareaHTMLAttributes } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+} from "react";
 
 import { cn } from "@/lib/utils";
 
 interface FieldProps {
   label: string;
   hint?: string;
+  error?: string | null;
   htmlFor?: string;
   children: ReactNode;
 }
 
-export function Field({ label, hint, htmlFor, children }: FieldProps) {
+type DescribableProps = {
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+};
+
+export function Field({ label, hint, error, htmlFor, children }: FieldProps) {
+  const message = error ?? hint;
+  const messageId = htmlFor && message ? `${htmlFor}-mensaje` : undefined;
+  const control =
+    messageId && isValidElement<DescribableProps>(children)
+      ? cloneElement(children as ReactElement<DescribableProps>, {
+          "aria-describedby": messageId,
+          "aria-invalid": error ? true : undefined,
+        })
+      : children;
+
   return (
     <div className="flex flex-col gap-1.5">
       <label
         htmlFor={htmlFor}
-        className="font-sans text-xs uppercase tracking-[0.16em] text-secondary/55"
+        className="font-sans text-xs uppercase tracking-[0.16em] text-secondary/80"
       >
         {label}
       </label>
-      {children}
-      {hint && <p className="font-sans text-xs text-secondary/55">{hint}</p>}
+      {control}
+      {message && (
+        <p
+          id={messageId}
+          className={cn(
+            "font-sans text-xs",
+            error ? "font-medium text-red-700" : "text-secondary/75",
+          )}
+        >
+          {message}
+        </p>
+      )}
     </div>
   );
 }
 
 export const INPUT_CLASS =
-  "h-11 w-full rounded-xl border border-secondary/15 bg-white px-3 font-sans text-sm text-secondary outline-none transition-colors placeholder:text-secondary/35 focus-visible:border-tertiary focus-visible:ring-2 focus-visible:ring-tertiary/40";
+  "h-11 w-full rounded-xl border border-secondary/15 bg-white px-3 font-sans text-sm text-secondary outline-none transition-colors placeholder:text-secondary/45 aria-invalid:border-red-400 focus-visible:border-tertiary focus-visible:ring-2 focus-visible:ring-tertiary/40";
 
 export function TextArea({
   className,
@@ -69,7 +101,7 @@ export function CheckboxField({
       <span className="flex flex-col gap-0.5">
         <span className="font-sans text-sm text-secondary">{label}</span>
         {description && (
-          <span className="font-sans text-xs text-secondary/55">
+          <span className="font-sans text-xs text-secondary/70">
             {description}
           </span>
         )}

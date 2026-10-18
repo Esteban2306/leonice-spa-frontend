@@ -25,7 +25,7 @@ export function ClientDirectoryCard({ client, onOpen }: ClientDirectoryCardProps
         <span className="block truncate font-sans text-lg text-secondary">
           {client.name}
         </span>
-        <span className="mt-0.5 flex items-center gap-1.5 font-sans text-xs text-secondary/60">
+        <span className="mt-0.5 flex items-center gap-1.5 font-sans text-xs text-secondary/70">
           <Phone className="size-3" />
           {client.phone}
         </span>

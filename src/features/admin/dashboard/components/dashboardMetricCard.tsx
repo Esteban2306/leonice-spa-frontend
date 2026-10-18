@@ -69,7 +69,7 @@ export function DashboardMetricCard({
             className={
               isFeatured
                 ? "size-5 shrink-0 text-primary"
-                : "size-5 shrink-0 text-secondary/60"
+                : "size-5 shrink-0 text-secondary/70"
             }
             strokeWidth={1.8}
           />
@@ -143,7 +143,7 @@ export function DashboardMetricCard({
           <div
             className={[
               "flex flex-wrap items-center gap-2 font-sans text-sm",
-              isFeatured ? "text-primary/60" : "text-secondary/55",
+              isFeatured ? "text-primary/60" : "text-secondary/70",
             ].join(" ")}
           >
             {footer}

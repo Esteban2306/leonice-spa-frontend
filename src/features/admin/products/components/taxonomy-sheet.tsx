@@ -91,7 +91,7 @@ function TaxonomyRow({
             type="button"
             aria-label="Cancelar"
             onClick={() => setEditing(null)}
-            className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/60 hover:bg-secondary/5"
+            className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5"
           >
             <X className="size-4" />
           </button>
@@ -107,12 +107,12 @@ function TaxonomyRow({
           className={
             item.isActive
               ? "truncate font-sans text-sm font-semibold text-secondary"
-              : "truncate font-sans text-sm text-secondary/55"
+              : "truncate font-sans text-sm text-secondary/70"
           }
         >
           {item.name}
         </p>
-        <p className="font-sans text-xs text-secondary/55 tabular-nums">
+        <p className="font-sans text-xs text-secondary/70 tabular-nums">
           {section.usageLabel(item.usage)}
           {!item.isActive && " · desactivada"}
         </p>
@@ -128,7 +128,7 @@ function TaxonomyRow({
         type="button"
         aria-label={`Renombrar ${item.name}`}
         onClick={() => setEditing(item.name)}
-        className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/55 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+        className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-quaternary/35 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
       >
         <Pencil className="size-4" />
       </button>
@@ -138,7 +138,7 @@ function TaxonomyRow({
         title={blocked ?? `Eliminar ${item.name}`}
         disabled={blocked !== null}
         onClick={() => section.onDelete(item)}
-        className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/55 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-secondary/55"
+        className="grid size-8 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-secondary/70"
       >
         <Trash2 className="size-4" />
       </button>
@@ -192,7 +192,7 @@ function TaxonomySection(props: TaxonomySectionProps) {
         </button>
       </form>
       {props.items.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-tertiary/50 px-4 py-3 font-sans text-sm text-secondary/60">
+        <p className="rounded-2xl border border-dashed border-tertiary/50 px-4 py-3 font-sans text-sm text-secondary/70">
           Todavía no hay ninguna.
         </p>
       ) : (

@@ -92,7 +92,7 @@ export function DashboardHeader({
       <div className="flex flex-col lg:flex-row">
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-8 p-7 sm:p-8">
           <div>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-sans text-sm text-secondary/60">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-sans text-sm text-secondary/70">
               <span className="inline-flex items-center gap-2">
                 <Icon className="size-4 text-tertiary" strokeWidth={1.7} />
 
@@ -109,7 +109,7 @@ export function DashboardHeader({
             </h1>
 
             <div className="mt-5">
-              <span className="font-sans text-xs font-medium uppercase tracking-[0.18em] text-tertiary">
+              <span className="font-sans text-xs font-medium uppercase tracking-[0.18em] text-tertiary-ink">
                 Resumen de hoy
               </span>
 

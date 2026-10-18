@@ -50,7 +50,7 @@ export function ReservationCard({
               <span className="font-sans text-xl text-secondary">
                 {reservation.start}
               </span>
-              <span className="font-sans text-xs text-secondary/45">
+              <span className="font-sans text-xs text-secondary/70">
                 — {reservation.end}
               </span>
             </span>
@@ -62,7 +62,7 @@ export function ReservationCard({
             )}
 
             <span
-              className={`block font-sans text-sm text-secondary/60 ${
+              className={`block font-sans text-sm text-secondary/70 ${
                 showClientName ? "mt-1" : "mt-3"
               }`}
             >
@@ -92,7 +92,7 @@ export function ReservationCard({
           trigger={
             <button
               type="button"
-              className="mt-3.5 grid size-8 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/60 transition-colors hover:bg-secondary/5 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+              className="mt-3.5 grid size-8 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-secondary/5 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
             >
               <Ellipsis className="size-4" />
             </button>

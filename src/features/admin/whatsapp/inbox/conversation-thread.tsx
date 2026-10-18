@@ -106,7 +106,7 @@ function Bubble({ message }: { message: ConversationMessage }) {
             "mt-1 text-right font-sans text-[11px]",
             !inbound && author === "human"
               ? "text-primary/70"
-              : "text-secondary/60",
+              : "text-secondary/70",
           )}
         >
           {formatTime(message.createdAt)}

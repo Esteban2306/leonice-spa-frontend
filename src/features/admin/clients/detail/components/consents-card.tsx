@@ -17,7 +17,7 @@ export function ConsentsCard({ consents }: { consents: ClientDetail["consents"] 
   return (
     <CardShell title="Consentimientos">
       {consents.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-tertiary/40 p-3 font-sans text-xs text-secondary/60">
+        <p className="rounded-xl border border-dashed border-tertiary/40 p-3 font-sans text-xs text-secondary/70">
           No hay consentimientos registrados.
         </p>
       ) : (
@@ -27,7 +27,7 @@ export function ConsentsCard({ consents }: { consents: ClientDetail["consents"] 
               <FileCheck2 className="mt-0.5 size-4 shrink-0 text-green-700" />
               <span className="font-sans text-sm text-secondary">
                 {CONSENT_LABELS[consent.type]} · {consent.policyVersion}
-                <span className="block text-xs text-secondary/55">
+                <span className="block text-xs text-secondary/70">
                   Firmado {DATE_FORMATTER.format(new Date(consent.consentedAt))}
                 </span>
               </span>

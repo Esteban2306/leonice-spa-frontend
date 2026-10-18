@@ -66,7 +66,7 @@ export function CatalogToolbar({
         <div className="relative flex-1">
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-secondary/45"
+            className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-secondary/70"
           />
           <input
             type="search"
@@ -81,7 +81,7 @@ export function CatalogToolbar({
               type="button"
               aria-label="Limpiar búsqueda"
               onClick={() => onChange({ q: "" })}
-              className="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-secondary/50 hover:bg-secondary/5 hover:text-secondary"
+              className="absolute top-1/2 right-3 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-secondary/70 hover:bg-secondary/5 hover:text-secondary"
             >
               <X className="size-4" />
             </button>
@@ -118,7 +118,7 @@ export function CatalogToolbar({
             </select>
             <ChevronDown
               aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-secondary/60"
+              className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-secondary/70"
             />
           </div>
 

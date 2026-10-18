@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { getBogotaDayKey } from "@/src/lib/date/bogota";
 import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
@@ -17,6 +17,7 @@ import {
 } from "./daily-report-seen";
 
 const subscribeNoop = () => () => undefined;
+const OPEN_DELAY_MS = 1200;
 
 export function DailyReportGate() {
   const session = useSession();
@@ -24,6 +25,12 @@ export function DailyReportGate() {
   const todayKey = getBogotaDayKey(new Date(nowMs));
   const storageKey = seenStorageKey(session.data?.id ?? null);
   const [dismissedDay, setDismissedDay] = useState<string | null>(null);
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSettled(true), OPEN_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const seenDay = useSyncExternalStore(
     subscribeNoop,
@@ -43,7 +50,7 @@ export function DailyReportGate() {
 
   return (
     <DailyReportDialog
-      open={isOpen}
+      open={settled && isOpen && (reportQuery.isSuccess || reportQuery.isError)}
       report={reportQuery.data}
       isLoading={reportQuery.isLoading}
       isError={reportQuery.isError}

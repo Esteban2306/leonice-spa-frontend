@@ -229,7 +229,7 @@ export function CreateProductDialog({
           <span className="font-sans text-sm font-semibold text-secondary">
             Destacar en la landing
           </span>
-          <span className="font-sans text-xs text-secondary/60">
+          <span className="font-sans text-xs text-secondary/70">
             Aparece en el bloque de productos de la página principal.
           </span>
         </div>
@@ -241,12 +241,12 @@ export function CreateProductDialog({
       </div>
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1.5 font-sans text-xs tracking-[0.16em] text-secondary/55 uppercase">
+        <legend className="mb-1.5 font-sans text-xs tracking-[0.16em] text-secondary/70 uppercase">
           Variantes
         </legend>
         <div
           aria-hidden="true"
-          className="hidden grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1fr)_9rem_2.5rem] gap-2 px-2 font-sans text-xs text-secondary/60 sm:grid"
+          className="hidden grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1fr)_9rem_2.5rem] gap-2 px-2 font-sans text-xs text-secondary/70 sm:grid"
         >
           <span>Foto</span>
           <span>Marca</span>
@@ -302,7 +302,7 @@ export function CreateProductDialog({
                   <div className="relative">
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-sans text-sm text-secondary/50"
+                      className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-sans text-sm text-secondary/70"
                     >
                       $
                     </span>
@@ -339,7 +339,7 @@ export function CreateProductDialog({
                       current.filter((item) => item.key !== variant.key),
                     );
                   }}
-                  className="grid size-10 cursor-pointer place-items-center justify-self-end rounded-full text-secondary/50 transition-colors hover:bg-secondary/5 hover:text-secondary disabled:invisible"
+                  className="grid size-10 cursor-pointer place-items-center justify-self-end rounded-full text-secondary/70 transition-colors hover:bg-secondary/5 hover:text-secondary disabled:invisible"
                 >
                   <X className="size-4" />
                 </button>
@@ -356,7 +356,7 @@ export function CreateProductDialog({
           <Plus className="size-4" strokeWidth={2} />
           Otra variante
         </button>
-        <p className="font-sans text-xs text-secondary/55">
+        <p className="font-sans text-xs text-secondary/70">
           Cada variante es una marca y presentación con su precio en pesos y una
           foto opcional (JPG, PNG o WebP, hasta 5 MB). Deja la fila vacía si
           prefieres agregarlas después.
