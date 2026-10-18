@@ -366,6 +366,38 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Recomendación quitada.",
     error: "No se pudo quitar la recomendación",
   },
+  createTestimonial: {
+    success: "Testimonio creado.",
+    error: "No se pudo crear el testimonio",
+  },
+  updateTestimonial: {
+    success: "Testimonio actualizado.",
+    error: "No se pudo actualizar el testimonio",
+  },
+  publishTestimonial: {
+    success: "Testimonio publicado en la web.",
+    error: "No se pudo publicar el testimonio",
+  },
+  hideTestimonial: {
+    success: "Testimonio oculto de la web.",
+    error: "No se pudo ocultar el testimonio",
+  },
+  removeTestimonial: {
+    success: "Testimonio eliminado junto con sus fotos.",
+    error: "No se pudo eliminar el testimonio",
+  },
+  reorderTestimonials: {
+    success: "Orden actualizado.",
+    error: "No se pudo cambiar el orden",
+  },
+  uploadTestimonialImage: {
+    success: "Foto guardada.",
+    error: "No se pudo subir la foto",
+  },
+  removeTestimonialImage: {
+    success: "Foto quitada.",
+    error: "No se pudo quitar la foto",
+  },
 } as const satisfies Record<string, ActionMessages>;
 
 export type AdminActionKey = keyof typeof ADMIN_ACTION_MESSAGES;

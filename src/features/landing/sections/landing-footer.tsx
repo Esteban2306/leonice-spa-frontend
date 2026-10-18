@@ -14,7 +14,6 @@ import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catal
 
 import LogoW from "../../../../public/leonice-logo-w.png";
 import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
-import { publishedStories } from "@/src/features/landing/content/landing-content";
 import { DATA_POLICY_PATH } from "@/src/features/legal/data-policy";
 import type { OpeningHoursRow } from "@/src/features/landing/lib/opening-hours";
 
@@ -22,7 +21,7 @@ const LINKS: { label: string; target: string; page?: string }[] = [
   { label: "Inicio", target: SECTION_IDS.home },
   { label: "Por qué Leonice", target: SECTION_IDS.why },
   { label: "Tratamientos", target: SECTION_IDS.treatments, page: TREATMENTS_PAGE },
-  ...(publishedStories.length > 0 ? [{ label: "Historias", target: SECTION_IDS.stories }] : []),
+  { label: "Historias", target: SECTION_IDS.stories },
   { label: "Productos", target: SECTION_IDS.products, page: PRODUCTS_PAGE },
   { label: "Contacto", target: SECTION_IDS.contact },
 ];

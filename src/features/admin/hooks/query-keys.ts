@@ -208,6 +208,11 @@ export const adminQueryKeys = {
       [...adminQueryKeys.conduit.all(), "business-settings"] as const,
   },
 
+  testimonials: {
+    all: () => [...adminQueryKeys.all, "testimonials"] as const,
+    list: () => [...adminQueryKeys.testimonials.all(), "list"] as const,
+  },
+
   settings: {
     all: () => [...adminQueryKeys.all, "settings"] as const,
     recipients: () =>

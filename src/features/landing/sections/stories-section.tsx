@@ -10,7 +10,6 @@ import CircularCarousel from "@/src/components/ui/CircularCarousel";
 import { MediaFrame } from "@/src/features/landing/components/media-frame";
 import { SectionHeading } from "@/src/features/landing/components/section-heading";
 import {
-  publishedStories,
   storiesContent,
   type StoryItem,
 } from "@/src/features/landing/content/landing-content";
@@ -71,10 +70,10 @@ function BeforeAfterFace({ story }: { story: StoryItem }) {
   );
 }
 
-export function StoriesSection() {
+export function StoriesSection({ stories }: { stories: StoryItem[] }) {
   const rootRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
-  const items = publishedStories;
+  const items = stories;
   const story = items[active] ?? items[0];
   const compact = useMediaQuery("(max-width: 640px)");
 
@@ -130,7 +129,7 @@ export function StoriesSection() {
             intro="rise"
             key={compact ? "compact" : "wide"}
             cardWidth={320}
-            aspectRatio={0.82}
+            aspectRatio={0.8}
             gap={compact ? 10 : 44}
             autoplay="drift"
             speed={7}

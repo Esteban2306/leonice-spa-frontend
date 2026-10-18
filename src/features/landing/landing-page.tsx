@@ -1,7 +1,7 @@
 import {
-  publishedStories,
   type LandingCatalog,
   type LandingProduct,
+  type StoryItem,
 } from "@/src/features/landing/content/landing-content";
 import type { OpeningHoursRow } from "@/src/features/landing/lib/opening-hours";
 import { SkipLink } from "@/src/components/ui/skip-link";
@@ -23,11 +23,13 @@ export function LandingPage({
   products,
   featuredProducts,
   hours,
+  stories,
 }: {
   catalog: LandingCatalog;
   products: LandingProduct[];
   featuredProducts: LandingProduct[];
   hours: OpeningHoursRow[] | null;
+  stories: StoryItem[];
 }) {
   return (
     <SunlightStage>
@@ -37,7 +39,7 @@ export function LandingPage({
         <HeroSection />
         <WhySection />
         {catalog.featured.length > 0 && <TreatmentsSection catalog={catalog} />}
-        {publishedStories.length > 0 && <StoriesSection />}
+        <StoriesSection stories={stories} />
         <PromiseSection />
         {featuredProducts.length > 0 && <ProductsSection products={featuredProducts} />}
         <MetricsSection />

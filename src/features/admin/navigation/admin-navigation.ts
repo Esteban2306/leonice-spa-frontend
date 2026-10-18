@@ -2,6 +2,7 @@ import {
   CalendarDays,
   LayoutDashboard,
   MessageCircle,
+  MessageSquareQuote,
   Package,
   Scissors,
   Settings,
@@ -46,6 +47,12 @@ export const ADMIN_NAVIGATION: readonly AdminNavigationItem[] = [
     shortName: "Productos",
     href: "/admin/products",
     icon: Package,
+  },
+  {
+    name: "Testimonios",
+    shortName: "Testimonios",
+    href: "/admin/testimonials",
+    icon: MessageSquareQuote,
   },
   {
     name: "WhatsApp",
