@@ -6,7 +6,6 @@ import { ActionLink, BookingLink } from "@/src/features/landing/components/actio
 import { TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import {
   metricsContent,
-  publishedMetrics,
   type MetricItem,
 } from "@/src/features/landing/content/landing-content";
 import { SECTION_IDS } from "@/src/features/landing/lib/site-config";
@@ -32,17 +31,17 @@ function MetricPanel({ metric }: { metric: MetricItem }) {
     <article
       ref={glowRef}
       data-metric
-      className="glow lit lit-hover flex flex-col justify-between gap-8 rounded-[1.75rem] border border-[#062112]/15 bg-[#FDF8F1] p-6"
+      className="glow lit lit-hover flex flex-col justify-between gap-5 rounded-[1.25rem] border border-[#062112]/15 bg-[#FDF8F1] p-4 sm:gap-8 sm:rounded-[1.75rem] sm:p-6"
     >
-      <h3 className="font-sans text-sm font-bold text-[#062112]">{metric.label}</h3>
-      <p className="self-end font-sans text-[clamp(3rem,5vw,4.5rem)] font-bold leading-none text-[#062112] tabular-nums">
+      <h3 className="font-sans text-xs font-bold text-[#062112] sm:text-sm">{metric.label}</h3>
+      <p className="self-end font-sans text-[clamp(2.25rem,10vw,3rem)] font-bold sm:text-[clamp(3rem,5vw,4.5rem)] leading-none text-[#062112] tabular-nums">
         {metric.prefix}
         <span data-count={metric.value}>{formatMetric(metric.value)}</span>
         {metric.suffix && <span className="text-[#BF9250]">{metric.suffix}</span>}
       </p>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2 sm:gap-3">
         <span data-metric-rule aria-hidden="true" className="h-px w-full origin-left bg-[#062112]/60" />
-        <p className="text-right font-sans text-sm leading-snug text-[#062112]/70">{metric.detail}</p>
+        <p className="text-right font-sans text-xs leading-snug text-[#062112]/70 sm:text-sm">{metric.detail}</p>
       </div>
     </article>
   );
@@ -132,8 +131,8 @@ export function MetricsSection() {
             </div>
           </div>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          {publishedMetrics.map((metric) => (
+        <div className="grid grid-cols-2 gap-3 sm:gap-5">
+          {metricsContent.items.map((metric) => (
             <MetricPanel key={metric.id} metric={metric} />
           ))}
         </div>

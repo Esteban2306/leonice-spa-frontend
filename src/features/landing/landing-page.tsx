@@ -1,5 +1,4 @@
 import {
-  publishedMetrics,
   publishedStories,
   type LandingCatalog,
   type LandingProduct,
@@ -41,7 +40,7 @@ export function LandingPage({
         {publishedStories.length > 0 && <StoriesSection />}
         <PromiseSection />
         {featuredProducts.length > 0 && <ProductsSection products={featuredProducts} />}
-        {publishedMetrics.length > 0 && <MetricsSection />}
+        <MetricsSection />
         <VisitSection hours={hours} />
       </SectionStack>
       <LandingFooter hours={hours} />

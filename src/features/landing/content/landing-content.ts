@@ -360,8 +360,6 @@ export const metricsContent = {
 
 export const publishedStories = storiesContent.items.filter((item) => !item.sample);
 
-export const publishedMetrics = metricsContent.items.filter((item) => !item.sample);
-
 export const visitContent = {
   title: "Tu cabello merece un plan, no solo un producto",
   reviewTitle: "¿Nos dejas tu valoración en Google?",
