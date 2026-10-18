@@ -6,9 +6,9 @@ import { Clock, MapPin, MessageCircle } from "lucide-react";
 import { ReviewRating } from "@/src/features/landing/components/review-rating";
 import { BookingLink } from "@/src/features/landing/components/action-link";
 import { visitContent } from "@/src/features/landing/content/landing-content";
+import type { OpeningHoursRow } from "@/src/features/landing/lib/opening-hours";
 import {
   formatWhatsappDisplay,
-  OPENING_HOURS,
   SECTION_IDS,
   siteContact,
   SPA_NAME,
@@ -66,7 +66,7 @@ function MapPanel() {
   );
 }
 
-export function VisitSection() {
+export function VisitSection({ hours }: { hours: OpeningHoursRow[] | null }) {
   const rootRef = useRef<HTMLElement>(null);
   const whatsapp = formatWhatsappDisplay();
   const whatsappLink = whatsappHref(BOOKING_MESSAGE);
@@ -146,20 +146,22 @@ export function VisitSection() {
           </div>
 
           <dl className="grid gap-8 sm:grid-cols-2">
-            <div data-visit-item className="flex flex-col gap-2">
-              <dt className="inline-flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#062112]/75">
-                <Clock className="size-4" aria-hidden="true" />
-                Horario
-              </dt>
-              {OPENING_HOURS.map((slot) => (
-                <dd
-                  key={slot.days}
-                  className="font-sans text-lg text-[#062112] tabular-nums"
-                >
-                  {slot.days} · {slot.hours}
-                </dd>
-              ))}
-            </div>
+            {hours && hours.length > 0 && (
+              <div data-visit-item className="flex flex-col gap-2">
+                <dt className="inline-flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#062112]/75">
+                  <Clock className="size-4" aria-hidden="true" />
+                  Horario
+                </dt>
+                {hours.map((slot) => (
+                  <dd
+                    key={slot.days}
+                    className="font-sans text-lg text-[#062112] tabular-nums"
+                  >
+                    {slot.days} · {slot.hours}
+                  </dd>
+                ))}
+              </div>
+            )}
             <div data-visit-item className="flex flex-col gap-2">
               <dt className="inline-flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.12em] text-[#062112]/75">
                 <MessageCircle className="size-4" aria-hidden="true" />

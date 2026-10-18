@@ -10,6 +10,7 @@ import CircularCarousel from "@/src/components/ui/CircularCarousel";
 import { MediaFrame } from "@/src/features/landing/components/media-frame";
 import { SectionHeading } from "@/src/features/landing/components/section-heading";
 import {
+  publishedStories,
   storiesContent,
   type StoryItem,
 } from "@/src/features/landing/content/landing-content";
@@ -73,7 +74,7 @@ function BeforeAfterFace({ story }: { story: StoryItem }) {
 export function StoriesSection() {
   const rootRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
-  const items = storiesContent.items;
+  const items = publishedStories;
   const story = items[active] ?? items[0];
   const compact = useMediaQuery("(max-width: 640px)");
 

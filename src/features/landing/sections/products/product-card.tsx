@@ -100,7 +100,7 @@ export function ProductCard({ product, variant = "shelf", dense = false }: Produ
         <p className="font-sans text-lg font-bold text-[#7a5a2c] tabular-nums">{price}</p>
         {benefits && <p className="font-sans text-[0.95rem] text-[#062112]/65">{benefits}</p>}
         {meta && (
-          <p className="font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#062112]/55">{meta}</p>
+          <p className="font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#062112]/70">{meta}</p>
         )}
         {!dense && (
           <div className="min-h-[2.85rem]">

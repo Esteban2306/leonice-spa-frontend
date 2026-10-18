@@ -1,6 +1,5 @@
 import {
   fallbackCatalog,
-  productsContent,
   treatmentsContent,
   type LandingCatalog,
   type LandingCategory,
@@ -216,12 +215,9 @@ async function fetchApiProducts(path: string): Promise<LandingProduct[] | null> 
 }
 
 export async function getLandingProducts(): Promise<LandingProduct[]> {
-  if (process.env.NEXT_PUBLIC_LANDING_PRODUCTS_SOURCE !== "api") return productsContent.items;
-  const products = await fetchApiProducts("/products");
-  return products && products.length > 0 ? products : productsContent.items;
+  return (await fetchApiProducts("/products")) ?? [];
 }
 
 export async function getFeaturedLandingProducts(): Promise<LandingProduct[]> {
-  const products = await fetchApiProducts("/products?isFeatured=true");
-  return products && products.length > 0 ? products : productsContent.items;
+  return (await fetchApiProducts("/products?isFeatured=true")) ?? [];
 }

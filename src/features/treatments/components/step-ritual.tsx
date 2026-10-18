@@ -96,11 +96,11 @@ export function StepRitual({ steps, treatmentName, durationLabel, bookingMessage
                 </span>
                 <div
                   className={`flex flex-col gap-2 rounded-[1.5rem] p-5 transition-[background-color,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:p-6 ${
-                    current ? "lit bg-[#FDF8F1] [--lift:14px]" : lit ? "opacity-100" : "opacity-60"
+                    current ? "lit bg-[#FDF8F1] [--lift:14px]" : lit ? "opacity-100" : "opacity-85"
                   }`}
                 >
                   <h3 className="font-sans text-xl font-bold leading-snug text-[#062112]">{step.title}</h3>
-                  <p className="max-w-[58ch] font-sans text-[0.95rem] leading-relaxed text-pretty text-[#062112]/72">
+                  <p className="max-w-[58ch] font-sans text-[0.95rem] leading-relaxed text-pretty text-[#062112]/80">
                     {step.description}
                   </p>
                   {step.durationMinutes !== null && (

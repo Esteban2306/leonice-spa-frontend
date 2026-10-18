@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { productsContent } from "@/src/features/landing/content/landing-content";
 
 import { getFeaturedLandingProducts } from "./landing-catalog";
 
@@ -75,17 +74,17 @@ describe("getFeaturedLandingProducts", () => {
     expect(products.map((product) => product.id)).toEqual(["p1"]);
   });
 
-  it("usa el contenido de respaldo si no hay destacados", async () => {
+  it("no muestra productos inventados si no hay destacados", async () => {
     vi.stubGlobal("fetch", respond([]));
 
-    expect(await getFeaturedLandingProducts()).toBe(productsContent.items);
+    expect(await getFeaturedLandingProducts()).toEqual([]);
   });
 
-  it("usa el contenido de respaldo si el backend falla", async () => {
+  it("no muestra productos inventados si el backend falla", async () => {
     vi.stubGlobal("fetch", respond({}, false));
-    expect(await getFeaturedLandingProducts()).toBe(productsContent.items);
+    expect(await getFeaturedLandingProducts()).toEqual([]);
 
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("caído")));
-    expect(await getFeaturedLandingProducts()).toBe(productsContent.items);
+    expect(await getFeaturedLandingProducts()).toEqual([]);
   });
 });

@@ -228,44 +228,7 @@ export const treatmentsContent = {
 
 export const fallbackCatalog: LandingCatalog = {
   source: "fallback",
-  featured: [
-    {
-      id: "fallback-hidratacion",
-      name: "Terapia de hidratación",
-      categoryName: "Spa Capilar",
-      durationMinutes: 120,
-      priceFromThousands: 200,
-      priceToThousands: 200,
-      promotion: null,
-      requiresAssessment: false,
-      copy: treatmentsContent.copyByName["Terapia de hidratación"],
-      image: null,
-    },
-    {
-      id: "fallback-alisado",
-      name: "Alisado",
-      categoryName: "Spa Capilar",
-      durationMinutes: 180,
-      priceFromThousands: 250,
-      priceToThousands: 380,
-      promotion: null,
-      requiresAssessment: true,
-      copy: treatmentsContent.copyByName.Alisado,
-      image: null,
-    },
-    {
-      id: "fallback-anticaida",
-      name: "Terapia anticaída",
-      categoryName: "Spa Capilar",
-      durationMinutes: 150,
-      priceFromThousands: 250,
-      priceToThousands: 250,
-      promotion: null,
-      requiresAssessment: false,
-      copy: treatmentsContent.copyByName["Terapia anticaída"],
-      image: null,
-    },
-  ],
+  featured: [],
   all: [],
   categories: [],
 };
@@ -354,48 +317,9 @@ export const promiseContent = {
   ] satisfies PromiseItem[],
 };
 
-const DEMO_BRAND = "MAIS";
-
-function demoProduct(
-  id: string,
-  name: string,
-  categoryName: string,
-  description: string,
-  tags: string[],
-  variants: [string, number][],
-): LandingProduct {
-  return {
-    id,
-    name,
-    description,
-    categoryName,
-    tags,
-    variants: variants.map(([presentation, pricePesos]) => ({
-      id: `${id}-${presentation}`,
-      brand: DEMO_BRAND,
-      presentation,
-      pricePesos,
-      imageUrl: null,
-    })),
-    image: null,
-  };
-}
-
 export const productsContent = {
   title: "Continúa tu tratamiento en casa",
   lead: "La misma línea de producto profesional que usamos en cabina, disponible para tu rutina diaria.",
-  items: [
-    demoProduct("shampoo-reparador", "Shampoo reparador intensivo", "Shampoo", "Limpieza suave que repara la fibra dañada por procesos químicos.", ["Rehidratante", "Reparación"], [["250 ml", 45000], ["1 L", 118000]]),
-    demoProduct("shampoo-detox", "Shampoo detox", "Shampoo", "Equilibra el cuero cabelludo graso con menta y carbón activado.", ["Cabello graso", "Anticaspa"], [["250 ml", 42000]]),
-    demoProduct("acondicionador-hidratante", "Acondicionador hidratante", "Acondicionador", "Desenreda y devuelve la suavidad desde el primer uso.", ["Rehidratante"], [["250 ml", 44000], ["1 L", 112000]]),
-    demoProduct("mascarilla-nutricion", "Mascarilla de cuidado y nutrición", "Mascarilla", "Nutrición profunda para medios y puntas resecos.", ["Nutrición", "Brillo"], [["250 g", 58000], ["500 g", 96000]]),
-    demoProduct("aceite-vitaminas", "Aceite de vitaminas", "Aceite", "Sella la cutícula y controla el frizz con vitaminas A y E.", ["Control de frizz", "Brillo"], [["60 ml", 52000]]),
-    demoProduct("perfume-capilar", "Perfume capilar", "Fragancia", "Aroma duradero y brillo inmediato sin apelmazar.", ["Brillo"], [["100 ml", 39000]]),
-    demoProduct("protector-termico", "Protector térmico", "Estilizado", "Protege la fibra del calor de secador y plancha.", ["Protección térmica"], [["150 ml", 47000]]),
-    demoProduct("tonico-anticaida", "Tónico anticaída", "Tratamiento", "Estimula el cuero cabelludo y fortalece la raíz.", ["Anticaída"], [["120 ml", 65000]]),
-    demoProduct("serum-puntas", "Sérum de puntas", "Sérum", "Sella las puntas abiertas y suaviza sin dejar residuo.", ["Puntas abiertas", "Control de frizz"], [["50 ml", 48000]]),
-    demoProduct("crema-peinar", "Crema para peinar", "Estilizado", "Define el peinado y mantiene el cabello sin frizz todo el día.", ["Definición", "Sin frizz"], [["200 ml", 41000]]),
-  ] satisfies LandingProduct[],
 };
 
 export const metricsContent = {
@@ -433,6 +357,10 @@ export const metricsContent = {
     },
   ] satisfies MetricItem[],
 };
+
+export const publishedStories = storiesContent.items.filter((item) => !item.sample);
+
+export const publishedMetrics = metricsContent.items.filter((item) => !item.sample);
 
 export const visitContent = {
   title: "Tu cabello merece un plan, no solo un producto",

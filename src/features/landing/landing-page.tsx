@@ -1,4 +1,11 @@
-import type { LandingCatalog, LandingProduct } from "@/src/features/landing/content/landing-content";
+import {
+  publishedMetrics,
+  publishedStories,
+  type LandingCatalog,
+  type LandingProduct,
+} from "@/src/features/landing/content/landing-content";
+import type { OpeningHoursRow } from "@/src/features/landing/lib/opening-hours";
+import { SkipLink } from "@/src/components/ui/skip-link";
 import { SectionStack } from "@/src/features/landing/components/section-stack";
 import { SunlightStage } from "@/src/features/landing/motion/sunlight-stage";
 import { LandingNavbar } from "@/src/features/landing/navbar/landing-navbar";
@@ -16,25 +23,28 @@ export function LandingPage({
   catalog,
   products,
   featuredProducts,
+  hours,
 }: {
   catalog: LandingCatalog;
   products: LandingProduct[];
   featuredProducts: LandingProduct[];
+  hours: OpeningHoursRow[] | null;
 }) {
   return (
     <SunlightStage>
+      <SkipLink />
       <LandingNavbar categories={catalog.categories} products={products} />
       <SectionStack>
         <HeroSection />
         <WhySection />
-        <TreatmentsSection catalog={catalog} />
-        <StoriesSection />
+        {catalog.featured.length > 0 && <TreatmentsSection catalog={catalog} />}
+        {publishedStories.length > 0 && <StoriesSection />}
         <PromiseSection />
-        <ProductsSection products={featuredProducts} />
-        <MetricsSection />
-        <VisitSection />
+        {featuredProducts.length > 0 && <ProductsSection products={featuredProducts} />}
+        {publishedMetrics.length > 0 && <MetricsSection />}
+        <VisitSection hours={hours} />
       </SectionStack>
-      <LandingFooter />
+      <LandingFooter hours={hours} />
     </SunlightStage>
   );
 }

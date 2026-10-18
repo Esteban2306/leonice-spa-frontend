@@ -130,7 +130,7 @@ export function CatalogFilterBar({
                   </span>
                 )}
               </button>
-              <p className="shrink-0 font-sans text-sm text-[#062112]/60 tabular-nums">
+              <p className="shrink-0 font-sans text-sm text-[#062112]/70 tabular-nums">
                 {total} {total === 1 ? "producto" : "productos"}
               </p>
             </div>
@@ -172,7 +172,7 @@ export function CatalogFilterBar({
               </button>
 
               <p
-                className="ml-auto hidden font-sans text-sm text-[#062112]/60 tabular-nums desk:block"
+                className="ml-auto hidden font-sans text-sm text-[#062112]/70 tabular-nums desk:block"
                 aria-live="polite"
               >
                 {total} {total === 1 ? "producto" : "productos"}

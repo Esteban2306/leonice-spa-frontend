@@ -9,5 +9,9 @@ import "@/src/features/landing/section-stack.css";
 export function SectionStack({ children }: { children: ReactNode }) {
   const mainRef = useRef<HTMLElement>(null);
   useSectionStack(mainRef);
-  return <main ref={mainRef}>{children}</main>;
+  return (
+    <main ref={mainRef} id="contenido" tabIndex={-1} className="outline-none">
+      {children}
+    </main>
+  );
 }

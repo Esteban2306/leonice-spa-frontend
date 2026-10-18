@@ -61,7 +61,7 @@ export function VariantPicker({ productName, variants, size = "lg" }: VariantPic
         </ActionLink>
       </div>
       {selected && (
-        <p className="font-sans text-xs text-[#062112]/55">
+        <p className="font-sans text-xs text-[#062112]/70">
           {selected.brand} · {selected.presentation}. Te confirmamos disponibilidad y entrega por WhatsApp.
         </p>
       )}

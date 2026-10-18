@@ -198,7 +198,7 @@ const AccordionGallery = ({
         '--ag-radius': `${radius}px`,
         height: typeof height === 'number' ? (vertical ? `${Math.round(height * 1.6)}px` : `${height}px`) : height
       }}
-      role="list"
+      role="group"
       aria-label={ariaLabel}
     >
       {items.map((item, i) => {
@@ -217,7 +217,6 @@ const AccordionGallery = ({
               if (e.currentTarget.matches(':focus-visible')) setActive(i);
             }}
             onKeyDown={e => handleKeyDown(i, e)}
-            role="listitem"
             tabIndex={0}
             aria-current={isActive ? 'true' : undefined}
             aria-label={item.label}

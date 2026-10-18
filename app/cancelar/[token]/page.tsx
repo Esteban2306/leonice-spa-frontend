@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { CancelPage } from "@/src/features/cancellation/components/cancel-page";
 
 export const metadata: Metadata = {
-  title: "Cancelar cita · Leonice Spa",
+  title: "Cancelar cita",
   robots: { index: false, follow: false },
 };
 

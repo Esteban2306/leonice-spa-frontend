@@ -109,7 +109,7 @@ export function ProductCard({ product, priority = false, onQuickView }: ProductC
             <div className="flex min-w-0 flex-col">
               {price && <span className="font-sans text-base font-bold tabular-nums text-[#062112]">{price}</span>}
               {presentations && (
-                <span className="truncate font-sans text-xs tabular-nums text-[#062112]/55">{presentations}</span>
+                <span className="truncate font-sans text-xs tabular-nums text-[#062112]/70">{presentations}</span>
               )}
             </div>
             <span

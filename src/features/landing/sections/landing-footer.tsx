@@ -5,7 +5,6 @@ import { ArrowUp } from "lucide-react";
 
 import {
   formatWhatsappDisplay,
-  OPENING_HOURS,
   SECTION_IDS,
   SPA_NAME,
   siteContact,
@@ -15,17 +14,20 @@ import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catal
 
 import LogoW from "../../../../public/leonice-logo-w.png";
 import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
+import { publishedStories } from "@/src/features/landing/content/landing-content";
+import { DATA_POLICY_PATH } from "@/src/features/legal/data-policy";
+import type { OpeningHoursRow } from "@/src/features/landing/lib/opening-hours";
 
 const LINKS: { label: string; target: string; page?: string }[] = [
   { label: "Inicio", target: SECTION_IDS.home },
   { label: "Por qué Leonice", target: SECTION_IDS.why },
   { label: "Tratamientos", target: SECTION_IDS.treatments, page: TREATMENTS_PAGE },
-  { label: "Historias", target: SECTION_IDS.stories },
+  ...(publishedStories.length > 0 ? [{ label: "Historias", target: SECTION_IDS.stories }] : []),
   { label: "Productos", target: SECTION_IDS.products, page: PRODUCTS_PAGE },
   { label: "Contacto", target: SECTION_IDS.contact },
 ];
 
-export function LandingFooter() {
+export function LandingFooter({ hours }: { hours: OpeningHoursRow[] | null }) {
   const whatsapp = formatWhatsappDisplay();
   return (
     <footer className="relative isolate bg-[#062112] text-[#F2EBDB]">
@@ -59,16 +61,18 @@ export function LandingFooter() {
           </ul>
         </nav>
 
-        <div className="flex flex-col gap-3">
-          <h2 className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-[#E0BC87]">Horario</h2>
-          <ul className="flex flex-col gap-2 font-sans text-sm text-[#F2EBDB]/80 tabular-nums">
-            {OPENING_HOURS.map((slot) => (
-              <li key={slot.days}>
-                {slot.days} · {slot.hours}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {hours && hours.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-[#E0BC87]">Horario</h2>
+            <ul className="flex flex-col gap-2 font-sans text-sm text-[#F2EBDB]/80 tabular-nums">
+              {hours.map((slot) => (
+                <li key={slot.days}>
+                  {slot.days} · {slot.hours}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="flex flex-col gap-3">
           <h2 className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-[#E0BC87]">Contacto</h2>
@@ -81,9 +85,17 @@ export function LandingFooter() {
 
       <div className="border-t border-[#F2EBDB]/10">
         <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-4 px-5 py-6 sm:px-8">
-          <p className="font-sans text-xs text-[#F2EBDB]/60">
-            © {new Date().getFullYear()} {SPA_NAME}
-          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <p className="font-sans text-xs text-[#F2EBDB]/75">
+              © {new Date().getFullYear()} {SPA_NAME}
+            </p>
+            <a
+              href={DATA_POLICY_PATH}
+              className="font-sans text-xs text-[#F2EBDB]/85 underline decoration-[#E0BC87] underline-offset-4 hover:text-[#F2EBDB]"
+            >
+              Política de tratamiento de datos
+            </a>
+          </div>
           <button
             type="button"
             onClick={() => scrollToSection(SECTION_IDS.home)}

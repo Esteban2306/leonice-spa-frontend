@@ -27,11 +27,7 @@ const OPTIONS = {
   duration: 28,
 } as const;
 
-export function ProductsSection({
-  products = productsContent.items,
-}: {
-  products?: LandingProduct[];
-}) {
+export function ProductsSection({ products }: { products: LandingProduct[] }) {
   const rootRef = useRef<HTMLElement>(null);
   const compact = useMediaQuery("(max-width: 640px)");
   const short = useMediaQuery("(max-height: 820px)");

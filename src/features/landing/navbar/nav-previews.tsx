@@ -138,7 +138,7 @@ export function TreatmentsPreview({
                 )}
                 <span className="relative font-heading text-2xl leading-tight">{category.name}</span>
                 <span
-                  className={`relative font-sans text-xs ${selected ? "text-[#E0BC87]" : "text-[#062112]/60"}`}
+                  className={`relative font-sans text-xs ${selected ? "text-[#E0BC87]" : "text-[#062112]/70"}`}
                 >
                   {category.treatmentCount} {category.treatmentCount === 1 ? "servicio" : "servicios"}
                   {category.fromThousands !== null && ` · desde ${formatThousandsCop(category.fromThousands)}`}
@@ -250,7 +250,7 @@ export function ProductsPreview({
                     <Icon className="size-6" strokeWidth={1.5} aria-hidden="true" />
                   </span>
                   <span className="font-heading text-xl leading-tight">{group.name}</span>
-                  <span className="font-sans text-xs text-[#062112]/60 transition-colors duration-300 group-hover:text-[#E0BC87] group-focus-visible:text-[#E0BC87]">
+                  <span className="font-sans text-xs text-[#062112]/70 transition-colors duration-300 group-hover:text-[#E0BC87] group-focus-visible:text-[#E0BC87]">
                     {productCountLabel(group.products.length)}
                   </span>
                 </button>
@@ -312,7 +312,7 @@ export function ProductsPreview({
                   <span className="relative flex min-w-0 flex-col">
                     <span className="truncate font-heading text-xl leading-tight">{group.name}</span>
                     <span
-                      className={`font-sans text-xs ${selected ? "text-[#E0BC87]" : "text-[#062112]/60"}`}
+                      className={`font-sans text-xs ${selected ? "text-[#E0BC87]" : "text-[#062112]/70"}`}
                     >
                       {productCountLabel(group.products.length)}
                     </span>

@@ -4,7 +4,11 @@ import { useRef } from "react";
 
 import { ActionLink, BookingLink } from "@/src/features/landing/components/action-link";
 import { TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
-import { metricsContent, type MetricItem } from "@/src/features/landing/content/landing-content";
+import {
+  metricsContent,
+  publishedMetrics,
+  type MetricItem,
+} from "@/src/features/landing/content/landing-content";
 import { SECTION_IDS } from "@/src/features/landing/lib/site-config";
 import {
   EASE_OUT,
@@ -129,7 +133,7 @@ export function MetricsSection() {
           </div>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          {metricsContent.items.map((metric) => (
+          {publishedMetrics.map((metric) => (
             <MetricPanel key={metric.id} metric={metric} />
           ))}
         </div>

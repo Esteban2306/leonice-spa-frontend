@@ -3,6 +3,8 @@ import { Inria_Sans, Italiana } from "next/font/google";
 
 import "@/src/globals.css";
 import { QueryProvider } from "@/src/lib/query/query-provider";
+import { SITE_DESCRIPTION, SITE_URL } from "@/src/features/landing/lib/seo";
+import { SPA_NAME } from "@/src/features/landing/lib/site-config";
 
 const inriaSans = Inria_Sans({
   variable: "--font-inria-sans",
@@ -17,8 +19,16 @@ const italiana = Italiana({
 });
 
 export const metadata: Metadata = {
-  title: "Leonice Spa",
-  description: "Administración Leonice Spa",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SPA_NAME, template: `%s · ${SPA_NAME}` },
+  description: SITE_DESCRIPTION,
+  applicationName: SPA_NAME,
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    siteName: SPA_NAME,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({
@@ -28,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="es-CO"
       className={`${inriaSans.variable} ${italiana.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
