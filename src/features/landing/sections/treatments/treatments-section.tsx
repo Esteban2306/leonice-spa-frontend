@@ -54,7 +54,6 @@ export function TreatmentsSection({ catalog }: { catalog: LandingCatalog }) {
       whatsappHref(
         treatmentBookingMessage({
           name: treatment.name,
-          categoryName: treatment.categoryName,
           requiresPriorAssessment: treatment.requiresAssessment,
         }),
       ) ?? `#${SECTION_IDS.contact}`,

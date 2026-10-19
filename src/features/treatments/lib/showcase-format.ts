@@ -50,7 +50,6 @@ export function bookingMessage(categoryName?: string): string {
 
 export interface BookableTreatment {
   name: string;
-  categoryName: string;
   requiresPriorAssessment: boolean;
 }
 
@@ -58,7 +57,7 @@ export function treatmentBookingMessage(treatment: BookableTreatment): string {
   const lines = treatment.requiresPriorAssessment
     ? ["Hola, quiero agendar una valoración en Leonice."]
     : ["Hola, quiero agendar una cita en Leonice."];
-  lines.push(`Tratamiento: ${treatment.name}`, `Categoría: ${treatment.categoryName}`);
+  lines.push(`Tratamiento: ${treatment.name}`);
   if (treatment.requiresPriorAssessment) lines.push("Este tratamiento requiere valoración previa.");
   lines.push("¿Qué horarios tienen disponibles?");
   return lines.join("\n");

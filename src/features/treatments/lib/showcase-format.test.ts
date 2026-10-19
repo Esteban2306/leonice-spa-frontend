@@ -51,14 +51,13 @@ describe("bookingMessage", () => {
 });
 
 describe("treatmentBookingMessage", () => {
-  it("deja el tratamiento y la categoría en líneas propias para el bot y el equipo", () => {
+  it("deja el tratamiento en su propia línea para el bot y el equipo", () => {
     expect(
-      treatmentBookingMessage({ name: "Alisado", categoryName: "Spa capilar", requiresPriorAssessment: false }),
+      treatmentBookingMessage({ name: "Alisado", requiresPriorAssessment: false }),
     ).toBe(
       [
         "Hola, quiero agendar una cita en Leonice.",
         "Tratamiento: Alisado",
-        "Categoría: Spa capilar",
         "¿Qué horarios tienen disponibles?",
       ].join("\n"),
     );
@@ -66,12 +65,11 @@ describe("treatmentBookingMessage", () => {
 
   it("pide la valoración cuando el tratamiento la exige", () => {
     expect(
-      treatmentBookingMessage({ name: "Keratina", categoryName: "Spa capilar", requiresPriorAssessment: true }),
+      treatmentBookingMessage({ name: "Keratina", requiresPriorAssessment: true }),
     ).toBe(
       [
         "Hola, quiero agendar una valoración en Leonice.",
         "Tratamiento: Keratina",
-        "Categoría: Spa capilar",
         "Este tratamiento requiere valoración previa.",
         "¿Qué horarios tienen disponibles?",
       ].join("\n"),
