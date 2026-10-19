@@ -43,12 +43,23 @@ export function countLabel(count: number, singular: string, plural: string): str
   return `${count} ${count === 1 ? singular : plural}`;
 }
 
-export function bookingMessage(treatmentName?: string, categoryName?: string): string {
-  if (treatmentName) return `Hola, quiero agendar ${treatmentName} en Leonice.`;
+export function bookingMessage(categoryName?: string): string {
   if (categoryName) return `Hola, quiero agendar un servicio de ${categoryName} en Leonice.`;
   return "Hola, quiero agendar una cita en Leonice.";
 }
 
-export function assessmentMessage(treatmentName: string): string {
-  return `Hola, quiero agendar la valoración para ${treatmentName} en Leonice.`;
+export interface BookableTreatment {
+  name: string;
+  categoryName: string;
+  requiresPriorAssessment: boolean;
+}
+
+export function treatmentBookingMessage(treatment: BookableTreatment): string {
+  const lines = treatment.requiresPriorAssessment
+    ? ["Hola, quiero agendar una valoración en Leonice."]
+    : ["Hola, quiero agendar una cita en Leonice."];
+  lines.push(`Tratamiento: ${treatment.name}`, `Categoría: ${treatment.categoryName}`);
+  if (treatment.requiresPriorAssessment) lines.push("Este tratamiento requiere valoración previa.");
+  lines.push("¿Qué horarios tienen disponibles?");
+  return lines.join("\n");
 }

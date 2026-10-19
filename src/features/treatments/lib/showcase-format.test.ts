@@ -5,6 +5,7 @@ import {
   durationLabel,
   priceDisplay,
   priceFromLabel,
+  treatmentBookingMessage,
 } from "@/src/features/treatments/lib/showcase-format";
 
 const normalize = (value: string | null) => value?.replace(/\s/g, " ") ?? null;
@@ -43,10 +44,37 @@ describe("durationLabel", () => {
 });
 
 describe("bookingMessage", () => {
-  it("nombra el servicio cuando lo conoce", () => {
-    expect(bookingMessage("Alisado")).toBe("Hola, quiero agendar Alisado en Leonice.");
-    expect(bookingMessage(undefined, "Uñas")).toBe(
-      "Hola, quiero agendar un servicio de Uñas en Leonice.",
+  it("nombra la categoría cuando la conoce", () => {
+    expect(bookingMessage("Uñas")).toBe("Hola, quiero agendar un servicio de Uñas en Leonice.");
+    expect(bookingMessage()).toBe("Hola, quiero agendar una cita en Leonice.");
+  });
+});
+
+describe("treatmentBookingMessage", () => {
+  it("deja el tratamiento y la categoría en líneas propias para el bot y el equipo", () => {
+    expect(
+      treatmentBookingMessage({ name: "Alisado", categoryName: "Spa capilar", requiresPriorAssessment: false }),
+    ).toBe(
+      [
+        "Hola, quiero agendar una cita en Leonice.",
+        "Tratamiento: Alisado",
+        "Categoría: Spa capilar",
+        "¿Qué horarios tienen disponibles?",
+      ].join("\n"),
+    );
+  });
+
+  it("pide la valoración cuando el tratamiento la exige", () => {
+    expect(
+      treatmentBookingMessage({ name: "Keratina", categoryName: "Spa capilar", requiresPriorAssessment: true }),
+    ).toBe(
+      [
+        "Hola, quiero agendar una valoración en Leonice.",
+        "Tratamiento: Keratina",
+        "Categoría: Spa capilar",
+        "Este tratamiento requiere valoración previa.",
+        "¿Qué horarios tienen disponibles?",
+      ].join("\n"),
     );
   });
 });

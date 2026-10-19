@@ -4,10 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Check, Clock, Stethoscope } from "lucide-react";
 
+import { BookingLink } from "@/src/features/landing/components/action-link";
 import type { ShowcaseTreatmentCard } from "@/src/features/treatments/api/showcase.types";
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
 import { TreatmentVideo } from "@/src/features/treatments/components/treatment-video";
-import { durationLabel, priceDisplay } from "@/src/features/treatments/lib/showcase-format";
+import {
+  durationLabel,
+  priceDisplay,
+  treatmentBookingMessage,
+} from "@/src/features/treatments/lib/showcase-format";
 import { treatmentHref } from "@/src/features/treatments/lib/showcase-routes";
 
 export function TreatmentCard({
@@ -23,13 +28,12 @@ export function TreatmentCard({
   const duration = durationLabel(treatment.durationMinMinutes, treatment.durationMaxMinutes);
 
   return (
-    <Link
-      href={treatmentHref(treatment.categorySlug, treatment.slug)}
+    <div
       onPointerEnter={() => setActive(true)}
       onPointerLeave={() => setActive(false)}
       onFocus={() => setActive(true)}
       onBlur={() => setActive(false)}
-      className="group/card bezel lit-hover flex h-full cursor-pointer flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#BF9250]"
+      className="group/card bezel lit-hover flex h-full cursor-pointer flex-col has-[[data-card-link]:focus-visible]:outline-2 has-[[data-card-link]:focus-visible]:outline-offset-4 has-[[data-card-link]:focus-visible]:outline-[#BF9250]"
     >
       <span
         ref={glowRef}
@@ -99,7 +103,7 @@ export function TreatmentCard({
               ))}
             </span>
           )}
-          <span className="mt-auto flex items-end justify-between gap-4 border-t border-[#BF9250]/25 pt-4">
+          <span className="mt-auto flex flex-wrap items-end justify-between gap-4 border-t border-[#BF9250]/25 pt-4">
             <span className="flex flex-col">
               {price.original && (
                 <span className="font-sans text-xs tabular-nums text-[#062112]/50 line-through">{price.original}</span>
@@ -108,17 +112,34 @@ export function TreatmentCard({
                 <span className="font-sans text-base font-bold tabular-nums text-[#062112]">{price.label}</span>
               )}
             </span>
-            <span className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#062112]">
-              <span className="underline decoration-[#BF9250] decoration-2 underline-offset-[6px] transition-[text-decoration-color] duration-300 group-hover/card:decoration-[#062112]">
-                Ver tratamiento
-              </span>
-              <span className="grid size-9 place-items-center rounded-full bg-[#062112]/5 transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:-translate-y-0.5 group-hover/card:translate-x-0.5 group-hover/card:bg-[#062112] group-hover/card:text-[#E0BC87]">
-                <ArrowUpRight className="size-4" aria-hidden="true" />
-              </span>
+            <span className="flex flex-wrap items-center justify-end gap-x-4 gap-y-3">
+              <Link
+                href={treatmentHref(treatment.categorySlug, treatment.slug)}
+                data-card-link
+                aria-label={`Ver tratamiento ${treatment.name}`}
+                className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#062112] outline-none after:absolute after:inset-0 after:content-['']"
+              >
+                <span className="underline decoration-[#BF9250] decoration-2 underline-offset-[6px] transition-[text-decoration-color] duration-300 group-hover/card:decoration-[#062112]">
+                  Ver tratamiento
+                </span>
+                <span className="grid size-9 place-items-center rounded-full bg-[#062112]/5 transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:-translate-y-0.5 group-hover/card:translate-x-0.5 group-hover/card:bg-[#062112] group-hover/card:text-[#E0BC87]">
+                  <ArrowUpRight className="size-4" aria-hidden="true" />
+                </span>
+              </Link>
+              <BookingLink
+                variant="ink"
+                size="sm"
+                arrow={false}
+                message={treatmentBookingMessage(treatment)}
+                ariaLabel={`Agendar ${treatment.name} por WhatsApp`}
+                className="z-10"
+              >
+                Agendar
+              </BookingLink>
             </span>
           </span>
         </span>
       </span>
-    </Link>
+    </div>
   );
 }

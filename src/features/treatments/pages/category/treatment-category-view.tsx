@@ -69,7 +69,7 @@ export function TreatmentCategoryView({
                 ))}
               </p>
               <div>
-                <BookingLink variant="sand" size="lg" message={bookingMessage(undefined, category.name)}>
+                <BookingLink variant="sand" size="lg" message={bookingMessage(category.name)}>
                   Agendar en {category.name}
                 </BookingLink>
               </div>
@@ -136,7 +136,7 @@ export function TreatmentCategoryView({
       <BookingBand
         title={`Agenda tu cita de ${category.name}`}
         lead="Escríbenos por WhatsApp y te ayudamos a elegir el servicio y el horario que mejor te queda."
-        message={bookingMessage(undefined, category.name)}
+        message={bookingMessage(category.name)}
         actionLabel="Agendar por WhatsApp"
       />
     </>

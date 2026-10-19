@@ -6,10 +6,9 @@ import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
 import { ReviewPendingChip } from "@/src/features/landing/components/review-pending-chip";
 import { TreatmentVideo } from "@/src/features/treatments/components/treatment-video";
 import {
-  assessmentMessage,
-  bookingMessage,
   durationLabel,
   priceDisplay,
+  treatmentBookingMessage,
 } from "@/src/features/treatments/lib/showcase-format";
 import { categoryHref, RITUAL_ID, TREATMENTS_ROOT } from "@/src/features/treatments/lib/showcase-routes";
 
@@ -86,11 +85,7 @@ export function TreatmentHero({ treatment }: { treatment: ShowcaseTreatmentDetai
               <BookingLink
                 variant="sand"
                 size="lg"
-                message={
-                  treatment.requiresPriorAssessment
-                    ? assessmentMessage(treatment.name)
-                    : bookingMessage(treatment.name)
-                }
+                message={treatmentBookingMessage(treatment)}
               >
                 {treatment.requiresPriorAssessment ? "Agendar mi valoración" : `Agendar ${treatment.name}`}
               </BookingLink>

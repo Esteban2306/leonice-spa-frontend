@@ -10,18 +10,15 @@ import { StickyBookingBar } from "@/src/features/landing/components/sticky-booki
 import { TreatmentCard } from "@/src/features/treatments/components/treatment-card";
 import { TreatmentHero } from "@/src/features/treatments/components/treatment-hero";
 import {
-  assessmentMessage,
-  bookingMessage,
   durationLabel,
   priceDisplay,
+  treatmentBookingMessage,
 } from "@/src/features/treatments/lib/showcase-format";
 
 export function TreatmentDetailView({ treatment }: { treatment: ShowcaseTreatmentDetail }) {
   const duration = durationLabel(treatment.durationMinMinutes, treatment.durationMaxMinutes);
   const price = priceDisplay(treatment.price);
-  const primaryMessage = treatment.requiresPriorAssessment
-    ? assessmentMessage(treatment.name)
-    : bookingMessage(treatment.name);
+  const primaryMessage = treatmentBookingMessage(treatment);
   const primaryLabel = "Agendar";
 
   return (

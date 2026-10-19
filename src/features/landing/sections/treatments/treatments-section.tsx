@@ -14,6 +14,7 @@ import {
 import { TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import { formatDuration, formatThousandsCop } from "@/src/features/landing/lib/format";
 import { SECTION_IDS, whatsappHref } from "@/src/features/landing/lib/site-config";
+import { treatmentBookingMessage } from "@/src/features/treatments/lib/showcase-format";
 import {
   EASE_OUT,
   ensureGsap,
@@ -50,7 +51,13 @@ export function TreatmentsSection({ catalog }: { catalog: LandingCatalog }) {
       </>
     ),
     link:
-      whatsappHref(`Hola, quiero agendar ${treatment.name} en Leonice.`) ?? `#${SECTION_IDS.contact}`,
+      whatsappHref(
+        treatmentBookingMessage({
+          name: treatment.name,
+          categoryName: treatment.categoryName,
+          requiresPriorAssessment: treatment.requiresAssessment,
+        }),
+      ) ?? `#${SECTION_IDS.contact}`,
     image: treatment.image ?? undefined,
     alt: treatment.name,
     hint: `Foto de ${treatment.name}`,
