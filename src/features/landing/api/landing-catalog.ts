@@ -97,16 +97,14 @@ function groupCategories(treatments: LandingTreatment[]): LandingCategory[] {
   }
   return [...groups.entries()]
     .map(([name, list]) => {
-      const sorted = [...list].sort(
-        (a, b) => a.priceFromThousands - b.priceFromThousands,
-      );
+      const cheapest = Math.min(...list.map((t) => t.priceFromThousands));
       return {
         id: name,
         name,
         slug: list[0]?.categorySlug ?? null,
         treatmentCount: list.length,
-        fromThousands: sorted[0]?.priceFromThousands ?? null,
-        highlights: sorted.slice(0, 3),
+        fromThousands: Number.isFinite(cheapest) ? cheapest : null,
+        highlights: list.slice(0, 3),
       };
     })
     .sort((a, b) => b.treatmentCount - a.treatmentCount);

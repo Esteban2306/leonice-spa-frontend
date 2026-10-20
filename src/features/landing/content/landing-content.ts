@@ -181,7 +181,7 @@ export const whyContent = {
 
 export const treatmentsContent = {
   title: "Procedimientos con propósito, no de catálogo",
-  featuredNames: ["Terapia de hidratación", "Alisado", "Terapia anticaída", "Terapia antiácida"],
+  featuredNames: ["Alisado", "Terapia de hidratación", "Terapia anticaída", "Terapia antiácida"],
   fallbackCategory: "Spa Capilar",
   hiddenCategories: ["Fase de Prueba QA"],
   copyByName: {

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 
-import { getFeaturedLandingProducts } from "./landing-catalog";
+import { getFeaturedLandingProducts, getLandingCatalog } from "./landing-catalog";
 
 const apiProduct = (overrides: Record<string, unknown> = {}) => ({
   id: "p1",
@@ -86,5 +86,65 @@ describe("getFeaturedLandingProducts", () => {
 
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("caído")));
     expect(await getFeaturedLandingProducts()).toEqual([]);
+  });
+});
+
+const apiTreatment = (name: string, price: number) => ({
+  id: name,
+  name,
+  slug: name.toLowerCase().replace(/\s+/g, "-"),
+  isActive: true,
+  requiresPriorAssessment: false,
+  basePriceMin: price,
+  basePriceMax: price,
+  baseDurationMinMinutes: 60,
+  baseDurationMaxMinutes: 60,
+  category: { id: "c1", name: "Spa Capilar", slug: "spa-capilar" },
+  activePromotion: null,
+});
+
+describe("getLandingCatalog: el alisado va primero", () => {
+  beforeEach(() => {
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://api.test/api/v1");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+  });
+
+  it("destaca el alisado primero en la landing aunque no sea el más barato", async () => {
+    vi.stubGlobal(
+      "fetch",
+      respond([
+        apiTreatment("Terapia de hidratación", 200),
+        apiTreatment("Terapia antiácida", 150),
+        apiTreatment("Alisado", 400),
+      ]),
+    );
+
+    const catalog = await getLandingCatalog();
+
+    expect(catalog.featured[0].name).toBe("Alisado");
+  });
+
+  it("el previo del navbar conserva el orden que manda el backend", async () => {
+    vi.stubGlobal(
+      "fetch",
+      respond([
+        apiTreatment("Alisado", 400),
+        apiTreatment("Terapia de hidratación", 200),
+        apiTreatment("Terapia antiácida", 150),
+      ]),
+    );
+
+    const [category] = (await getLandingCatalog()).categories;
+
+    expect(category.highlights.map((t) => t.name)).toEqual([
+      "Alisado",
+      "Terapia de hidratación",
+      "Terapia antiácida",
+    ]);
+    expect(category.fromThousands).toBe(150);
   });
 });
