@@ -3,12 +3,17 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/src/components/seo/json-ld";
 import { pageMetadata } from "@/src/features/landing/lib/seo";
 import { breadcrumbJsonLd } from "@/src/features/landing/lib/structured-data";
-import { getShowcaseCategory } from "@/src/features/treatments/api/showcase.api";
+import { getShowcaseCategories, getShowcaseCategory } from "@/src/features/treatments/api/showcase.api";
 import { categoryHref } from "@/src/features/treatments/lib/showcase-routes";
 import { TreatmentsShell } from "@/src/features/treatments/components/treatments-shell";
 import { TreatmentCategoryContainer } from "@/src/features/treatments/pages/category/treatment-category-container";
 
 export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const categories = await getShowcaseCategories().catch(() => []);
+  return categories.map((category) => ({ categoria: category.slug }));
+}
 
 type Params = Promise<{ categoria: string }>;
 

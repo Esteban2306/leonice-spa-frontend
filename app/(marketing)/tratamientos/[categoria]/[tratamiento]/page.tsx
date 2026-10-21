@@ -3,12 +3,16 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/src/components/seo/json-ld";
 import { pageMetadata } from "@/src/features/landing/lib/seo";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/src/features/landing/lib/structured-data";
-import { getShowcaseTreatment } from "@/src/features/treatments/api/showcase.api";
+import { getShowcaseTreatment, listShowcaseTreatmentPaths } from "@/src/features/treatments/api/showcase.api";
 import { categoryHref, treatmentHref } from "@/src/features/treatments/lib/showcase-routes";
 import { TreatmentsShell } from "@/src/features/treatments/components/treatments-shell";
 import { TreatmentDetailContainer } from "@/src/features/treatments/pages/treatment/treatment-detail-container";
 
 export const revalidate = 300;
+
+export async function generateStaticParams() {
+  return listShowcaseTreatmentPaths();
+}
 
 type Params = Promise<{ categoria: string; tratamiento: string }>;
 

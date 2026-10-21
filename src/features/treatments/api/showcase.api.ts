@@ -35,6 +35,19 @@ export async function getShowcaseCategories(): Promise<ShowcaseCategorySummary[]
   return (await getShowcase<ShowcaseCategorySummary[]>("/categories")) ?? [];
 }
 
+export async function listShowcaseTreatmentPaths(): Promise<{ categoria: string; tratamiento: string }[]> {
+  const categories = await getShowcaseCategories().catch(() => []);
+  const details = await Promise.all(
+    categories.map((category) => getShowcaseCategory(category.slug).catch(() => null)),
+  );
+  return details.flatMap((detail) =>
+    (detail?.treatments ?? []).map((treatment) => ({
+      categoria: treatment.categorySlug,
+      tratamiento: treatment.slug,
+    })),
+  );
+}
+
 export function getShowcaseCategory(categorySlug: string) {
   return getShowcase<ShowcaseCategoryDetail>(`/categories/${encodeURIComponent(categorySlug)}`);
 }

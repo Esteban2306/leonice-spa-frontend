@@ -4,12 +4,18 @@ import { JsonLd } from "@/src/components/seo/json-ld";
 import { pageMetadata } from "@/src/features/landing/lib/seo";
 import { breadcrumbJsonLd, productJsonLd } from "@/src/features/landing/lib/structured-data";
 import { MarketingShell } from "@/src/features/landing/components/marketing-shell";
-import { getCatalogProduct } from "@/src/features/products-catalog/api/catalog.api";
+import { getCatalog, getCatalogProduct } from "@/src/features/products-catalog/api/catalog.api";
+import { EMPTY_FILTERS } from "@/src/features/products-catalog/lib/catalog-filters";
 import { ProductDetailContainer } from "@/src/features/products-catalog/pages/product/product-detail-container";
 
 import "@/src/features/products-catalog/products-catalog.css";
 
 export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const catalog = await getCatalog(EMPTY_FILTERS).catch(() => null);
+  return (catalog?.items ?? []).map((product) => ({ producto: product.slug }));
+}
 
 type Params = Promise<{ producto: string }>;
 
