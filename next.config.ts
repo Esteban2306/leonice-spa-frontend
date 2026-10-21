@@ -13,13 +13,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        pathname: "/exyhq5ry/**",
-      },
-    ],
+    loader: "custom",
+    loaderFile: "./src/lib/images/cloudinary-loader.ts",
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

@@ -135,7 +135,7 @@ function VideoPlayer({
         muted
         loop
         playsInline
-        preload="metadata"
+        preload={mode === "card" && posterUrl ? "none" : "metadata"}
         aria-label={`Video del procedimiento: ${title}`}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
