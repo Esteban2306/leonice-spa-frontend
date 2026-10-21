@@ -16,6 +16,12 @@
   initial-value: 0.5;
 }
 
+@property --shadow-fade {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
 .landing {
   --sun-dx: var(--sx);
   --sun-dy: var(--sy);
@@ -32,8 +38,8 @@
 .treatments-gallery .treatment-cta {
   --sun-near: calc(1 - var(--sd));
   --sun-heat: calc(var(--sun-near) * var(--sun-near));
-  --sun-reach: calc(var(--lift) * (0.7 + var(--sd) * 1.05));
-  --sun-blur: calc(var(--lift) * (1.1 + var(--sd) * 1.25));
+  --sun-reach: calc(var(--lift) * (0.7 + var(--sd) * 1.05) * (0.55 + 0.45 * var(--shadow-fade)));
+  --sun-blur: calc(var(--lift) * (1.1 + var(--sd) * 1.25) * (0.55 + 0.45 * var(--shadow-fade)));
   --sun-glow: 30px;
   --sun-shade: calc(var(--sun-glow) * 1.3);
   --sun-tint: 74 46 16;
@@ -48,15 +54,15 @@
   --sun-bloom: 255 224 176;
   box-shadow:
     calc(var(--sx) * var(--sun-reach)) calc(var(--sy) * var(--sun-reach)) var(--sun-blur)
-      calc(var(--lift) * -0.3) rgb(var(--sun-tint) / calc(var(--sun-cast) * (0.8 + var(--sun-near) * 0.4))),
-    calc(var(--sx) * 4px) calc(var(--sy) * 4px) 10px -3px rgb(var(--sun-tint) / var(--sun-contact)),
-    inset calc(var(--sx) * 2px) calc(var(--sy) * 2px) 0 rgb(var(--sun-rim) / calc(var(--sun-rim-alpha) * (0.4 + var(--sun-heat) * 0.6))),
+      calc(var(--lift) * -0.3) rgb(var(--sun-tint) / calc(var(--sun-cast) * (0.8 + var(--sun-near) * 0.4) * var(--shadow-fade))),
+    calc(var(--sx) * 4px) calc(var(--sy) * 4px) 10px -3px rgb(var(--sun-tint) / calc(var(--sun-contact) * var(--shadow-fade))),
+    inset calc(var(--sx) * 2px) calc(var(--sy) * 2px) 0 rgb(var(--sun-rim) / calc(var(--sun-rim-alpha) * (0.4 + var(--sun-heat) * 0.6) * var(--shadow-fade))),
     inset calc(var(--sx) * -1 * var(--sun-shade)) calc(var(--sy) * -1 * var(--sun-shade)) calc(var(--sun-shade) * 1.1) 0
-      rgb(var(--sun-far) / var(--sun-far-alpha)),
+      rgb(var(--sun-far) / calc(var(--sun-far-alpha) * var(--shadow-fade))),
     inset calc(var(--sx) * var(--sun-glow) * 0.7) calc(var(--sy) * var(--sun-glow) * 0.7) calc(var(--sun-glow) * 0.55) 0
-      rgb(var(--sun-bloom) / calc(0.22 + var(--sun-heat) * 0.6)),
+      rgb(var(--sun-bloom) / calc((0.22 + var(--sun-heat) * 0.6) * var(--shadow-fade))),
     inset calc(var(--sx) * var(--sun-glow) * 2.1) calc(var(--sy) * var(--sun-glow) * 2.1) calc(var(--sun-glow) * 1.7) 0
-      rgb(var(--sun-shine) / calc(var(--sun-shine-alpha) * var(--sun-heat) * 0.5));
+      rgb(var(--sun-shine) / calc(var(--sun-shine-alpha) * var(--sun-heat) * 0.5 * var(--shadow-fade)));
 }
 
 .lit,
@@ -341,6 +347,43 @@ html:has(.landing)::-webkit-scrollbar-thumb:hover {
 @supports not selector(::-webkit-scrollbar) {
   html:has(.landing) {
     scrollbar-color: #d9b277 #fdf8f1;
+  }
+}
+
+@keyframes sun-shadow-in {
+  from {
+    --shadow-fade: 0;
+  }
+  to {
+    --shadow-fade: 1;
+  }
+}
+
+.landing :is(.lit, .lit-dark, .sun-shadow, .sun-shadow-ink, .sun-panel, .sun-glass, .why-gallery .ag-panel, .treatments-gallery .ag-panel, .treatments-gallery .treatment-cta) {
+  --shadow-fade: 0;
+}
+
+.landing :is(.lit, .lit-dark, .sun-shadow, .sun-shadow-ink, .sun-panel, .sun-glass, .why-gallery .ag-panel, .treatments-gallery .ag-panel, .treatments-gallery .treatment-cta)[data-lit] {
+  --shadow-fade: 1;
+  animation: sun-shadow-in 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.landing:not([data-sun="ready"]) :is(.sun-shade, .sun-halo) {
+  opacity: 0;
+}
+
+.landing :is(.sun-shade, .sun-halo) {
+  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce), (scripting: none) {
+  .landing :is(.lit, .lit-dark, .sun-shadow, .sun-shadow-ink, .sun-panel, .sun-glass, .why-gallery .ag-panel, .treatments-gallery .ag-panel, .treatments-gallery .treatment-cta) {
+    --shadow-fade: 1;
+    animation: none;
+  }
+
+  .landing:not([data-sun="ready"]) :is(.sun-shade, .sun-halo) {
+    opacity: 1;
   }
 }
 

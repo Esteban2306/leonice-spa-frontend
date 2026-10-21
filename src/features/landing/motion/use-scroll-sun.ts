@@ -20,6 +20,17 @@ export const SUN_SURFACES =
 const EASE = 0.24;
 const SETTLE_PX = 0.4;
 const STATIC_PROGRESS = 0.25;
+const SETTLE_POLL_MS = 100;
+const SETTLE_CALM_POLLS = 2;
+const SETTLE_MAX_MS = 4000;
+
+function isSettled(surface: HTMLElement, root: HTMLElement) {
+  for (let node: HTMLElement | null = surface; node && node !== root; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    if (style.clipPath !== "none" || Number(style.opacity) < 0.98) return false;
+  }
+  return true;
+}
 
 function writeLight(target: HTMLElement, light: SurfaceLight) {
   target.style.setProperty("--sx", light.sx.toFixed(2));
@@ -112,6 +123,42 @@ export function useScrollSun(
       { rootMargin: "25% 0px 25% 0px" },
     );
 
+    const pending = new Map<HTMLElement, { since: number; calm: number }>();
+    let pollTimer = 0;
+    const poll = () => {
+      const now = performance.now();
+      pending.forEach((state, surface) => {
+        state.calm = isSettled(surface, root) ? state.calm + 1 : 0;
+        if (state.calm >= SETTLE_CALM_POLLS || now - state.since > SETTLE_MAX_MS) {
+          pending.delete(surface);
+          surface.dataset.lit = "";
+        }
+      });
+      if (pending.size === 0) {
+        window.clearInterval(pollTimer);
+        pollTimer = 0;
+      }
+    };
+    const queueLight = (surface: HTMLElement) => {
+      if (reduced) {
+        surface.dataset.lit = "";
+        return;
+      }
+      pending.set(surface, { since: performance.now(), calm: 0 });
+      if (!pollTimer) pollTimer = window.setInterval(poll, SETTLE_POLL_MS);
+    };
+    const lightUp = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const surface = entry.target as HTMLElement;
+          lightUp.unobserve(surface);
+          if (surface.dataset.lit === undefined) queueLight(surface);
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+
     const tracked = new Set<HTMLElement>();
     const scan = () => {
       const found = new Set(root.querySelectorAll<HTMLElement>(SUN_SURFACES));
@@ -119,6 +166,7 @@ export function useScrollSun(
         if (!tracked.has(surface)) {
           tracked.add(surface);
           visibility.observe(surface);
+          if (surface.dataset.lit === undefined) lightUp.observe(surface);
         }
       }
       for (const surface of tracked) {
@@ -126,6 +174,8 @@ export function useScrollSun(
           tracked.delete(surface);
           visible.delete(surface);
           visibility.unobserve(surface);
+          lightUp.unobserve(surface);
+          pending.delete(surface);
         }
       }
     };
@@ -176,6 +226,9 @@ export function useScrollSun(
       root.removeEventListener("animationend", onSettle);
       mutations.disconnect();
       visibility.disconnect();
+      lightUp.disconnect();
+      pending.clear();
+      if (pollTimer) window.clearInterval(pollTimer);
       if (frame) cancelAnimationFrame(frame);
       if (scanFrame) cancelAnimationFrame(scanFrame);
       delete root.dataset.sun;
