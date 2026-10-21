@@ -14,10 +14,10 @@
       "service": "leonice-spa"
     }
   ],
-  "r2_buckets": [
+  "kv_namespaces": [
     {
-      "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "leonice-spa-cache"
+      "binding": "NEXT_INC_CACHE_KV",
+      "id": "69f826b2a59d4fd7b7072c88bd61c571"
     }
   ],
   "durable_objects": {
