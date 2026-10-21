@@ -1,5 +1,6 @@
 import { HttpClientConfig, HttpMethod, RequestOptions } from "./http.types";
 import { HttpError, type HttpErrorInit } from "./http-error";
+import { tunnelHeaders } from "./tunnel-headers";
 
 const MUTATING_METHODS: readonly HttpMethod[] = [
   "POST",
@@ -137,7 +138,7 @@ export class HttpClient {
     const response = await fetch(this.buildUrl(this.refreshEndpoint), {
       method: "POST",
       credentials: "include",
-      headers: this.buildCsrfHeaders("POST"),
+      headers: { ...tunnelHeaders(this.baseUrl), ...this.buildCsrfHeaders("POST") },
     });
 
     if (!response.ok) {
@@ -154,6 +155,7 @@ export class HttpClient {
 
     return {
       ...(isFormData ? {} : this.defaultHeaders),
+      ...tunnelHeaders(this.baseUrl),
       ...this.buildCsrfHeaders(method),
       ...options.headers,
     };

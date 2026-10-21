@@ -6,6 +6,7 @@ import type {
 import { toApiQuery } from "@/src/features/products-catalog/lib/catalog-filters";
 import { allowedImageUrl } from "@/src/features/landing/lib/allowed-image";
 import type { CatalogProductCard } from "@/src/features/products-catalog/api/catalog.types";
+import { tunnelHeaders } from "@/src/lib/api/tunnel-headers";
 
 const REVALIDATE_SECONDS = 300;
 const TIMEOUT_MS = 6000;
@@ -69,11 +70,16 @@ export async function getCatalogProduct(slug: string): Promise<CatalogProductDet
   return safeDetail(unwrap(await response.json()));
 }
 
+const browserHeaders = () => tunnelHeaders(apiUrl());
+
 export async function fetchCatalogInBrowser(
   filters: CatalogFilters,
   signal: AbortSignal,
 ): Promise<CatalogResult> {
-  const response = await fetch(`${apiUrl()}/catalog/products${toApiQuery(filters)}`, { signal });
+  const response = await fetch(`${apiUrl()}/catalog/products${toApiQuery(filters)}`, {
+    signal,
+    headers: browserHeaders(),
+  });
   if (!response.ok) throw new CatalogUnavailableError(`El catálogo respondió ${response.status}`);
   return safeResult(unwrap(await response.json()));
 }
@@ -82,7 +88,10 @@ export async function fetchProductInBrowser(
   slug: string,
   signal: AbortSignal,
 ): Promise<CatalogProductDetail> {
-  const response = await fetch(`${apiUrl()}/catalog/products/${encodeURIComponent(slug)}`, { signal });
+  const response = await fetch(`${apiUrl()}/catalog/products/${encodeURIComponent(slug)}`, {
+    signal,
+    headers: browserHeaders(),
+  });
   if (!response.ok) throw new CatalogUnavailableError(`El catálogo respondió ${response.status}`);
   return safeDetail(unwrap(await response.json()));
 }
