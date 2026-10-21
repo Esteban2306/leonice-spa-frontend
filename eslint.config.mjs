@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     ".agents/**",
     ".claude/**",
     "claude/**",
+    ".open-next/**",
+    ".wrangler/**",
     "src/components/ui/Dock.jsx",
     "src/components/ui/AccordionGallery.jsx",
     "src/components/ui/CircularCarousel.jsx",
