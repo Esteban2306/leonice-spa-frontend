@@ -1,11 +1,15 @@
 import { httpClient } from "@/src/lib/api/client";
 import type { QueryOptions } from "@/src/lib/api/http.types";
 
+import {
+  toConduitAiModel,
+  toConduitAiModels,
+} from "../mapper/conduit-ai-model.mapper";
+
 import type {
   BotTool,
   BusinessSettings,
   CampaignPolicy,
-  ConduitAiModel,
   ConduitBot,
   ConduitConnection,
   ConduitOverview,
@@ -87,9 +91,11 @@ export const conduitApi = {
     httpClient.request<unknown>(`${BASE}/bot/prompts/preview`, "POST", {
       type,
     }),
-  models: () => get<ConduitAiModel[]>("/bot/models"),
-  addModel: (data: CreateAiModelRequest) =>
-    httpClient.request<ConduitAiModel>(`${BASE}/bot/models`, "POST", data),
+  models: async () => toConduitAiModels(await get<unknown>("/bot/models")),
+  addModel: async (data: CreateAiModelRequest) =>
+    toConduitAiModel(
+      await httpClient.request<unknown>(`${BASE}/bot/models`, "POST", data),
+    ),
   removeModel: (modelId: string) =>
     httpClient.request<unknown>(`${BASE}/bot/models/${modelId}`, "DELETE"),
   resetModel: (modelId: string) =>

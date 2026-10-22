@@ -102,6 +102,7 @@ export function ModelsTab({
                 <p className="font-sans text-xs text-secondary/70 tabular-nums">
                   {ROLE_LABELS[model.role]} · Prioridad {model.priority} ·{" "}
                   {model.tier === "FREE" ? "Gratis" : "Pago"}
+                  {model.apiKeyLast4 ? ` · Clave ••••${model.apiKeyLast4}` : ""}
                   {model.dailyTokenLimit
                     ? ` · ${model.tokensUsedToday.toLocaleString("es-CO")} / ${model.dailyTokenLimit.toLocaleString("es-CO")} tokens hoy`
                     : ""}

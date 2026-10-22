@@ -56,6 +56,7 @@ export interface ConduitAiModel {
   requestsThisMinute?: number;
   isActive: boolean;
   createdAt?: string;
+  apiKeyLast4: string | null;
 }
 
 export interface ConduitBot {
