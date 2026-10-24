@@ -334,6 +334,11 @@ export interface RecommendedTool {
 }
 
 export const RECOMMENDED_TOOLS: readonly RecommendedTool[] = [
+  {
+    name: "consultar_cliente",
+    path: "/conduit/clients/me",
+    injectsPhone: false,
+  },
   { name: "info_negocio", path: "/conduit/business-info", injectsPhone: false },
   {
     name: "listar_tratamientos",
