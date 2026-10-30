@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -17,9 +17,9 @@ import {
   Sprout,
   Waves,
   Wind,
-  type LucideIcon,
 } from "lucide-react";
 
+import { AmazonicaIcon } from "@/src/features/landing/components/amazonica-icon";
 import type {
   LandingCategory,
   LandingProduct,
@@ -41,7 +41,14 @@ interface ProductGroup {
   products: LandingProduct[];
 }
 
-const CATEGORY_ICONS: { match: RegExp; icon: LucideIcon }[] = [
+type CategoryIconComponent = ComponentType<{
+  className?: string;
+  strokeWidth?: number;
+  "aria-hidden"?: boolean | "true" | "false";
+}>;
+
+const CATEGORY_ICONS: { match: RegExp; icon: CategoryIconComponent }[] = [
+  { match: /amazonica/, icon: AmazonicaIcon },
   { match: /shampoo|champu|limpie/, icon: Droplets },
   { match: /acondicion|hidrata/, icon: Waves },
   { match: /mascarilla/, icon: Layers },
@@ -56,7 +63,7 @@ function normalize(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-function categoryIcon(name: string): LucideIcon {
+function categoryIcon(name: string): CategoryIconComponent {
   const key = normalize(name);
   return CATEGORY_ICONS.find((entry) => entry.match.test(key))?.icon ?? Package;
 }
