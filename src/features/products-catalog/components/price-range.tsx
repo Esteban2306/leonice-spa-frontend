@@ -28,7 +28,7 @@ export function PriceRange({ bounds, value, onCommit }: PriceRangeProps) {
     });
 
   return (
-    <div className="flex min-w-[15rem] flex-col gap-2">
+    <div className="flex w-full min-w-0 flex-col gap-2">
       <div className="flex items-baseline justify-between font-sans text-xs font-bold tabular-nums text-[#7a5a2c]">
         <span>{formatPesos(low)}</span>
         <span>{formatPesos(high)}</span>
@@ -47,7 +47,9 @@ export function PriceRange({ bounds, value, onCommit }: PriceRangeProps) {
           step={STEP}
           value={low}
           disabled={disabled}
-          onChange={(event) => setLow(Math.min(Number(event.target.value), high))}
+          onChange={(event) =>
+            setLow(Math.min(Number(event.target.value), high))
+          }
           onPointerUp={commit}
           onKeyUp={commit}
           className="catalog-range absolute inset-0 w-full"
@@ -60,7 +62,9 @@ export function PriceRange({ bounds, value, onCommit }: PriceRangeProps) {
           step={STEP}
           value={high}
           disabled={disabled}
-          onChange={(event) => setHigh(Math.max(Number(event.target.value), low))}
+          onChange={(event) =>
+            setHigh(Math.max(Number(event.target.value), low))
+          }
           onPointerUp={commit}
           onKeyUp={commit}
           className="catalog-range absolute inset-0 w-full"

@@ -9,9 +9,15 @@ interface CatalogSearchFieldProps {
   value: string;
   onCommit: (value: string) => void;
   compact?: boolean;
+  stacked?: boolean;
 }
 
-export function CatalogSearchField({ value, onCommit, compact = false }: CatalogSearchFieldProps) {
+export function CatalogSearchField({
+  value,
+  onCommit,
+  compact = false,
+  stacked = false,
+}: CatalogSearchFieldProps) {
   const [query, setQuery] = useState(value);
   const [synced, setSynced] = useState(value);
 
@@ -27,9 +33,14 @@ export function CatalogSearchField({ value, onCommit, compact = false }: Catalog
   }, [query, value, onCommit]);
 
   return (
-    <label className="relative flex min-w-0 flex-1 basis-56 items-center">
+    <label
+      className={`relative flex min-w-0 items-center ${stacked ? "w-full" : "flex-1 basis-56"}`}
+    >
       <span className="sr-only">Buscar productos</span>
-      <Search className="pointer-events-none absolute left-4 size-4 text-[#7a5a2c]" aria-hidden="true" />
+      <Search
+        className="pointer-events-none absolute left-4 size-4 text-[#7a5a2c]"
+        aria-hidden="true"
+      />
       <input
         type="search"
         value={query}

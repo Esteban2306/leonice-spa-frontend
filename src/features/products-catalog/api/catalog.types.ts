@@ -51,8 +51,14 @@ export interface CatalogFacetOption {
 export interface CatalogResult {
   items: CatalogProductCard[];
   total: number;
+  page: number;
+  pageSize: number | null;
+  pageCount: number;
   facets: {
-    categories: (CatalogFacetOption & { iconKey: string | null; description: string | null })[];
+    categories: (CatalogFacetOption & {
+      iconKey: string | null;
+      description: string | null;
+    })[];
     tags: CatalogFacetOption[];
     price: { minPesos: number | null; maxPesos: number | null };
   };
@@ -65,4 +71,5 @@ export interface CatalogFilters {
   minPrice: number | null;
   maxPrice: number | null;
   sort: CatalogSort;
+  page: number;
 }

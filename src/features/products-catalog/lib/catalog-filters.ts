@@ -1,4 +1,7 @@
-import type { CatalogFilters, CatalogSort } from "@/src/features/products-catalog/api/catalog.types";
+import type {
+  CatalogFilters,
+  CatalogSort,
+} from "@/src/features/products-catalog/api/catalog.types";
 
 export const SORT_OPTIONS: { value: CatalogSort; label: string }[] = [
   { value: "featured", label: "Destacados" },
@@ -7,6 +10,8 @@ export const SORT_OPTIONS: { value: CatalogSort; label: string }[] = [
   { value: "name", label: "Nombre A–Z" },
 ];
 
+export const PAGE_SIZE = 18;
+
 export const EMPTY_FILTERS: CatalogFilters = {
   category: null,
   tags: [],
@@ -14,6 +19,7 @@ export const EMPTY_FILTERS: CatalogFilters = {
   minPrice: null,
   maxPrice: null,
   sort: "featured",
+  page: 1,
 };
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -38,7 +44,10 @@ export function readFilters(params: ParamSource): CatalogFilters {
     q: (params.get("q") ?? "").slice(0, 80),
     minPrice: readInt(params.get("min")),
     maxPrice: readInt(params.get("max")),
-    sort: SORT_OPTIONS.some((option) => option.value === sort) ? (sort as CatalogSort) : "featured",
+    sort: SORT_OPTIONS.some((option) => option.value === sort)
+      ? (sort as CatalogSort)
+      : "featured",
+    page: Math.max(readInt(params.get("pagina")) ?? 1, 1),
   };
 }
 
@@ -50,6 +59,7 @@ export function toSearchParams(filters: CatalogFilters): URLSearchParams {
   if (filters.minPrice !== null) params.set("min", String(filters.minPrice));
   if (filters.maxPrice !== null) params.set("max", String(filters.maxPrice));
   if (filters.sort !== "featured") params.set("orden", filters.sort);
+  if (filters.page > 1) params.set("pagina", String(filters.page));
   return params;
 }
 
@@ -58,18 +68,25 @@ export function toApiQuery(filters: CatalogFilters): string {
   if (filters.category) params.set("category", filters.category);
   if (filters.tags.length > 0) params.set("tags", filters.tags.join(","));
   if (filters.q.trim()) params.set("q", filters.q.trim());
-  if (filters.minPrice !== null) params.set("minPrice", String(filters.minPrice));
-  if (filters.maxPrice !== null) params.set("maxPrice", String(filters.maxPrice));
+  if (filters.minPrice !== null)
+    params.set("minPrice", String(filters.minPrice));
+  if (filters.maxPrice !== null)
+    params.set("maxPrice", String(filters.maxPrice));
   if (filters.sort !== "featured") params.set("sort", filters.sort);
+  params.set("page", String(filters.page));
+  params.set("pageSize", String(PAGE_SIZE));
   const query = params.toString();
   return query ? `?${query}` : "";
 }
 
-export function toggleTag(filters: CatalogFilters, tag: string): CatalogFilters {
+export function toggleTag(
+  filters: CatalogFilters,
+  tag: string,
+): CatalogFilters {
   const tags = filters.tags.includes(tag)
     ? filters.tags.filter((item) => item !== tag)
     : [...filters.tags, tag];
-  return { ...filters, tags };
+  return { ...filters, tags, page: 1 };
 }
 
 export function activeFilterCount(filters: CatalogFilters): number {
