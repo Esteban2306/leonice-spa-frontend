@@ -377,16 +377,6 @@ export function LandingNavbar({
                   Agendar cita
                 </BookingLink>
               </span>
-              <span className="sm:hidden">
-                <BookingLink
-                  variant="sand"
-                  size="sm"
-                  arrow={false}
-                  className="!shadow-none"
-                >
-                  Agendar
-                </BookingLink>
-              </span>
             </div>
           </motion.nav>
 
