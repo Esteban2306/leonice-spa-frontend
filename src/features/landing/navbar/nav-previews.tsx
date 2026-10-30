@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import { AmazonicaIcon } from "@/src/features/landing/components/amazonica-icon";
+import { AnvaIcon } from "@/src/features/landing/components/anva-icon";
 import type {
   LandingCategory,
   LandingProduct,
@@ -47,8 +48,16 @@ type CategoryIconComponent = ComponentType<{
   "aria-hidden"?: boolean | "true" | "false";
 }>;
 
-const CATEGORY_ICONS: { match: RegExp; icon: CategoryIconComponent }[] = [
+interface CategoryIconEntry {
+  match: RegExp;
+  icon: CategoryIconComponent;
+  tileSize?: string;
+  rowSize?: string;
+}
+
+const CATEGORY_ICONS: CategoryIconEntry[] = [
   { match: /amazonica/, icon: AmazonicaIcon },
+  { match: /anva/, icon: AnvaIcon, tileSize: "h-6 w-9", rowSize: "h-5 w-7 -mx-1" },
   { match: /shampoo|champu|limpie/, icon: Droplets },
   { match: /acondicion|hidrata/, icon: Waves },
   { match: /mascarilla/, icon: Layers },
@@ -63,9 +72,11 @@ function normalize(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-function categoryIcon(name: string): CategoryIconComponent {
+const FALLBACK_ICON: CategoryIconEntry = { match: /^$/, icon: Package };
+
+function categoryIcon(name: string): CategoryIconEntry {
   const key = normalize(name);
-  return CATEGORY_ICONS.find((entry) => entry.match.test(key))?.icon ?? Package;
+  return CATEGORY_ICONS.find((entry) => entry.match.test(key)) ?? FALLBACK_ICON;
 }
 
 function groupByCategory(products: LandingProduct[]): ProductGroup[] {
@@ -245,7 +256,7 @@ export function ProductsPreview({
           className="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-3"
         >
           {groups.map((group) => {
-            const Icon = categoryIcon(group.name);
+            const { icon: Icon, tileSize } = categoryIcon(group.name);
             return (
               <motion.li key={group.key} variants={item}>
                 <button
@@ -254,7 +265,7 @@ export function ProductsPreview({
                   className="group flex w-full cursor-pointer flex-col items-center gap-3 rounded-3xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-6 text-center transition-colors duration-300 hover:bg-[#062112] hover:text-[#F2EBDB] focus-visible:bg-[#062112] focus-visible:text-[#F2EBDB]"
                 >
                   <span className="grid size-14 place-items-center rounded-full bg-[#E0BC87]/45 text-[#062112] transition-colors duration-300 group-hover:bg-[#E0BC87] group-focus-visible:bg-[#E0BC87]">
-                    <Icon className="size-6" strokeWidth={1.5} aria-hidden="true" />
+                    <Icon className={tileSize ?? "size-6"} strokeWidth={1.5} aria-hidden="true" />
                   </span>
                   <span className="font-heading text-xl leading-tight">{group.name}</span>
                   <span className="font-sans text-xs text-[#062112]/70 transition-colors duration-300 group-hover:text-[#E0BC87] group-focus-visible:text-[#E0BC87]">
@@ -291,7 +302,7 @@ export function ProductsPreview({
         <motion.ul variants={list} initial="hidden" animate="show" className="flex flex-col gap-1">
           {groups.map((group) => {
             const selected = group.key === active.key;
-            const Icon = categoryIcon(group.name);
+            const { icon: Icon, rowSize } = categoryIcon(group.name);
             return (
               <motion.li key={group.key} variants={item}>
                 <button
@@ -312,7 +323,7 @@ export function ProductsPreview({
                     />
                   )}
                   <Icon
-                    className={`relative size-5 shrink-0 ${selected ? "text-[#E0BC87]" : "text-[#7a5a2c]"}`}
+                    className={`relative ${rowSize ?? "size-5"} shrink-0 ${selected ? "text-[#E0BC87]" : "text-[#7a5a2c]"}`}
                     strokeWidth={1.5}
                     aria-hidden="true"
                   />
