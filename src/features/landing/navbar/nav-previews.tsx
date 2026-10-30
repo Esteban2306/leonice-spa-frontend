@@ -133,6 +133,12 @@ function normalize(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+function categorySlug(name: string): string {
+  return normalize(name)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 const FALLBACK_ICON: CategoryIconEntry = { match: /^$/, icon: Package };
 
 function categoryIcon(name: string): CategoryIconEntry {
@@ -286,6 +292,8 @@ export function TreatmentsPreview({
   );
 }
 
+const MENU_PRODUCTS_LIMIT = 6;
+
 const productCountLabel = (count: number) => `${count} ${count === 1 ? "producto" : "productos"}`;
 
 export function ProductsPreview({
@@ -349,104 +357,110 @@ export function ProductsPreview({
     );
   }
 
+  const visibleProducts = active.products.slice(0, MENU_PRODUCTS_LIMIT);
+  const hiddenCount = active.products.length - visibleProducts.length;
+
   return (
-    <div className="grid grid-cols-[minmax(12rem,15rem)_1fr] gap-6">
-      <div className="flex flex-col gap-3">
-        <button
-          type="button"
-          onClick={() => setActiveKey(null)}
-          className="group inline-flex w-fit cursor-pointer items-center gap-1 rounded-full py-1 pr-3 font-sans text-xs font-bold text-[#062112]/70 transition-colors hover:text-[#062112]"
-        >
-          <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
-          Todas las categorías
-        </button>
-        <motion.ul variants={list} initial="hidden" animate="show" className="flex flex-col gap-1">
-          {groups.map((group) => {
-            const selected = group.key === active.key;
-            const { icon: Icon, rowSize, strokeWidth } = categoryIcon(group.name);
-            return (
-              <motion.li key={group.key} variants={item}>
-                <button
-                  type="button"
-                  onMouseEnter={() => setActiveKey(group.key)}
-                  onFocus={() => setActiveKey(group.key)}
-                  onClick={() => setActiveKey(group.key)}
-                  aria-pressed={selected}
-                  className={`relative flex w-full cursor-pointer items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors duration-300 ${
-                    selected ? "text-[#F2EBDB]" : "text-[#062112] hover:bg-[#062112]/5"
-                  }`}
-                >
-                  {selected && (
-                    <motion.span
-                      layoutId="nav-product-category-pill"
-                      className="absolute inset-0 rounded-2xl bg-[#062112]"
-                      transition={{ duration: 0.45, ease: EASE }}
-                    />
-                  )}
-                  <Icon
-                    className={`relative ${rowSize ?? "size-5"} shrink-0 ${selected ? "text-[#E0BC87]" : "text-[#7a5a2c]"}`}
-                    strokeWidth={strokeWidth ?? 1.5}
-                    aria-hidden="true"
+    <div className="flex flex-col gap-4">
+      <button
+        type="button"
+        onClick={() => setActiveKey(null)}
+        className="group inline-flex w-fit cursor-pointer items-center gap-1 rounded-full py-1 pr-3 font-sans text-xs font-bold text-[#062112]/70 transition-colors hover:text-[#062112]"
+      >
+        <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
+        Todas las categorías
+      </button>
+
+      <motion.ul variants={list} initial="hidden" animate="show" className="flex flex-wrap gap-2">
+        {groups.map((group) => {
+          const selected = group.key === active.key;
+          const { icon: Icon, rowSize, strokeWidth } = categoryIcon(group.name);
+          return (
+            <motion.li key={group.key} variants={item}>
+              <button
+                type="button"
+                onMouseEnter={() => setActiveKey(group.key)}
+                onFocus={() => setActiveKey(group.key)}
+                onClick={() => setActiveKey(group.key)}
+                aria-pressed={selected}
+                className={`relative flex cursor-pointer items-center gap-3 rounded-full px-4 py-2 text-left transition-colors duration-300 ${
+                  selected ? "text-[#F2EBDB]" : "text-[#062112] hover:bg-[#062112]/5"
+                }`}
+              >
+                {selected && (
+                  <motion.span
+                    layoutId="nav-product-category-pill"
+                    className="absolute inset-0 rounded-full bg-[#062112]"
+                    transition={{ duration: 0.45, ease: EASE }}
                   />
-                  <span className="relative flex min-w-0 flex-col">
-                    <span className="truncate font-heading text-xl leading-tight">{group.name}</span>
-                    <span
-                      className={`font-sans text-xs ${selected ? "text-[#E0BC87]" : "text-[#062112]/70"}`}
-                    >
-                      {productCountLabel(group.products.length)}
-                    </span>
-                  </span>
-                </button>
-              </motion.li>
-            );
-          })}
-        </motion.ul>
-      </div>
+                )}
+                <Icon
+                  className={`relative ${rowSize ?? "size-5"} shrink-0 ${selected ? "text-[#E0BC87]" : "text-[#7a5a2c]"}`}
+                  strokeWidth={strokeWidth ?? 1.5}
+                  aria-hidden="true"
+                />
+                <span className="relative font-heading text-lg leading-tight">{group.name}</span>
+              </button>
+            </motion.li>
+          );
+        })}
+      </motion.ul>
 
       <AnimatePresence mode="wait">
-        <motion.ul
+        <motion.div
           key={active.key}
           variants={list}
           initial="hidden"
           animate="show"
           exit={{ opacity: 0, transition: { duration: 0.15 } }}
-          className="grid max-h-[22rem] content-start gap-2 overflow-y-auto pr-1"
+          className="flex flex-col gap-3"
         >
-          {active.products.map((product) => {
-            const from = priceFrom(product);
-            const presentations = product.variants.map((variant) => variant.presentation).join(" · ");
-            return (
-              <motion.li key={product.id} variants={item}>
-                <Link
-                  href={landingProductHref(product)}
-                  onClick={onNavigate}
-                  className="group flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-3 text-left transition-colors duration-300 hover:border-[#BF9250]/60 hover:bg-white"
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate font-sans font-bold text-[#062112]">{product.name}</span>
-                    {presentations && (
-                      <span className="block truncate font-sans text-xs text-[#062112]/65">{presentations}</span>
-                    )}
-                  </span>
-                  <span className="flex shrink-0 items-center gap-4">
-                    {from !== null && (
-                      <span className="font-sans text-sm font-bold text-[#7a5a2c] tabular-nums">
-                        desde {formatPesos(from)}
-                      </span>
-                    )}
-                    <span className="inline-flex items-center gap-1 font-sans text-sm font-bold text-[#062112] underline decoration-[#BF9250] decoration-2 underline-offset-[6px]">
-                      Ver producto
+          <ul className="grid grid-cols-2 content-start gap-2">
+            {visibleProducts.map((product) => {
+              const from = priceFrom(product);
+              const presentations = product.variants.map((variant) => variant.presentation).join(" · ");
+              return (
+                <motion.li key={product.id} variants={item} className="min-w-0">
+                  <Link
+                    href={landingProductHref(product)}
+                    onClick={onNavigate}
+                    className="group flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-[#BF9250]/25 bg-[#FDF8F1] px-4 py-3 text-left transition-colors duration-300 hover:border-[#BF9250]/60 hover:bg-white"
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate font-sans font-bold text-[#062112]">{product.name}</span>
+                      {presentations && (
+                        <span className="block truncate font-sans text-xs text-[#062112]/65">{presentations}</span>
+                      )}
+                    </span>
+                    <span className="flex shrink-0 items-center gap-2">
+                      {from !== null && (
+                        <span className="font-sans text-sm font-bold text-[#7a5a2c] tabular-nums">
+                          {formatPesos(from)}
+                        </span>
+                      )}
                       <ArrowUpRight
-                        className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        className="size-4 text-[#062112] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                         aria-hidden="true"
                       />
                     </span>
-                  </span>
-                </Link>
-              </motion.li>
-            );
-          })}
-        </motion.ul>
+                  </Link>
+                </motion.li>
+              );
+            })}
+          </ul>
+          <motion.div variants={item}>
+            <Link
+              href={`${PRODUCTS_PAGE}?categoria=${categorySlug(active.name)}`}
+              onClick={onNavigate}
+              className="group inline-flex cursor-pointer items-center gap-2 font-sans text-sm font-bold text-[#062112] underline decoration-[#BF9250] decoration-2 underline-offset-[6px]"
+            >
+              {hiddenCount > 0
+                ? `Ver los ${active.products.length} productos de ${active.name}`
+                : `Ver ${active.name} en la tienda`}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+            </Link>
+          </motion.div>
+        </motion.div>
       </AnimatePresence>
     </div>
   );
