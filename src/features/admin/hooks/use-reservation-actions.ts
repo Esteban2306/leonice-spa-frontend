@@ -22,6 +22,13 @@ export interface ApproveDepositInput {
   scope: ApproveDepositScope;
 }
 
+export interface CompleteReservationInput {
+  reservationId: string;
+  cashPesos: number;
+  transferPesos: number;
+  advancePesos?: number;
+}
+
 export interface CancelReservationInput {
   reservationId: string;
   reason?: string;
@@ -33,7 +40,7 @@ export interface ReservationActions {
   rejectDeposit: (reservationId: string, reason: string) => Promise<boolean>;
   cancel: (input: CancelReservationInput) => Promise<boolean>;
   checkIn: (reservationId: string) => Promise<boolean>;
-  complete: (reservationId: string) => Promise<boolean>;
+  complete: (input: CompleteReservationInput) => Promise<boolean>;
   revive: (reservationId: string) => Promise<boolean>;
   sendCancellationLink: (reservationId: string) => Promise<boolean>;
   copyCancellationLink: (reservationId: string) => Promise<boolean>;
@@ -63,7 +70,7 @@ export function useReservationActions(): ReservationActions {
     (reject.isPending && reject.variables?.reservationId) ||
     (cancel.isPending && cancel.variables?.reservationId) ||
     (checkIn.isPending && checkIn.variables) ||
-    (complete.isPending && complete.variables) ||
+    (complete.isPending && complete.variables?.reservationId) ||
     (revive.isPending && revive.variables) ||
     (issueLink.isPending && issueLink.variables?.reservationId) ||
     null;
@@ -125,9 +132,21 @@ export function useReservationActions(): ReservationActions {
         (await runAdminAction("checkIn", () => checkInAsync(reservationId)))
           .ok,
 
-      complete: async (reservationId: string) =>
-        (await runAdminAction("complete", () => completeAsync(reservationId)))
-          .ok,
+      complete: async (input: CompleteReservationInput) =>
+        (
+          await runAdminAction("complete", () =>
+            completeAsync({
+              reservationId: input.reservationId,
+              data: {
+                cashAmount: pesosToThousands(input.cashPesos),
+                transferAmount: pesosToThousands(input.transferPesos),
+                ...(input.advancePesos !== undefined
+                  ? { advanceAmount: pesosToThousands(input.advancePesos) }
+                  : {}),
+              },
+            }),
+          )
+        ).ok,
 
       revive: async (reservationId: string) =>
         (await runAdminAction("revive", () => reviveAsync(reservationId))).ok,

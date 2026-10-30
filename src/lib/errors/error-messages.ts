@@ -13,6 +13,12 @@ export const FRIENDLY_ERROR_MESSAGES: Readonly<Record<string, string>> = {
     "Esta acción ya se está procesando. Espera unos segundos.",
   DEPOSIT_AMOUNT_REQUIRED:
     "Indica el monto que entregó el cliente para aprobar el depósito.",
+  PAYMENT_AMOUNT_MISMATCH:
+    "Lo cobrado no coincide con el saldo por cobrar. Revisa los montos.",
+  PAYMENT_ADVANCE_REQUIRED:
+    "El anticipo de esta cita es compartido. Indica cuánto corresponde a esta cita.",
+  PAYMENT_ADVANCE_NOT_EDITABLE:
+    "El anticipo de esta cita ya está registrado y no se puede modificar.",
   DEPOSIT_NOT_PENDING:
     "Este depósito ya fue revisado por otra persona o proceso.",
   DEPOSIT_CONCURRENT_CHANGE:

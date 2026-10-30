@@ -6,6 +6,7 @@ import type {
   AvailabilityCalendarResponse,
   CreatedReservations,
   CancelReservationRequest,
+  CompleteReservationRequest,
   ConfirmValoracionRequest,
   CreateReservationRequest,
   FindReservationsParams,
@@ -15,6 +16,7 @@ import type {
   PaginatedGroupedReservations,
   ReservationDetail,
   RescheduleReservationRequest,
+  ReservationSettlement,
 } from "../types/reservations.types";
 
 export const reservationsApi = {
@@ -113,10 +115,18 @@ export const reservationsApi = {
     );
   },
 
-  complete(reservationId: string) {
+  getSettlement(reservationId: string) {
+    return httpClient.request<ReservationSettlement>(
+      `/reservations/${reservationId}/settlement`,
+      "GET",
+    );
+  },
+
+  complete(reservationId: string, data: CompleteReservationRequest) {
     return httpClient.request(
       `/reservations/${reservationId}/complete`,
       "PATCH",
+      data,
     );
   },
 

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { CompleteReservationDialog } from "@/src/features/admin/components/reservation-actions/complete-reservation-dialog";
 import { ApproveDepositDialog } from "@/src/features/admin/components/reservation-actions/approve-deposit-dialog";
 import { CancelReservationDialog } from "@/src/features/admin/components/reservation-actions/cancel-reservation-dialog";
 import { DepositProofViewer } from "@/src/features/admin/components/reservation-actions/deposit-proof-viewer";
@@ -165,15 +166,18 @@ export function ReservationActions({
       )}
 
       {status === "CITA_EN_CURSO" && (
-        <button
-          type="button"
-          className={PRIMARY}
-          disabled={isBusy}
-          onClick={() => void actions.complete(reservation.id)}
-        >
-          <CircleCheckBig className="size-4" />
-          Completar cita
-        </button>
+        <CompleteReservationDialog
+          reservationId={reservation.id}
+          clientName={reservation.clientName}
+          treatmentName={reservation.treatmentName}
+          onComplete={actions.complete}
+          trigger={
+            <button type="button" className={PRIMARY} disabled={isBusy}>
+              <CircleCheckBig className="size-4" />
+              Completar cita
+            </button>
+          }
+        />
       )}
 
       {canRevive(status, reservation.cancellationSource, isUpcoming) && (

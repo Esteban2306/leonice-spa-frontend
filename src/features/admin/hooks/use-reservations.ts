@@ -15,6 +15,7 @@ import type {
   AdminRescheduleReservationRequest,
   AvailabilityCalendarParams,
   CancelReservationRequest,
+  CompleteReservationRequest,
   ConfirmValoracionRequest,
   CreateReservationRequest,
   FindReservationsParams,
@@ -204,9 +205,28 @@ export function useCompleteReservation() {
 
   return useMutation({
     mutationKey: ["admin", "reservations", "complete"],
-    mutationFn: (reservationId: string) =>
-      reservationsApi.complete(reservationId),
+    mutationFn: ({
+      reservationId,
+      data,
+    }: {
+      reservationId: string;
+      data: CompleteReservationRequest;
+    }) => reservationsApi.complete(reservationId, data),
     onSuccess: () => invalidateReservationDomain(queryClient),
+  });
+}
+
+export function useReservationSettlement(
+  reservationId: string,
+  enabled: boolean,
+) {
+  return useQuery({
+    queryKey: adminQueryKeys.reservations.settlement(reservationId),
+    queryFn: () => reservationsApi.getSettlement(reservationId),
+    enabled,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnWindowFocus: false,
   });
 }
 

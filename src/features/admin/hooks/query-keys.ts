@@ -14,6 +14,12 @@ export const adminQueryKeys = {
     details: () => [...adminQueryKeys.reservations.all(), "detail"] as const,
     detail: (reservationId: string) =>
       [...adminQueryKeys.reservations.details(), reservationId] as const,
+    settlement: (reservationId: string) =>
+      [
+        ...adminQueryKeys.reservations.all(),
+        "settlement",
+        reservationId,
+      ] as const,
     availability: (params: unknown) =>
       [...adminQueryKeys.reservations.all(), "availability", params] as const,
     availabilityCalendar: (params: unknown) =>

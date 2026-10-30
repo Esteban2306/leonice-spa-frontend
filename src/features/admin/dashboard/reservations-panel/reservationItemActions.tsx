@@ -1,7 +1,16 @@
 "use client";
 
-import { Check, ChevronDown, Ellipsis, FileX, LogIn, RotateCcw } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  CircleCheckBig,
+  Ellipsis,
+  FileX,
+  LogIn,
+  RotateCcw,
+} from "lucide-react";
 
+import { CompleteReservationDialog } from "@/src/features/admin/components/reservation-actions/complete-reservation-dialog";
 import { ApproveDepositDialog } from "@/src/features/admin/components/reservation-actions/approve-deposit-dialog";
 import { RejectDepositDialog } from "@/src/features/admin/components/reservation-actions/reject-deposit-dialog";
 import { ReservationOptionsMenu } from "@/src/features/admin/components/reservation-actions/reservation-options-menu";
@@ -88,6 +97,21 @@ export function ReservationItemActions({
         ) : (
           <p className={NOTE}>El check-in se habilita el día de la cita.</p>
         ))}
+
+      {item.status === "CITA_EN_CURSO" && (
+        <CompleteReservationDialog
+          reservationId={item.reservationId}
+          clientName={client.name}
+          treatmentName={item.treatmentName}
+          onComplete={actions.complete}
+          trigger={
+            <button type="button" className={PRIMARY} disabled={isBusy}>
+              <CircleCheckBig className="size-4" strokeWidth={1.8} />
+              Completar cita
+            </button>
+          }
+        />
+      )}
 
       {canRevive(item.status, item.cancellationSource, item.isUpcoming) && (
         <button

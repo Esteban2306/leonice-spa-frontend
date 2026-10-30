@@ -54,6 +54,20 @@ export interface ConfirmValoracionRequest {
   finalDurationMinutes: number;
 }
 
+export interface ReservationSettlement {
+  reservationId: string;
+  price: number;
+  advance: number | null;
+  advanceShared: boolean;
+  balanceDue: number | null;
+}
+
+export interface CompleteReservationRequest {
+  cashAmount: number;
+  transferAmount: number;
+  advanceAmount?: number;
+}
+
 export interface CancelReservationRequest {
   phone: string;
   reason?: string;
