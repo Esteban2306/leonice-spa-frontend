@@ -1,6 +1,7 @@
 import type {
   CancellationSource,
   HairColor,
+  HairDensity,
   HairLength,
   ReservationStatus,
 } from "../types/enums";
@@ -45,6 +46,7 @@ export type HairProfileStatus = "MISSING" | "EXPIRED" | "VALID";
 export interface HairProfileView {
   hairLength: HairLength | null;
   hairColor: HairColor | null;
+  hairDensity: HairDensity | null;
   updatedAt: string | null;
   validUntil: string | null;
   status: HairProfileStatus;
@@ -53,6 +55,7 @@ export interface HairProfileView {
 export interface SetHairProfileRequest {
   hairLength: HairLength;
   hairColor: HairColor;
+  hairDensity: HairDensity;
 }
 
 export type ConsentType =

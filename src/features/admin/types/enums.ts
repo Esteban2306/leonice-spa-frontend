@@ -28,3 +28,5 @@ export type DepositCoverage = "ANTICIPO" | "PAGO_COMPLETO";
 export type HairLength = "CORTO" | "MEDIANO" | "LARGO";
 
 export type HairColor = "CLARO" | "OSCURO";
+
+export type HairDensity = "BAJA" | "MEDIA" | "ALTA";

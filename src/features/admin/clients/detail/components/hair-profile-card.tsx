@@ -6,9 +6,9 @@ import { Scissors } from "lucide-react";
 import { ActionDialog } from "@/src/features/admin/components/reservation-actions/action-dialog";
 import { ChoicePills, Field } from "@/src/features/admin/components/reservation-actions/form-controls";
 import type { HairProfileView, SetHairProfileRequest } from "@/src/features/admin/types/clients.types";
-import type { HairColor, HairLength } from "@/src/features/admin/types/enums";
+import type { HairColor, HairDensity, HairLength } from "@/src/features/admin/types/enums";
 
-import { HAIR_COLOR_OPTIONS, HAIR_LENGTH_OPTIONS } from "@/src/features/admin/components/hair-assessment/hair-options";
+import { HAIR_COLOR_OPTIONS, HAIR_DENSITY_HINT, HAIR_DENSITY_LABELS, HAIR_DENSITY_OPTIONS, HAIR_LENGTH_OPTIONS } from "@/src/features/admin/components/hair-assessment/hair-options";
 
 import { validityProgress } from "../../lib/client-crm";
 import { CardShell } from "./card-shell";
@@ -32,6 +32,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("es-CO", { day: "numeric", month:
 export function HairProfileCard({ profile, nowMs, isSaving, onSave, onConfirm }: HairProfileCardProps) {
   const [length, setLength] = useState<HairLength>(profile.hairLength ?? "MEDIANO");
   const [color, setColor] = useState<HairColor>(profile.hairColor ?? "OSCURO");
+  const [density, setDensity] = useState<HairDensity | null>(profile.hairDensity);
   const progress = validityProgress(profile.updatedAt, profile.validUntil, nowMs);
   const badge = STATUS_BADGE[profile.status];
   const hasProfile = profile.status !== "MISSING";
@@ -45,9 +46,13 @@ export function HairProfileCard({ profile, nowMs, isSaving, onSave, onConfirm }:
     >
       {hasProfile ? (
         <>
-          <div className="grid grid-cols-2 gap-2">
-            {[profile.hairLength, profile.hairColor].map((value) => (
-              <span key={value} className="rounded-full bg-primary/10 py-2 text-center font-sans text-xs tracking-wide">
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              profile.hairLength,
+              profile.hairColor,
+              profile.hairDensity ? `DENSIDAD ${HAIR_DENSITY_LABELS[profile.hairDensity].toUpperCase()}` : "DENSIDAD SIN REGISTRAR",
+            ].map((value) => (
+              <span key={value} className="rounded-full bg-primary/10 px-1 py-2 text-center font-sans text-[11px] tracking-wide">
                 {value}
               </span>
             ))}
@@ -76,7 +81,8 @@ export function HairProfileCard({ profile, nowMs, isSaving, onSave, onConfirm }:
           description="Al guardar, el perfil queda vigente por 4 meses."
           submitLabel="Guardar perfil"
           submittingLabel="Guardando…"
-          onSubmit={() => onSave({ hairLength: length, hairColor: color })}
+          canSubmit={density !== null}
+          onSubmit={() => (density ? onSave({ hairLength: length, hairColor: color, hairDensity: density }) : Promise.resolve(false))}
           trigger={
             <button type="button" disabled={isSaving} className="h-10 cursor-pointer rounded-full bg-tertiary font-sans text-sm text-secondary transition-colors hover:bg-quaternary disabled:opacity-50">
               {hasProfile ? "Actualizar perfil" : "Registrar perfil"}
@@ -88,6 +94,9 @@ export function HairProfileCard({ profile, nowMs, isSaving, onSave, onConfirm }:
           </Field>
           <Field label="Color">
             <ChoicePills ariaLabel="Color del cabello" value={color} options={HAIR_COLOR_OPTIONS} onChange={setColor} />
+          </Field>
+          <Field label="Densidad" hint={HAIR_DENSITY_HINT}>
+            <ChoicePills ariaLabel="Densidad del cabello" value={density ?? ("" as HairDensity)} options={HAIR_DENSITY_OPTIONS} onChange={setDensity} />
           </Field>
         </ActionDialog>
 

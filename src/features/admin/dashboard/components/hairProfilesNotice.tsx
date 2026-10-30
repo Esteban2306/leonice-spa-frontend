@@ -192,6 +192,7 @@ export function HairProfilesNotice({
           context={registering.nextReservation?.treatment}
           initialLength={registering.hairProfile.hairLength}
           initialColor={registering.hairProfile.hairColor}
+          initialDensity={registering.hairProfile.hairDensity}
           onOpenChange={(open) => !open && setRegistering(null)}
           onSave={(data) => onRegister(registering.clientId, data)}
         />
