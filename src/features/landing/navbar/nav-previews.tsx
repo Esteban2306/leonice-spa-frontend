@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowRight,
   ArrowUpRight,
+  Brush,
   ChevronLeft,
   Clock,
   Droplets,
@@ -15,6 +16,7 @@ import {
   Package,
   Sparkles,
   Sprout,
+  Tags,
   Waves,
   Wind,
 } from "lucide-react";
@@ -123,6 +125,8 @@ const CATEGORY_ICONS: CategoryIconEntry[] = [
   { match: /estiliz|peinar|fijad|calor/, icon: Wind },
   { match: /tratamiento|tonico|caida|cuero/, icon: Sprout },
   { match: /brillo|color|repar/, icon: Sparkles },
+  { match: /accesorios/, icon: Brush },
+  { match: /otras marcas/, icon: Tags },
 ];
 
 function normalize(value: string): string {
