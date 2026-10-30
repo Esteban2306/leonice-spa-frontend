@@ -23,6 +23,7 @@ import { AlfaparfIcon } from "@/src/features/landing/components/alfaparf-icon";
 import { AlterEgoIcon } from "@/src/features/landing/components/alter-ego-icon";
 import { AmazonicaIcon } from "@/src/features/landing/components/amazonica-icon";
 import { AnvaIcon } from "@/src/features/landing/components/anva-icon";
+import { LmarIcon } from "@/src/features/landing/components/lmar-icon";
 import { BenvoleoIcon } from "@/src/features/landing/components/benvoleo-icon";
 import { MaisIcon } from "@/src/features/landing/components/mais-icon";
 import { SalermIcon } from "@/src/features/landing/components/salerm-icon";
@@ -98,6 +99,13 @@ const CATEGORY_ICONS: CategoryIconEntry[] = [
     tileSize: "h-3.5 w-[3.25rem]",
     rowSize: "h-3 w-10 -mx-2.5",
     strokeWidth: 0.9,
+  },
+  {
+    match: /^l.?mar$/,
+    icon: LmarIcon,
+    tileSize: "h-4 w-11",
+    rowSize: "h-3.5 w-10 -mx-2.5",
+    strokeWidth: 1,
   },
   { match: /shampoo|champu|limpie/, icon: Droplets },
   { match: /acondicion|hidrata/, icon: Waves },
