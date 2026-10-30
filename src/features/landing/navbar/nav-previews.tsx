@@ -22,6 +22,7 @@ import {
 import { AlterEgoIcon } from "@/src/features/landing/components/alter-ego-icon";
 import { AmazonicaIcon } from "@/src/features/landing/components/amazonica-icon";
 import { AnvaIcon } from "@/src/features/landing/components/anva-icon";
+import { SalermIcon } from "@/src/features/landing/components/salerm-icon";
 import type {
   LandingCategory,
   LandingProduct,
@@ -66,6 +67,13 @@ const CATEGORY_ICONS: CategoryIconEntry[] = [
     tileSize: "h-3.5 w-[3.25rem]",
     rowSize: "h-3 w-10 -mx-2.5",
     strokeWidth: 0.9,
+  },
+  {
+    match: /salerm/,
+    icon: SalermIcon,
+    tileSize: "h-4 w-[3.25rem]",
+    rowSize: "h-3.5 w-12 -mx-3.5",
+    strokeWidth: 1,
   },
   { match: /shampoo|champu|limpie/, icon: Droplets },
   { match: /acondicion|hidrata/, icon: Waves },
