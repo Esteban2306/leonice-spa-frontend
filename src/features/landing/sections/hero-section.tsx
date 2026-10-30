@@ -154,14 +154,16 @@ export function HeroSection({ videoSrc = null }: { videoSrc?: string | null }) {
           { y: 18, opacity: 0, filter: "blur(6px)", duration: 1, stagger: 0.12, clearProps: "filter" },
           0.85,
         )
-        .from(
+        .fromTo(
           "[data-hero-portal]",
+          { clipPath: "inset(0 100% 0 0 round 32px)", x: -24 },
           {
-            clipPath: "inset(0 100% 0 0 round 32px)",
-            x: -24,
+            clipPath: "inset(0 0% 0 0 round 32px)",
+            x: 0,
             duration: 1.3,
             stagger: 0.16,
             ease: "expo.inOut",
+            clearProps: "clipPath",
           },
           0.7,
         );
