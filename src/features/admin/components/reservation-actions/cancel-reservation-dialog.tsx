@@ -34,6 +34,9 @@ export function CancelReservationDialog({
     setNotifyClient(true);
   };
 
+  const trimmedReason = reason.trim();
+  const reasonRequired = notifyClient;
+
   return (
     <ActionDialog
       trigger={trigger}
@@ -43,6 +46,7 @@ export function CancelReservationDialog({
       submitLabel="Cancelar reserva"
       submittingLabel="Cancelando…"
       tone="danger"
+      canSubmit={!reasonRequired || trimmedReason.length > 0}
       onOpenChange={(next) => {
         if (!next) reset();
         onOpenChange?.(next);
@@ -50,17 +54,25 @@ export function CancelReservationDialog({
       onSubmit={() =>
         onCancel({
           reservationId,
-          reason: reason.trim() || undefined,
+          reason: trimmedReason || undefined,
           notifyClient,
         })
       }
     >
-      <Field label="Motivo (opcional)" htmlFor={`cancel-${reservationId}`}>
+      <Field
+        label={reasonRequired ? "Motivo" : "Motivo (opcional)"}
+        htmlFor={`cancel-${reservationId}`}
+        hint={
+          reasonRequired
+            ? "La clienta recibirá este motivo en el mensaje de cancelación."
+            : undefined
+        }
+      >
         <TextArea
           id={`cancel-${reservationId}`}
           value={reason}
           maxLength={300}
-          placeholder="Ej. El cliente pidió cancelar por teléfono."
+          placeholder="Ej. No logramos validar tu pago a tiempo."
           onChange={(event) => setReason(event.target.value)}
         />
       </Field>
@@ -70,7 +82,7 @@ export function CancelReservationDialog({
         checked={notifyClient}
         onChange={setNotifyClient}
         label="Avisar al cliente por WhatsApp"
-        description="Desmárcalo si ya hablaste con el cliente."
+        description="Se envía un mensaje automático con el motivo. Desmárcalo si ya hablaste con el cliente."
       />
     </ActionDialog>
   );
