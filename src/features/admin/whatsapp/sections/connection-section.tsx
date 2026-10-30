@@ -33,6 +33,7 @@ import {
 import { StatusPill } from "../components/status-pill";
 import { QrLinkDialog } from "../connection/qr-link-dialog";
 import {
+  activeLimiter,
   connectionCopy,
   formatDateTime,
   formatWhatsappPhone,
@@ -318,7 +319,7 @@ export function ConnectionSection() {
     connection?.phoneNumber,
   );
   const banned = connection?.status === "BANNED";
-  const risk = riskCopy(connectionHealth?.rateLimiter.riskLevel ?? 1);
+  const risk = riskCopy(activeLimiter(connectionHealth)?.riskLevel ?? 1);
 
   const startLink = async () => {
     const ok = await (connection?.status === "ERROR"

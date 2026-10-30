@@ -1,9 +1,17 @@
 import type {
   BotTool,
+  ConnectionHealth,
   ConnectionStatus,
   ConversationSummary,
   MessageAuthor,
 } from "@/src/features/admin/types/conduit.types";
+
+export function activeLimiter(
+  health: ConnectionHealth | null | undefined,
+): Extract<ConnectionHealth["rateLimiter"], { riskLevel: number }> | null {
+  const limiter = health?.rateLimiter;
+  return limiter && "riskLevel" in limiter ? limiter : null;
+}
 
 const LID_SUFFIX = "@lid";
 

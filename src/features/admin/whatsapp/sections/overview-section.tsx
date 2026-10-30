@@ -27,7 +27,11 @@ import {
 } from "../components/section-card";
 import { StatusPill } from "../components/status-pill";
 import { useInboxCounts } from "../lib/use-inbox-counts";
-import { connectionCopy, riskCopy } from "../lib/whatsapp-format";
+import {
+  activeLimiter,
+  connectionCopy,
+  riskCopy,
+} from "../lib/whatsapp-format";
 
 function QuickLink({
   href,
@@ -91,7 +95,8 @@ export function OverviewSection() {
     reachable,
     connection?.phoneNumber,
   );
-  const risk = connectionHealth?.rateLimiter.riskLevel ?? 1;
+  const limiter = activeLimiter(connectionHealth);
+  const risk = limiter?.riskLevel ?? 1;
   const riskInfo = riskCopy(risk);
   const missingTemplates = templates.filter((t) => !t.configured);
   const botOn = bot?.status === "ACTIVE";
@@ -239,11 +244,10 @@ export function OverviewSection() {
             {riskInfo.description}
           </p>
         </div>
-        {connectionHealth && (
+        {limiter && (
           <p className="font-sans text-sm text-secondary/75 tabular-nums">
-            {connectionHealth.rateLimiter.lanes.conversation} respuestas en
-            espera · {connectionHealth.rateLimiter.lanes.campaign} avisos en
-            espera
+            {limiter.lanes.conversation} respuestas en espera ·{" "}
+            {limiter.lanes.campaign} avisos en espera
           </p>
         )}
       </SectionCard>

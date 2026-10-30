@@ -20,12 +20,14 @@ export interface ConnectionHealth {
   id: string;
   status: ConnectionStatus;
   isConnected: boolean;
-  rateLimiter: {
-    warmupLevel: WarmupLevel;
-    riskLevel: number;
-    queueSize: number;
-    lanes: { conversation: number; campaign: number };
-  };
+  rateLimiter:
+    | {
+        warmupLevel: WarmupLevel;
+        riskLevel: number;
+        queueSize: number;
+        lanes: { conversation: number; campaign: number };
+      }
+    | { message: string };
 }
 
 export interface ConnectionQr {
