@@ -18,7 +18,7 @@ import type { DepositCoverage } from "../types/enums";
 export interface ApproveDepositInput {
   reservationId: string;
   coverage: DepositCoverage;
-  amountPesos: number;
+  amountPesos?: number;
   scope: ApproveDepositScope;
 }
 
@@ -85,7 +85,10 @@ export function useReservationActions(): ReservationActions {
               reservationId: input.reservationId,
               data: {
                 coverage: input.coverage,
-                amount: pesosToThousands(input.amountPesos),
+                amount:
+                  input.amountPesos === undefined
+                    ? undefined
+                    : pesosToThousands(input.amountPesos),
                 scope: input.scope,
               },
             }),

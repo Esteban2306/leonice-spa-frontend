@@ -51,7 +51,7 @@ export type ApproveDepositScope = "GROUP" | "SINGLE";
 
 export interface ApproveDepositRequest {
   coverage: DepositCoverage;
-  amount: number;
+  amount?: number;
   scope?: ApproveDepositScope;
 }
 
