@@ -24,6 +24,7 @@ import { AlterEgoIcon } from "@/src/features/landing/components/alter-ego-icon";
 import { AmazonicaIcon } from "@/src/features/landing/components/amazonica-icon";
 import { AnvaIcon } from "@/src/features/landing/components/anva-icon";
 import { LmarIcon } from "@/src/features/landing/components/lmar-icon";
+import { ValemsIcon } from "@/src/features/landing/components/valems-icon";
 import { BenvoleoIcon } from "@/src/features/landing/components/benvoleo-icon";
 import { MaisIcon } from "@/src/features/landing/components/mais-icon";
 import { SalermIcon } from "@/src/features/landing/components/salerm-icon";
@@ -103,6 +104,13 @@ const CATEGORY_ICONS: CategoryIconEntry[] = [
   {
     match: /^l.?mar$/,
     icon: LmarIcon,
+    tileSize: "h-4 w-11",
+    rowSize: "h-3.5 w-10 -mx-2.5",
+    strokeWidth: 1,
+  },
+  {
+    match: /valems/,
+    icon: ValemsIcon,
     tileSize: "h-4 w-11",
     rowSize: "h-3.5 w-10 -mx-2.5",
     strokeWidth: 1,
