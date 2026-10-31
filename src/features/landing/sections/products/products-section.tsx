@@ -113,7 +113,7 @@ export function ProductsSection({ products }: { products: LandingProduct[] }) {
                 aria-label={`${index + 1} de ${products.length}`}
                 className="basis-[78%] pl-5 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               >
-                <div data-product-body className={compact ? "h-[32rem]" : "h-[27.5rem]"}>
+                <div data-product-body className={compact ? "h-[34rem]" : "h-[35rem]"}>
                   <ProductCard product={product} dense={dense} />
                 </div>
               </CarouselItem>

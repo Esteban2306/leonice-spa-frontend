@@ -79,7 +79,7 @@ export function ProductCard({ product, variant = "shelf", dense = false }: Produ
           compact
           sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 80vw"
           className="absolute inset-0"
-          imageClassName="!object-contain p-6 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/product:scale-[1.04]"
+          imageClassName="!object-contain p-4 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/product:scale-[1.04]"
         />
         {product.categoryName && (
           <span className="absolute left-4 top-4 rounded-full bg-[#FDF8F1]/90 px-3 py-1 font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#062112]">
