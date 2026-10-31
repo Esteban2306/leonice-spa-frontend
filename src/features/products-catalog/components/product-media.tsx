@@ -18,6 +18,7 @@ export function ProductMedia({ imageUrl, name, sizes, priority = false, classNam
         sizes={sizes}
         priority={priority}
         className="bezel-core lit aspect-[4/5] w-full [--lift:16px]"
+        imageClassName="!object-contain p-6"
       />
     </div>
   );
