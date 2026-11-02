@@ -10,6 +10,9 @@ import { tunnelHeaders } from "@/src/lib/api/tunnel-headers";
 
 const REVALIDATE_SECONDS = 300;
 const TIMEOUT_MS = 6000;
+const BROWSER_CACHE_MS = REVALIDATE_SECONDS * 1000;
+
+const browserCache = new Map<string, { at: number; result: CatalogResult }>();
 
 export class CatalogUnavailableError extends Error {}
 
@@ -76,12 +79,17 @@ export async function fetchCatalogInBrowser(
   filters: CatalogFilters,
   signal: AbortSignal,
 ): Promise<CatalogResult> {
-  const response = await fetch(`${apiUrl()}/catalog/products${toApiQuery(filters)}`, {
+  const url = `${apiUrl()}/catalog/products${toApiQuery(filters)}`;
+  const cached = browserCache.get(url);
+  if (cached && Date.now() - cached.at < BROWSER_CACHE_MS) return cached.result;
+  const response = await fetch(url, {
     signal,
     headers: browserHeaders(),
   });
   if (!response.ok) throw new CatalogUnavailableError(`El catálogo respondió ${response.status}`);
-  return safeResult(unwrap(await response.json()));
+  const result = safeResult(unwrap(await response.json()));
+  browserCache.set(url, { at: Date.now(), result });
+  return result;
 }
 
 export async function fetchProductInBrowser(
