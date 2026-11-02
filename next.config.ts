@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   images: {
     loader: "custom",
     loaderFile: "./src/lib/images/cloudinary-loader.ts",
+    deviceSizes: [480, 768, 1080],
+    imageSizes: [256],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
