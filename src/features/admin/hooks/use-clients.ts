@@ -35,6 +35,16 @@ export function useClients(
   });
 }
 
+export function useClientTagCatalog() {
+  return useQuery({
+    queryKey: adminQueryKeys.clients.tagCatalog(),
+    queryFn: () => clientsApi.tagCatalog(),
+    staleTime: CLIENTS_STALE_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+  });
+}
+
 export function useClient(clientId: string) {
   return useQuery({
     queryKey: adminQueryKeys.clients.detail(clientId),

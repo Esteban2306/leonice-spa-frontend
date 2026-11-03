@@ -6,8 +6,34 @@ import type {
   ReservationStatus,
 } from "../types/enums";
 
+export type ClientTagKey =
+  | "SIN_VISITAS"
+  | "NUEVA"
+  | "RECURRENTE"
+  | "EN_PAUSA"
+  | "INACTIVA"
+  | "CON_CITA_PROXIMA"
+  | "RESERVA_PENDIENTE"
+  | "NO_SHOW_REITERADO"
+  | "CUMPLE_PRONTO"
+  | "FRECUENTA"
+  | "REPITE_SERVICIO"
+  | "APTA_PROMOCION";
+
+export interface ClientTag {
+  key: ClientTagKey;
+  detail: string;
+  assignedAt?: string;
+}
+
+export interface ClientTagCatalogEntry {
+  key: ClientTagKey;
+  clients: number;
+}
+
 export interface FindClientsParams {
   q?: string;
+  tags?: string;
   page?: number;
   pageSize?: number;
 }
@@ -74,6 +100,7 @@ export interface ClientListItem {
   reservationCount: number;
   lastReservation: { scheduledStart: string; status: ReservationStatus } | null;
   hairProfileStatus: HairProfileStatus;
+  tags: ClientTag[];
 }
 
 export interface PaginatedClients {
@@ -120,6 +147,7 @@ export interface ClientDetail extends ClientView {
     upcoming: number;
   };
   reservations: ClientReservationSummary[];
+  tags: ClientTag[];
   consents: Array<{
     type: ConsentType;
     policyVersion: string;

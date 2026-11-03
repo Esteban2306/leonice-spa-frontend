@@ -9,10 +9,13 @@ import {
 
 import type {
   ClientListItem,
+  ClientTagCatalogEntry,
+  ClientTagKey,
   CreateClientRequest,
   PaginatedClients,
 } from "@/src/features/admin/types/clients.types";
 
+import { CLIENT_TAG_META, CLIENT_TAG_ORDER } from "../lib/client-tags";
 import { ClientDirectoryCard } from "./client-directory-card";
 import { CreateClientDialog } from "./create-client-dialog";
 
@@ -23,6 +26,10 @@ interface ClientsDirectoryViewProps {
   isLoading: boolean;
   isError: boolean;
   isQueryTooShort: boolean;
+  tagCatalog: readonly ClientTagCatalogEntry[];
+  selectedTags: readonly ClientTagKey[];
+  onToggleTag: (key: ClientTagKey) => void;
+  onClearTags: () => void;
   onQueryChange: (query: string) => void;
   onPageChange: (page: number) => void;
   onRetry: () => void;
@@ -40,6 +47,10 @@ export function ClientsDirectoryView({
   isLoading,
   isError,
   isQueryTooShort,
+  tagCatalog,
+  selectedTags,
+  onToggleTag,
+  onClearTags,
   onQueryChange,
   onPageChange,
   onRetry,
@@ -110,6 +121,50 @@ export function ClientsDirectoryView({
             </p>
           </div>
 
+          {tagCatalog.some((entry) => entry.clients > 0) && (
+            <div className="flex flex-col gap-2">
+              <p className="font-sans text-xs text-secondary/70">
+                Filtrar por etiqueta (se combinan: la clienta debe tener todas)
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {CLIENT_TAG_ORDER.map((key) => {
+                  const entry = tagCatalog.find((item) => item.key === key);
+                  const selected = selectedTags.includes(key);
+                  if (!entry || (entry.clients === 0 && !selected)) return null;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      aria-pressed={selected}
+                      title={CLIENT_TAG_META[key].description}
+                      onClick={() => onToggleTag(key)}
+                      className={`inline-flex h-8 cursor-pointer items-center gap-2 rounded-full border px-3 font-sans text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary ${
+                        selected
+                          ? "border-secondary bg-secondary text-primary"
+                          : "border-tertiary/40 bg-white text-secondary hover:bg-quaternary/25"
+                      }`}
+                    >
+                      {CLIENT_TAG_META[key].label}
+                      <span className="tabular-nums opacity-70">
+                        {entry.clients}
+                      </span>
+                    </button>
+                  );
+                })}
+                {selectedTags.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={onClearTags}
+                    className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-full px-3 font-sans text-xs text-secondary/70 hover:bg-secondary/5"
+                  >
+                    <X className="size-3" />
+                    Quitar filtros
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           {isQueryTooShort && (
             <p className="font-sans text-xs text-secondary/70">
               Escribe al menos 2 letras o 4 dígitos para filtrar.
@@ -147,7 +202,7 @@ export function ClientsDirectoryView({
 
           {!isLoading && !isError && clients.length === 0 && (
             <p className="py-12 text-center font-sans text-secondary/70">
-              {query
+              {query || selectedTags.length > 0
                 ? "No hay clientes que coincidan con la búsqueda."
                 : "Aún no hay clientes registrados."}
             </p>

@@ -48,6 +48,7 @@ export const adminQueryKeys = {
     lists: () => [...adminQueryKeys.clients.all(), "list"] as const,
     list: (params: unknown) =>
       [...adminQueryKeys.clients.lists(), params] as const,
+    tagCatalog: () => [...adminQueryKeys.clients.all(), "tag-catalog"] as const,
     details: () => [...adminQueryKeys.clients.all(), "detail"] as const,
     detail: (clientId: string) =>
       [...adminQueryKeys.clients.details(), clientId] as const,

@@ -5,6 +5,7 @@ import type { ClientListItem } from "@/src/features/admin/types/clients.types";
 import { RESERVATION_STATUS_LABELS } from "@/src/features/admin/utils/reservation-status.utils";
 
 import { ClientInitialsAvatar } from "../components/client-avatar";
+import { ClientTagChips } from "../components/client-tag-chips";
 import { HairStatusChip } from "../components/hair-status-chip";
 
 interface ClientDirectoryCardProps {
@@ -29,6 +30,11 @@ export function ClientDirectoryCard({ client, onOpen }: ClientDirectoryCardProps
           <Phone className="size-3" />
           {client.phone}
         </span>
+        {client.tags.length > 0 && (
+          <span className="mt-2 block">
+            <ClientTagChips tags={client.tags} limit={4} />
+          </span>
+        )}
         <span className="mt-2 flex flex-wrap items-center gap-1.5">
           <HairStatusChip status={client.hairProfileStatus} />
           <span className="inline-flex items-center rounded-full bg-secondary/5 px-2.5 py-0.5 font-sans text-[11px] text-secondary/70">

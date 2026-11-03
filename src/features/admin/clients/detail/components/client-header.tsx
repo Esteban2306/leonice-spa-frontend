@@ -15,6 +15,7 @@ import { formatCopFromThousands } from "@/src/lib/money/cop";
 import type { ClientDetail } from "@/src/features/admin/types/clients.types";
 
 import { ClientInitialsAvatar } from "../../components/client-avatar";
+import { ClientTagChips } from "../../components/client-tag-chips";
 import { HairStatusChip } from "../../components/hair-status-chip";
 import { ageOn, daysUntilBirthday, isBirthdaySoon } from "../../lib/client-crm";
 
@@ -93,6 +94,11 @@ export function ClientHeader({
                 <span className={`${CHIP} bg-amber-100 text-amber-900`}>Embarazo</span>
               )}
             </div>
+            {client.tags.length > 0 && (
+              <div className="mt-2">
+                <ClientTagChips tags={client.tags} onDark />
+              </div>
+            )}
           </div>
         </div>
 

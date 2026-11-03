@@ -1,6 +1,7 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
   ClientDetail,
+  ClientTagCatalogEntry,
   ClientView,
   CreateClientRequest,
   FindClientsParams,
@@ -18,6 +19,13 @@ export const clientsApi = {
     return httpClient.request<PaginatedClients>("/clients", "GET", undefined, {
       params,
     });
+  },
+
+  tagCatalog() {
+    return httpClient.request<ClientTagCatalogEntry[]>(
+      "/clients/tags/catalog",
+      "GET",
+    );
   },
 
   findOne(clientId: string) {
