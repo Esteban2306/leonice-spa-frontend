@@ -2,6 +2,7 @@ import {
   BadgePercent,
   CalendarDays,
   LayoutDashboard,
+  Megaphone,
   MessageCircle,
   MessageSquareQuote,
   Package,
@@ -48,6 +49,12 @@ export const ADMIN_NAVIGATION: readonly AdminNavigationItem[] = [
     shortName: "Promos",
     href: "/admin/promotions",
     icon: BadgePercent,
+  },
+  {
+    name: "Campañas",
+    shortName: "Campañas",
+    href: "/admin/campaigns",
+    icon: Megaphone,
   },
   {
     name: "Productos",
