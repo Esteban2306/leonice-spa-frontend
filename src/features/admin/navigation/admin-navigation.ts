@@ -1,4 +1,5 @@
 import {
+  BadgePercent,
   CalendarDays,
   LayoutDashboard,
   MessageCircle,
@@ -41,6 +42,12 @@ export const ADMIN_NAVIGATION: readonly AdminNavigationItem[] = [
     shortName: "Servicios",
     href: "/admin/services",
     icon: Scissors,
+  },
+  {
+    name: "Promociones",
+    shortName: "Promos",
+    href: "/admin/promotions",
+    icon: BadgePercent,
   },
   {
     name: "Productos",

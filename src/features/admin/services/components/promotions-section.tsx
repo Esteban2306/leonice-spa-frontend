@@ -24,6 +24,8 @@ interface PromotionsSectionProps {
   onCreate: () => void;
   onEdit: (promotion: Promotion) => void;
   onDeactivate: (promotion: Promotion) => void;
+  emptyLabel?: string;
+  showCreate?: boolean;
 }
 
 const ICON_BUTTON =
@@ -36,6 +38,8 @@ export function PromotionsSection({
   onCreate,
   onEdit,
   onDeactivate,
+  emptyLabel = "Sin promociones para este servicio ni para su categoría.",
+  showCreate = true,
 }: PromotionsSectionProps) {
   return (
     <div className="flex flex-col gap-3">
@@ -46,9 +50,7 @@ export function PromotionsSection({
       )}
 
       {!isLoading && promotions.length === 0 && (
-        <p className="font-sans text-sm text-secondary/70">
-          Sin promociones para este servicio ni para su categoría.
-        </p>
+        <p className="font-sans text-sm text-secondary/70">{emptyLabel}</p>
       )}
 
       {promotions.length > 0 && (
@@ -105,15 +107,17 @@ export function PromotionsSection({
         </ul>
       )}
 
-      <button
-        type="button"
-        onClick={onCreate}
-        className="inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded-full border border-tertiary/50 px-4 font-sans text-sm text-secondary transition-colors hover:bg-quaternary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
-      >
-        <Plus className="size-4" strokeWidth={1.8} />
-        <BadgePercent className="size-4" strokeWidth={1.8} />
-        Nueva promoción
-      </button>
+      {showCreate && (
+        <button
+          type="button"
+          onClick={onCreate}
+          className="inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded-full border border-tertiary/50 px-4 font-sans text-sm text-secondary transition-colors hover:bg-quaternary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+        >
+          <Plus className="size-4" strokeWidth={1.8} />
+          <BadgePercent className="size-4" strokeWidth={1.8} />
+          Nueva promoción
+        </button>
+      )}
     </div>
   );
 }

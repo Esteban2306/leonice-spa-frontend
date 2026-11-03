@@ -24,9 +24,15 @@ export interface PromotionTargetOptions {
   category: { id: string; name: string };
 }
 
+export interface PromotionTargetChoices {
+  categories: ReadonlyArray<{ id: string; name: string }>;
+  treatments: ReadonlyArray<{ id: string; name: string; categoryId: string }>;
+}
+
 interface PromotionDialogProps {
   open: boolean;
   target: PromotionTargetOptions | null;
+  choices?: PromotionTargetChoices;
   promotion: Promotion | null;
   todayKey: string;
   onOpenChange: (open: boolean) => void;
@@ -37,7 +43,8 @@ type Scope = "TREATMENT" | "CATEGORY";
 
 export function PromotionDialog({
   open,
-  target,
+  target: fixedTarget,
+  choices,
   promotion,
   todayKey,
   onOpenChange,
@@ -58,10 +65,34 @@ export function PromotionDialog({
       ? promotion.treatmentId
         ? "TREATMENT"
         : "CATEGORY"
-      : target?.treatment
+      : fixedTarget?.treatment
         ? "TREATMENT"
         : "CATEGORY",
   );
+
+  const [pickedCategoryId, setPickedCategoryId] = useState("");
+  const [pickedTreatmentId, setPickedTreatmentId] = useState("");
+  const picksTarget = fixedTarget === null && choices !== undefined;
+  const pickedCategory = choices?.categories.find(
+    (item) => item.id === pickedCategoryId,
+  );
+  const pickedTreatment = choices?.treatments.find(
+    (item) => item.id === pickedTreatmentId,
+  );
+  const target: PromotionTargetOptions | null = picksTarget
+    ? pickedCategory
+      ? {
+          category: pickedCategory,
+          treatment: pickedTreatment
+            ? { id: pickedTreatment.id, name: pickedTreatment.name }
+            : null,
+        }
+      : null
+    : fixedTarget;
+  const categoryTreatments =
+    choices?.treatments.filter(
+      (item) => item.categoryId === pickedCategoryId,
+    ) ?? [];
 
   const percentage = Number(discount.replace(",", "."));
   const isValidDiscount = percentage > 0 && percentage <= 100;
@@ -83,7 +114,8 @@ export function PromotionDialog({
       canSubmit={canSubmit}
       onSubmit={() => {
         if (!target) return Promise.resolve(false);
-        const useTreatment = scope === "TREATMENT" && target.treatment;
+        const useTreatment =
+          (picksTarget || scope === "TREATMENT") && target.treatment;
         return onSave({
           name: name.trim(),
           discountPercentage: percentage,
@@ -95,7 +127,49 @@ export function PromotionDialog({
         });
       }}
     >
-      {target?.treatment && (
+      {picksTarget && (
+        <>
+          <Field label="Categoría" htmlFor="promotion-category">
+            <select
+              id="promotion-category"
+              value={pickedCategoryId}
+              onChange={(event) => {
+                setPickedCategoryId(event.target.value);
+                setPickedTreatmentId("");
+              }}
+              className={INPUT_CLASS}
+            >
+              <option value="">Elige una categoría</option>
+              {choices?.categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Aplica a" htmlFor="promotion-treatment">
+            <select
+              id="promotion-treatment"
+              value={pickedTreatmentId}
+              disabled={pickedCategoryId === ""}
+              onChange={(event) => setPickedTreatmentId(event.target.value)}
+              className={INPUT_CLASS}
+            >
+              <option value="">
+                {pickedCategory
+                  ? `Toda ${pickedCategory.name}`
+                  : "Primero elige la categoría"}
+              </option>
+              {categoryTreatments.map((treatment) => (
+                <option key={treatment.id} value={treatment.id}>
+                  {treatment.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </>
+      )}
+      {!picksTarget && target?.treatment && (
         <Field label="Aplica a">
           <ChoicePills<Scope>
             ariaLabel="Alcance de la promoción"
