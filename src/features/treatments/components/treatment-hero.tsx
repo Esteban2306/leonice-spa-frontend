@@ -3,7 +3,6 @@ import { Clock, Stethoscope } from "lucide-react";
 import { ActionLink, BookingLink } from "@/src/features/landing/components/action-link";
 import type { ShowcaseTreatmentDetail } from "@/src/features/treatments/api/showcase.types";
 import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
-import { ReviewPendingChip } from "@/src/features/landing/components/review-pending-chip";
 import { TreatmentVideo } from "@/src/features/treatments/components/treatment-video";
 import {
   durationLabel,
@@ -41,7 +40,6 @@ export function TreatmentHero({ treatment }: { treatment: ShowcaseTreatmentDetai
               )}
             </div>
 
-            {treatment.contentNeedsReview && <ReviewPendingChip />}
 
             {treatment.summary && (
               <p className="max-w-[58ch] font-sans text-lg leading-relaxed text-pretty text-[#062112]/72">

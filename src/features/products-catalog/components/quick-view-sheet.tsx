@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, FileClock, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle } from "@/src/components/ui/sheet";
 import { fetchProductInBrowser } from "@/src/features/products-catalog/api/catalog.api";
@@ -85,15 +85,6 @@ export function QuickViewSheet({ product, onClose }: QuickViewSheetProps) {
               <Item index={1}>
                 <ProductMedia imageUrl={product.imageUrl} name={product.name} sizes="(min-width: 640px) 32rem, 100vw" className="w-full max-w-[13rem]" />
               </Item>
-
-              {detail?.contentNeedsReview && (
-                <Item index={2}>
-                  <p className="inline-flex w-fit items-center gap-1.5 rounded-full border border-dashed border-[#BF9250]/60 px-3 py-1 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-[#7a5a2c]">
-                    <FileClock className="size-3.5" aria-hidden="true" />
-                    Descripción en revisión
-                  </p>
-                </Item>
-              )}
 
               {product.purpose && (
                 <Item index={2}>

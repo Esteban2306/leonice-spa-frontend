@@ -25,7 +25,6 @@ export interface ShowcaseTreatmentCard {
   posterUrl: string | null;
   benefits: string[];
   stepCount: number;
-  contentNeedsReview: boolean;
 }
 
 export interface ShowcaseStep {

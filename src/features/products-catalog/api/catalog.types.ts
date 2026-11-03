@@ -31,7 +31,6 @@ export interface CatalogProductDetail extends CatalogProductCard {
   idealFor: string[];
   usageFrequency: string | null;
   precautions: string[];
-  contentNeedsReview: boolean;
   treatments: {
     name: string;
     slug: string;

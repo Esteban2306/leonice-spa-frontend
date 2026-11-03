@@ -4,7 +4,6 @@ import { ArrowUpRight, CalendarClock, Info, Sparkle } from "lucide-react";
 import { BookingBand } from "@/src/features/landing/components/booking-band";
 import { Breadcrumbs } from "@/src/features/landing/components/breadcrumbs";
 import { Reveal } from "@/src/features/landing/components/reveal";
-import { ReviewPendingChip } from "@/src/features/landing/components/review-pending-chip";
 import { StickyBookingBar } from "@/src/features/landing/components/sticky-booking-bar";
 import { formatPesos } from "@/src/features/landing/lib/format";
 import type { CatalogProductDetail } from "@/src/features/products-catalog/api/catalog.types";
@@ -51,7 +50,6 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
                   </p>
                 )}
               </div>
-              {product.contentNeedsReview && <ReviewPendingChip />}
               {product.tags.length > 0 && (
                 <ul className="flex flex-wrap gap-2" aria-label="Ideal para estas necesidades">
                   {product.tags.map((tag) => (
