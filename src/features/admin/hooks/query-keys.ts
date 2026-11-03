@@ -157,6 +157,29 @@ export const adminQueryKeys = {
       [...adminQueryKeys.capacityPools.all(), "detail", poolId] as const,
   },
 
+  campaigns: {
+    all: () => [...adminQueryKeys.all, "campaigns"] as const,
+    list: () => [...adminQueryKeys.campaigns.all(), "list"] as const,
+    detail: (campaignId: string) =>
+      [...adminQueryKeys.campaigns.all(), "detail", campaignId] as const,
+    recipients: (campaignId: string, params: unknown) =>
+      [
+        ...adminQueryKeys.campaigns.all(),
+        "recipients",
+        campaignId,
+        params,
+      ] as const,
+    templates: () => [...adminQueryKeys.campaigns.all(), "templates"] as const,
+    settings: () => [...adminQueryKeys.campaigns.all(), "settings"] as const,
+    estimate: (params: unknown) =>
+      [...adminQueryKeys.campaigns.all(), "estimate", params] as const,
+  },
+
+  audiences: {
+    preview: (params: unknown) =>
+      [...adminQueryKeys.all, "audiences", "preview", params] as const,
+  },
+
   automationRules: {
     all: () => [...adminQueryKeys.all, "automation-rules"] as const,
     lists: () => [...adminQueryKeys.automationRules.all(), "list"] as const,

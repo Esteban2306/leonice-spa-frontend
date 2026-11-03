@@ -398,6 +398,26 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Foto quitada.",
     error: "No se pudo quitar la foto",
   },
+  createCampaign: {
+    success: "Campaña programada. Los mensajes saldrán poco a poco.",
+    error: "No se pudo crear la campaña",
+  },
+  pauseCampaign: {
+    success: "Campaña pausada. No saldrán más mensajes.",
+    error: "No se pudo pausar la campaña",
+  },
+  resumeCampaign: {
+    success: "Campaña reanudada. Se reprogramó lo que faltaba.",
+    error: "No se pudo reanudar la campaña",
+  },
+  cancelCampaign: {
+    success: "Campaña cancelada. Lo pendiente no se enviará.",
+    error: "No se pudo cancelar la campaña",
+  },
+  updateCampaignSettings: {
+    success: "Horario de envío guardado.",
+    error: "No se pudo guardar el horario de envío",
+  },
 } as const satisfies Record<string, ActionMessages>;
 
 export type AdminActionKey = keyof typeof ADMIN_ACTION_MESSAGES;
