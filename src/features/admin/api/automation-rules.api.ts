@@ -1,5 +1,9 @@
 import { httpClient } from "@/src/lib/api/client";
 import type {
+  FindAutomaticMessagesParams,
+  PaginatedAutomaticMessages,
+} from "../types/automatic-messages.types";
+import type {
   AutomationRule,
   FollowUpTemplate,
   CreateAutomationRuleRequest,
@@ -8,6 +12,15 @@ import type {
 } from "../types/automation.types";
 
 export const automationRulesApi = {
+  messages(params: FindAutomaticMessagesParams) {
+    return httpClient.request<PaginatedAutomaticMessages>(
+      "/automatic-messages",
+      "GET",
+      undefined,
+      { params: { ...params, pageSize: 15 } },
+    );
+  },
+
   templates() {
     return httpClient.request<FollowUpTemplate[]>(
       "/automation-rules/templates",

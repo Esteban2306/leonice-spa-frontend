@@ -11,11 +11,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
 import { ActionDialog } from "@/src/features/admin/components/reservation-actions/action-dialog";
 import {
-  useConduitContacts,
-  useConduitOverview,
   useConduitTemplates,
   useTemplateUsage,
 } from "@/src/features/admin/hooks/use-conduit";
@@ -23,7 +20,6 @@ import {
   useConduitActions,
   type ConduitActions,
 } from "@/src/features/admin/hooks/use-conduit-actions";
-import { useNotificationRecipients } from "@/src/features/admin/hooks/use-notification-recipients";
 import type {
   ConduitTemplate,
   TemplateUsage,
@@ -38,10 +34,8 @@ import {
 import { StatusPill } from "../components/status-pill";
 import {
   REQUIRED_TEMPLATE_VARIABLES,
-  formatWhatsappPhone,
   missingVariables,
 } from "../lib/whatsapp-format";
-import { FollowUpRulesCard } from "../templates/follow-up-rules-card";
 import { TemplateEditorDialog } from "../templates/template-editor-dialog";
 
 const PURPOSE_COPY: Record<string, string> = {
@@ -314,93 +308,8 @@ function TemplatesCard({
   );
 }
 
-function RecipientsCheckCard({
-  windowDays,
-  spaPhone,
-}: {
-  windowDays: number;
-  spaPhone: string | null;
-}) {
-  const spaDigits = spaPhone?.replace(/\D/g, "") ?? "";
-  const recipients = useNotificationRecipients();
-  const contacts = useConduitContacts({ limit: 100 });
-  const nowMs = useMinuteClock();
-  const cutoff = nowMs - windowDays * 24 * 60 * 60 * 1000;
-  const lastInbound = new Map(
-    (contacts.data?.data ?? []).map((c) => [
-      c.address.replace(/\D/g, ""),
-      c.lastInboundAt,
-    ]),
-  );
-
-  return (
-    <SectionCard
-      title="Destinatarios de avisos internos"
-      description="Números del equipo que reciben depósitos vencidos, reprogramaciones, cancelaciones y traspasos."
-      aside={
-        <Link href="/admin/settings" className={`${SECONDARY_BUTTON} h-10`}>
-          Administrar en Ajustes
-        </Link>
-      }
-    >
-      {recipients.isError && (
-        <ErrorPanel
-          error={recipients.error}
-          onRetry={() => void recipients.refetch()}
-          compact
-        />
-      )}
-      <ul className="flex flex-col gap-2">
-        {(recipients.data ?? []).map((recipient) => {
-          const digits = recipient.phone.replace(/\D/g, "");
-          const at = lastInbound.get(digits);
-          const eligible = Boolean(at && new Date(at).getTime() >= cutoff);
-          const isSpaNumber = spaDigits !== "" && digits === spaDigits;
-          return (
-            <li
-              key={recipient.id}
-              className="flex flex-wrap items-center gap-3 rounded-[1.25rem] border border-tertiary/25 bg-white/80 p-3"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="font-sans text-sm font-semibold text-secondary">
-                  {recipient.name}
-                </p>
-                <p className="font-sans text-sm text-secondary/75 tabular-nums">
-                  {formatWhatsappPhone(recipient.phone)}
-                </p>
-              </div>
-              {!recipient.isActive ? (
-                <StatusPill tone="gray">Pausado</StatusPill>
-              ) : isSpaNumber ? (
-                <span className="flex max-w-64 flex-col items-end gap-1 text-right">
-                  <StatusPill tone="amber">Es el número del spa</StatusPill>
-                  <span className="font-sans text-[11px] text-secondary/70">
-                    WhatsApp no avisa de mensajes enviados a uno mismo. Usa otro
-                    número, por ejemplo tu WhatsApp personal en el mismo
-                    celular.
-                  </span>
-                </span>
-              ) : eligible ? (
-                <StatusPill tone="green">Puede recibir avisos</StatusPill>
-              ) : (
-                <span className="flex flex-col items-end gap-1">
-                  <StatusPill tone="amber">No puede recibir avisos</StatusPill>
-                  <span className="font-sans text-[11px] text-secondary/70">
-                    Pídele que le escriba una vez al WhatsApp del spa.
-                  </span>
-                </span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </SectionCard>
-  );
-}
-
 export function TemplatesSection() {
   const templates = useConduitTemplates();
-  const overview = useConduitOverview();
   const actions = useConduitActions();
   const [editor, setEditor] = useState<EditorState>({
     open: false,
@@ -438,13 +347,23 @@ export function TemplatesSection() {
           onCreate={() => open(null, null)}
         />
       )}
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <FollowUpRulesCard actions={actions} />
-        <RecipientsCheckCard
-          windowDays={overview.data?.connection?.inboundLookbackDays ?? 180}
-          spaPhone={overview.data?.connection?.phoneNumber ?? null}
-        />
-      </div>
+      <p className="font-sans text-sm text-secondary/75">
+        Los mensajes automáticos por tratamiento se programan en{" "}
+        <Link
+          href="/admin/campaigns/automatic"
+          className="underline decoration-tertiary underline-offset-4"
+        >
+          Campañas → Mensajes automáticos
+        </Link>
+        , y quién recibe los avisos del equipo, en{" "}
+        <Link
+          href="/admin/settings"
+          className="underline decoration-tertiary underline-offset-4"
+        >
+          Ajustes
+        </Link>
+        .
+      </p>
       <TemplateEditorDialog
         key={editor.version}
         open={editor.open}

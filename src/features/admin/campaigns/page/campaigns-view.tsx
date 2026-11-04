@@ -4,6 +4,7 @@ import { Clock, Plus } from "lucide-react";
 import type { Campaign } from "@/src/features/admin/types/campaigns.types";
 
 import { CampaignProgress } from "../components/campaign-progress";
+import { MessagingTabs } from "../components/messaging-tabs";
 import { CampaignStatusChip } from "../components/campaign-status-chip";
 import { NumberStatus } from "../components/number-status";
 import { formatDateTime, paceLabel } from "../lib/campaign-format";
@@ -43,7 +44,7 @@ export function CampaignsView(props: CampaignsViewProps) {
               className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-primary/25 px-5 font-sans text-sm text-primary transition-colors hover:bg-primary/10"
             >
               <Clock className="size-4" strokeWidth={1.8} />
-              Horario de envío
+              Ajustes de envío
             </button>
             <Link
               href="/admin/campaigns/new"
@@ -54,6 +55,8 @@ export function CampaignsView(props: CampaignsViewProps) {
             </Link>
           </div>
         </header>
+
+        <MessagingTabs active="campaigns" />
 
         <NumberStatus />
 

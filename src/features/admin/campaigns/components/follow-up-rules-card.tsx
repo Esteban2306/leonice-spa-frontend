@@ -21,12 +21,12 @@ import type {
   FollowUpTemplate,
 } from "@/src/features/admin/types/automation.types";
 
-import { ErrorPanel } from "../components/error-panel";
+import { ErrorPanel } from "@/src/features/admin/whatsapp/components/error-panel";
 import {
   PRIMARY_BUTTON,
   SectionCard,
   SkeletonRows,
-} from "../components/section-card";
+} from "@/src/features/admin/whatsapp/components/section-card";
 
 type RuleKind = "FOLLOW_UP" | "REMINDER";
 

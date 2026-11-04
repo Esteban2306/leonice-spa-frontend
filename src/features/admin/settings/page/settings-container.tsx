@@ -6,6 +6,7 @@ import { useLogout, useSession } from "@/src/features/auth/hooks/use-auth";
 
 import { useNotificationRecipients } from "../../hooks/use-notification-recipients";
 import { useSettingsActions } from "../../hooks/use-settings-actions";
+import { useRecipientReach } from "../lib/use-recipient-reach";
 import { SettingsView } from "./settings-view";
 
 export function SettingsContainer() {
@@ -14,6 +15,7 @@ export function SettingsContainer() {
   const logout = useLogout();
   const recipientsQuery = useNotificationRecipients();
   const actions = useSettingsActions();
+  const reach = useRecipientReach(recipientsQuery.data ?? []);
 
   const changePassword = async (
     currentPassword: string,
@@ -35,6 +37,7 @@ export function SettingsContainer() {
         isLoading: recipientsQuery.isLoading,
         isError: recipientsQuery.isError,
         isSaving: actions.isSavingRecipient,
+        reach,
         onRetry: () => void recipientsQuery.refetch(),
         onCreate: actions.createRecipient,
         onRename: actions.renameRecipient,

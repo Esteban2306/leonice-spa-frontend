@@ -17,7 +17,11 @@ export interface AudienceFilter {
 
 export interface AudiencePreview {
   total: number;
-  excluded: { withoutWhatsapp: number; withoutConsent: number };
+  excluded: {
+    withoutWhatsapp: number;
+    withoutConsent: number;
+    recentlyMessaged: number;
+  };
   sample: Array<{ id: string; name: string; phone: string }>;
 }
 
@@ -29,6 +33,7 @@ export interface SendWindow {
 export interface CampaignSettings {
   sendWindows: SendWindow[];
   maxPerDay: number;
+  marketingCooldownDays: number;
 }
 
 export interface BroadcastTemplate {

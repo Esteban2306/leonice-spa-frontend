@@ -9,11 +9,9 @@ import {
   useConduitModels,
   useConduitPromptSettings,
   useConduitTools,
-  useEscalationContacts,
 } from "@/src/features/admin/hooks/use-conduit";
 import { useConduitActions } from "@/src/features/admin/hooks/use-conduit-actions";
 
-import { EscalationTab } from "../assistant/escalation-tab";
 import { GeneralTab } from "../assistant/general-tab";
 import { ModelsTab } from "../assistant/models-tab";
 import { PersonalityTab } from "../assistant/personality-tab";
@@ -28,7 +26,6 @@ const TABS = [
   { id: "instrucciones", label: "Instrucciones avanzadas" },
   { id: "modelos", label: "Modelos de IA" },
   { id: "herramientas", label: "Herramientas" },
-  { id: "avisos", label: "A quién avisar" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
@@ -67,7 +64,6 @@ export function AssistantSection() {
   const settings = useConduitPromptSettings();
   const models = useConduitModels();
   const tools = useConduitTools();
-  const contacts = useEscalationContacts();
 
   const select = (id: TabId) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -135,11 +131,6 @@ export function AssistantSection() {
       {tab === "herramientas" && (
         <Loaded query={tools}>
           {(data) => <ToolsTab tools={data} actions={actions} />}
-        </Loaded>
-      )}
-      {tab === "avisos" && (
-        <Loaded query={contacts}>
-          {(data) => <EscalationTab contacts={data} actions={actions} />}
         </Loaded>
       )}
     </div>

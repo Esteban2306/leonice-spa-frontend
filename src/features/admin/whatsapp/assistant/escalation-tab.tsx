@@ -56,8 +56,8 @@ export function EscalationTab({
 
   return (
     <SectionCard
-      title="A quién avisar"
-      description="Reciben un WhatsApp cuando el asistente falla, cuando la IA no está disponible o cuando una clienta escribe demasiado seguido."
+      title="Fallas del asistente"
+      description="Números que reciben un WhatsApp cuando el asistente falla, cuando la IA no está disponible o cuando una clienta escribe demasiado seguido."
     >
       <ul className="flex flex-col gap-2">
         {contacts.map((contact) => (

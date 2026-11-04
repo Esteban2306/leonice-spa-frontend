@@ -261,6 +261,12 @@ export function AudienceBuilder({
                     WhatsApp, así que no se les envía.
                   </li>
                 )}
+                {marketing && preview.excluded.recentlyMessaged > 0 && (
+                  <li>
+                    {preview.excluded.recentlyMessaged} recibieron otro mensaje
+                    de marketing hace poco y se omiten.
+                  </li>
+                )}
                 {marketing && preview.excluded.withoutConsent > 0 && (
                   <li>
                     {preview.excluded.withoutConsent} no aceptaron recibir

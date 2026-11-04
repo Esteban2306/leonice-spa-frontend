@@ -8,12 +8,14 @@ import { INPUT_CLASS } from "@/src/features/admin/components/reservation-actions
 import { CatalogSwitch } from "@/src/features/admin/services/components/catalog-switch";
 import type { AdminNotificationRecipient } from "@/src/features/admin/types/settings.types";
 
+import type { RecipientReach } from "../lib/use-recipient-reach";
 import { isPlausibleEmail, normalizeEmail } from "../lib/email";
 import { formatPhone, initialsOf } from "../lib/phone";
 
 interface RecipientRowProps {
   recipient: AdminNotificationRecipient;
   isBusy: boolean;
+  reach?: RecipientReach;
   onRename: (recipientId: string, name: string) => Promise<boolean>;
   onChangeEmail: (recipientId: string, email: string | null) => Promise<boolean>;
   onToggle: (recipientId: string, isActive: boolean) => Promise<boolean>;
@@ -35,6 +37,7 @@ function draftError(draft: Draft): string | null {
 export function RecipientRow({
   recipient,
   isBusy,
+  reach,
   onRename,
   onChangeEmail,
   onToggle,
@@ -154,6 +157,13 @@ export function RecipientRow({
             <p className="font-sans text-sm text-secondary/75 tabular-nums">
               {formatPhone(recipient.phone)}
             </p>
+            {recipient.isActive && reach && reach !== "OK" && (
+              <p role="status" className="mt-0.5 font-sans text-xs text-amber-800">
+                {reach === "SPA_NUMBER"
+                  ? "Es el número del spa: WhatsApp no avisa de mensajes enviados a uno mismo. Usa otro número."
+                  : "No puede recibir avisos todavía: pídele que escriba una vez al WhatsApp del spa."}
+              </p>
+            )}
             <button
               type="button"
               onClick={() => setDraft({ field: "email", value: recipient.email ?? "" })}

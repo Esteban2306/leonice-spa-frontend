@@ -40,6 +40,9 @@ export function SendSettingsDialog({
     })),
   );
   const [maxPerDay, setMaxPerDay] = useState(String(settings?.maxPerDay ?? 90));
+  const [cooldown, setCooldown] = useState(
+    String(settings?.marketingCooldownDays ?? 30),
+  );
 
   const parsed = windows.flatMap((window) => {
     const startMinute = timeToMinute(window.start);
@@ -49,12 +52,17 @@ export function SendSettingsDialog({
       : [{ startMinute, endMinute }];
   });
   const limit = Number(maxPerDay);
+  const gap = Number(cooldown);
   const valid =
     parsed.length === windows.length &&
     windowsAreValid(parsed) &&
     Number.isInteger(limit) &&
     limit >= 10 &&
-    limit <= 300;
+    limit <= 300 &&
+    cooldown !== "" &&
+    Number.isInteger(gap) &&
+    gap >= 0 &&
+    gap <= 365;
 
   const update = (index: number, patch: Partial<WindowDraft>) =>
     setWindows((current) =>
@@ -67,12 +75,16 @@ export function SendSettingsDialog({
     <ActionDialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Horario de envío"
-      description="Los mensajes solo salen dentro de estas franjas (entre las 6:00 y las 23:00). Deja libre la hora en que el bot atiende más gente."
-      submitLabel="Guardar horario"
+      title="Ajustes de envío"
+      description="Valen para las campañas y para los mensajes automáticos. Los mensajes solo salen dentro de estas franjas (entre las 6:00 y las 23:00). Deja libre la hora en que el bot atiende más gente."
+      submitLabel="Guardar ajustes"
       submittingLabel="Guardando…"
       canSubmit={valid}
-      onSubmit={() => onSave({ sendWindows: parsed, maxPerDay: limit })}
+      onSubmit={() => onSave({
+          sendWindows: parsed,
+          maxPerDay: limit,
+          marketingCooldownDays: gap,
+        })}
     >
       {windows.map((window, index) => (
         <div key={index} className="grid grid-cols-2 gap-3">
@@ -132,6 +144,21 @@ export function SendSettingsDialog({
           inputMode="numeric"
           value={maxPerDay}
           onChange={(event) => setMaxPerDay(event.target.value)}
+          className={`${INPUT_CLASS} tabular-nums`}
+        />
+      </Field>
+      <Field
+        label="Días entre mensajes de marketing a una misma clienta"
+        htmlFor="marketing-cooldown"
+        hint="Cuenta campañas y mensajes automáticos de seguimiento. Quien recibió uno hace menos días se omite y se muestra el motivo. Usa 0 para no limitar."
+      >
+        <input
+          id="marketing-cooldown"
+          inputMode="numeric"
+          value={cooldown}
+          onChange={(event) =>
+            setCooldown(event.target.value.replace(/\D/g, ""))
+          }
           className={`${INPUT_CLASS} tabular-nums`}
         />
       </Field>

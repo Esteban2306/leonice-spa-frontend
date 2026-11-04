@@ -19,6 +19,7 @@ import type {
   CreateNotificationRecipientRequest,
 } from "@/src/features/admin/types/settings.types";
 
+import type { RecipientReach } from "../lib/use-recipient-reach";
 import { isPlausibleEmail, normalizeEmail } from "../lib/email";
 import { isPlausiblePhone } from "../lib/phone";
 import { RecipientRow } from "./recipient-row";
@@ -28,6 +29,7 @@ interface RecipientsCardProps {
   isLoading: boolean;
   isError: boolean;
   isSaving: boolean;
+  reach: ReadonlyMap<string, RecipientReach>;
   onRetry: () => void;
   onCreate: (data: CreateNotificationRecipientRequest) => Promise<boolean>;
   onRename: (recipientId: string, name: string) => Promise<boolean>;
@@ -47,6 +49,7 @@ export function RecipientsCard({
   isLoading,
   isError,
   isSaving,
+  reach,
   onRetry,
   onCreate,
   onRename,
@@ -179,6 +182,7 @@ export function RecipientsCard({
               key={`${recipient.id}-${recipient.name}`}
               recipient={recipient}
               isBusy={isSaving}
+              reach={reach.get(recipient.id)}
               onRename={onRename}
               onChangeEmail={onChangeEmail}
               onToggle={onToggle}
