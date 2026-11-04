@@ -314,6 +314,13 @@ export function useConduitActions() {
           () => automationRulesApi.update(id, data),
           refresh(adminQueryKeys.automationRules.lists()),
         ),
+      removeAutomationRule: (id: string) =>
+        run(
+          `rule:${id}`,
+          "deleteAutomationRule",
+          () => automationRulesApi.remove(id),
+          refresh(adminQueryKeys.automationRules.lists()),
+        ),
     };
   }, [queryClient, singleFlight]);
 

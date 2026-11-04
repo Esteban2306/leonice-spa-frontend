@@ -182,6 +182,8 @@ export const adminQueryKeys = {
 
   automationRules: {
     all: () => [...adminQueryKeys.all, "automation-rules"] as const,
+    templates: () =>
+      [...adminQueryKeys.automationRules.all(), "templates"] as const,
     lists: () => [...adminQueryKeys.automationRules.all(), "list"] as const,
     list: (params?: unknown) =>
       [...adminQueryKeys.automationRules.lists(), params] as const,

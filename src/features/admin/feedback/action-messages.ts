@@ -190,6 +190,10 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Regla de automatización guardada.",
     error: "No se pudo guardar la regla",
   },
+  deleteAutomationRule: {
+    success: "Regla eliminada. Dejará de enviar ese mensaje.",
+    error: "No se pudo eliminar la regla",
+  },
   createRecipient: {
     success: "Destinatario agregado. Recibirá los avisos del equipo.",
     error: "No se pudo agregar el destinatario",

@@ -8,19 +8,11 @@ import {
   FileText,
   Pencil,
   Plus,
-  Repeat,
   Trash2,
 } from "lucide-react";
 
 import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
 import { ActionDialog } from "@/src/features/admin/components/reservation-actions/action-dialog";
-import {
-  Field,
-  INPUT_CLASS,
-} from "@/src/features/admin/components/reservation-actions/form-controls";
-import { CatalogSwitch } from "@/src/features/admin/services/components/catalog-switch";
-import { useAutomationRules } from "@/src/features/admin/hooks/use-automation-rules";
-import { useCategories } from "@/src/features/admin/hooks/use-categories";
 import {
   useConduitContacts,
   useConduitOverview,
@@ -32,7 +24,6 @@ import {
   type ConduitActions,
 } from "@/src/features/admin/hooks/use-conduit-actions";
 import { useNotificationRecipients } from "@/src/features/admin/hooks/use-notification-recipients";
-import type { AutomationRule } from "@/src/features/admin/types/automation.types";
 import type {
   ConduitTemplate,
   TemplateUsage,
@@ -40,7 +31,6 @@ import type {
 
 import { ErrorPanel } from "../components/error-panel";
 import {
-  PRIMARY_BUTTON,
   SECONDARY_BUTTON,
   SectionCard,
   SkeletonRows,
@@ -51,6 +41,7 @@ import {
   formatWhatsappPhone,
   missingVariables,
 } from "../lib/whatsapp-format";
+import { FollowUpRulesCard } from "../templates/follow-up-rules-card";
 import { TemplateEditorDialog } from "../templates/template-editor-dialog";
 
 const PURPOSE_COPY: Record<string, string> = {
@@ -323,166 +314,6 @@ function TemplatesCard({
   );
 }
 
-function RuleRow({
-  rule,
-  actions,
-}: {
-  rule: AutomationRule;
-  actions: ConduitActions;
-}) {
-  const [reminder, setReminder] = useState(rule.reminderDays?.toString() ?? "");
-  const [reactivation, setReactivation] = useState(
-    rule.reactivationDays.toString(),
-  );
-  const dirty =
-    reminder !== (rule.reminderDays?.toString() ?? "") ||
-    reactivation !== rule.reactivationDays.toString();
-  return (
-    <li className="flex flex-wrap items-end gap-3 rounded-[1.25rem] border border-tertiary/25 bg-white/80 p-3">
-      <Field label="Recordar (días antes)" htmlFor={`r-rem-${rule.id}`}>
-        <input
-          id={`r-rem-${rule.id}`}
-          inputMode="numeric"
-          value={reminder}
-          onChange={(e) => setReminder(e.target.value.replace(/\D/g, ""))}
-          className={`${INPUT_CLASS} h-10 w-28 tabular-nums`}
-        />
-      </Field>
-      <Field label="Reactivar tras (días)" htmlFor={`r-rea-${rule.id}`}>
-        <input
-          id={`r-rea-${rule.id}`}
-          inputMode="numeric"
-          value={reactivation}
-          onChange={(e) => setReactivation(e.target.value.replace(/\D/g, ""))}
-          className={`${INPUT_CLASS} h-10 w-28 tabular-nums`}
-        />
-      </Field>
-      {dirty && (
-        <button
-          type="button"
-          className={`${PRIMARY_BUTTON} h-10`}
-          disabled={!reactivation || actions.busy.has(`rule:${rule.id}`)}
-          onClick={() =>
-            void actions.updateAutomationRule(rule.id, {
-              reminderDays: reminder ? Number(reminder) : undefined,
-              reactivationDays: Number(reactivation),
-            })
-          }
-        >
-          Guardar
-        </button>
-      )}
-      <label className="ml-auto flex items-center gap-2 font-sans text-sm text-secondary">
-        {rule.isActive ? "Activa" : "Pausada"}
-        <CatalogSwitch
-          checked={rule.isActive}
-          label={rule.isActive ? "Pausar regla" : "Activar regla"}
-          onChange={(isActive) =>
-            void actions.updateAutomationRule(rule.id, { isActive })
-          }
-        />
-      </label>
-    </li>
-  );
-}
-
-function RulesCard({ actions }: { actions: ConduitActions }) {
-  const categories = useCategories();
-  const [categoryId, setCategoryId] = useState("");
-  const effectiveCategory = categoryId || categories.data?.[0]?.id || "";
-  const rules = useAutomationRules(
-    effectiveCategory ? { categoryId: effectiveCategory } : undefined,
-  );
-  const [reminder, setReminder] = useState("1");
-  const [reactivation, setReactivation] = useState("60");
-
-  return (
-    <SectionCard
-      title="Recordatorios y reactivación"
-      icon={<Repeat className="size-5" strokeWidth={1.7} />}
-      description="La reactivación solo llega a clientas que hayan escrito al WhatsApp del spa dentro de la ventana de la política anti-bloqueo."
-    >
-      <Field label="Categoría" htmlFor="rules-category">
-        <select
-          id="rules-category"
-          value={effectiveCategory}
-          onChange={(e) => setCategoryId(e.target.value)}
-          className={`${INPUT_CLASS} max-w-xs`}
-        >
-          {(categories.data ?? []).map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </Field>
-      {rules.isError && (
-        <ErrorPanel
-          error={rules.error}
-          onRetry={() => void rules.refetch()}
-          compact
-        />
-      )}
-      {rules.isLoading && effectiveCategory && (
-        <SkeletonRows rows={1} height="h-16" />
-      )}
-      <ul className="flex flex-col gap-2">
-        {(rules.data ?? []).map((rule) => (
-          <RuleRow
-            key={`${rule.id}-${rule.reminderDays}-${rule.reactivationDays}`}
-            rule={rule}
-            actions={actions}
-          />
-        ))}
-      </ul>
-      {effectiveCategory &&
-        (rules.data ?? []).length === 0 &&
-        !rules.isLoading && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              void actions.createAutomationRule({
-                categoryId: effectiveCategory,
-                reminderDays: reminder ? Number(reminder) : undefined,
-                reactivationDays: Number(reactivation),
-              });
-            }}
-            className="flex flex-wrap items-end gap-3 rounded-[1.25rem] border border-dashed border-tertiary/50 p-3"
-          >
-            <Field label="Recordar (días antes)" htmlFor="new-rem">
-              <input
-                id="new-rem"
-                inputMode="numeric"
-                value={reminder}
-                onChange={(e) => setReminder(e.target.value.replace(/\D/g, ""))}
-                className={`${INPUT_CLASS} h-10 w-28 tabular-nums`}
-              />
-            </Field>
-            <Field label="Reactivar tras (días)" htmlFor="new-rea">
-              <input
-                id="new-rea"
-                inputMode="numeric"
-                value={reactivation}
-                onChange={(e) =>
-                  setReactivation(e.target.value.replace(/\D/g, ""))
-                }
-                className={`${INPUT_CLASS} h-10 w-28 tabular-nums`}
-              />
-            </Field>
-            <button
-              type="submit"
-              className={`${PRIMARY_BUTTON} h-10`}
-              disabled={!reactivation || actions.busy.has("rule:new")}
-            >
-              <Plus className="size-4" />
-              Crear regla
-            </button>
-          </form>
-        )}
-    </SectionCard>
-  );
-}
-
 function RecipientsCheckCard({
   windowDays,
   spaPhone,
@@ -608,7 +439,7 @@ export function TemplatesSection() {
         />
       )}
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <RulesCard actions={actions} />
+        <FollowUpRulesCard actions={actions} />
         <RecipientsCheckCard
           windowDays={overview.data?.connection?.inboundLookbackDays ?? 180}
           spaPhone={overview.data?.connection?.phoneNumber ?? null}
