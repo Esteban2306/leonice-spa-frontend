@@ -126,7 +126,10 @@ function UsageCard({
           </thead>
           <tbody>
             {usage.data.map((item) => {
-              const spec = REQUIRED_TEMPLATE_VARIABLES[item.name];
+              const spec = REQUIRED_TEMPLATE_VARIABLES[item.name] ?? {
+                audience: item.audience === "ADMIN" ? "Equipo" : "Clienta",
+                variables: item.variables,
+              };
               const template = item.templateId
                 ? byId.get(item.templateId)
                 : undefined;
@@ -141,7 +144,7 @@ function UsageCard({
                 >
                   <td className="py-2.5 pr-3 align-top">
                     <p className="text-secondary">
-                      {PURPOSE_COPY[item.name] ?? item.name}
+                      {PURPOSE_COPY[item.name] ?? item.description}
                     </p>
                     <p className="font-mono text-[11px] text-secondary/70">
                       {item.source === "env" ? item.envKey : item.catalogName}

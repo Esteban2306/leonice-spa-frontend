@@ -92,6 +92,9 @@ export interface TemplateUsage {
   catalogName: string;
   description: string;
   suggestedBody: string;
+  audience: "CLIENT" | "ADMIN";
+  variables: string[];
+  marketing: boolean;
 }
 
 export interface ConduitOverview {
