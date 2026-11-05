@@ -12,6 +12,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ["@base-ui/react", "react-day-picker", "motion", "gsap"],
+  },
   images: {
     loader: "custom",
     loaderFile: "./src/lib/images/cloudinary-loader.ts",
