@@ -6,6 +6,10 @@ import leoniceLogo from "../../../../public/leonice-logo-b.png";
 import { InputFloatingLabel } from "@/src/components/shadcn-studio/input/input-24";
 import { GradientButton } from "@/src/components/shadcn-studio/button/button-11";
 
+const googleLoginUrl = process.env.NEXT_PUBLIC_API_URL
+  ? `${process.env.NEXT_PUBLIC_API_URL}/auth/google`
+  : null;
+
 interface LoginViewProps {
   form: UseFormReturn<LoginFormValues>;
   onSubmit: (values: LoginFormValues) => Promise<void>;
@@ -83,6 +87,15 @@ export function LoginView({
             className={"w-[80%] text-white text-[16px] cursor-pointer min-h-10"}
           />
         </div>
+
+        {googleLoginUrl && (
+          <a
+            href={googleLoginUrl}
+            className="flex min-h-10 w-[80%] mx-auto items-center justify-center rounded-md border border-[#003C17]/25 bg-white/70 text-[15px] text-[#062112] transition hover:bg-white"
+          >
+            Continuar con Google
+          </a>
+        )}
       </form>
     </section>
   );
