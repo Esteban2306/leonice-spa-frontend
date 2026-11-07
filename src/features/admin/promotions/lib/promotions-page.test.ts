@@ -18,7 +18,7 @@ function promotion(overrides: Partial<Promotion>): Promotion {
     isActive: true,
     createdAt: "2026-10-01T00:00:00Z",
     treatment: null,
-    category: { id: "c", name: "Uñas" },
+    category: { id: "c", name: "Spa Coreano" },
     ...overrides,
   };
 }

@@ -187,7 +187,7 @@ export function PromotionDialog({
           id="promotion-name"
           value={name}
           maxLength={80}
-          placeholder="Ej. Octubre de uñas"
+          placeholder="Ej. Mes del cabello"
           onChange={(event) => setName(event.target.value)}
           className={INPUT_CLASS}
         />

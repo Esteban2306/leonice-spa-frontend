@@ -9,7 +9,7 @@ export const revalidate = 300;
 export const metadata: Metadata = pageMetadata({
   title: "Tratamientos capilares",
   description:
-    "Conoce nuestras categorías de tratamientos en Granada, Meta: spa capilar, spa coreano y uñas, con cada procedimiento explicado paso a paso.",
+    "Conoce nuestras categorías de tratamientos en Granada, Meta: spa capilar y spa coreano, con cada procedimiento explicado paso a paso.",
   path: "/tratamientos",
 });
 

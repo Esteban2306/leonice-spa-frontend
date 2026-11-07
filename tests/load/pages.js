@@ -10,7 +10,7 @@ const MIX = [
   [0.15, "/tratamientos/spa-capilar/alisado", "tratamiento"],
   [0.07, "/tratamientos", "tratamientos"],
   [0.07, "/productos", "productos"],
-  [0.03, "/tratamientos/unas/tradicional", "tratamiento"],
+  [0.03, "/tratamientos/spa-capilar/alisado", "tratamiento"],
   [0.03, "/politica-de-datos", "politica"],
 ];
 

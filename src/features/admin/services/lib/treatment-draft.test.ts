@@ -12,16 +12,16 @@ import {
 describe("validateTreatmentDraft", () => {
   it("convierte pesos a miles y completa el rango con un solo valor", () => {
     const { data, errors } = validateTreatmentDraft({
-      ...emptyTreatmentDraft("nails"),
-      name: " Uñas Dipping ",
+      ...emptyTreatmentDraft("korean"),
+      name: " Spa coreano ",
       priceMinPesos: "65.000",
       durationMin: "150",
     });
 
     expect(errors).toEqual({});
     expect(data).toEqual({
-      name: "Uñas Dipping",
-      categoryId: "nails",
+      name: "Spa coreano",
+      categoryId: "korean",
       requiresPriorAssessment: false,
       hasHairVariablePricing: false,
       basePriceMin: 65,
@@ -33,7 +33,7 @@ describe("validateTreatmentDraft", () => {
 
   it("permite servicios sin precio publicado", () => {
     const { data } = validateTreatmentDraft({
-      ...emptyTreatmentDraft("nails"),
+      ...emptyTreatmentDraft("korean"),
       name: "Diseño a mano alzada",
       durationMin: "30",
     });
@@ -62,7 +62,7 @@ describe("validateTreatmentDraft", () => {
 
   it("exige la duración", () => {
     const { errors } = validateTreatmentDraft({
-      ...emptyTreatmentDraft("nails"),
+      ...emptyTreatmentDraft("korean"),
       name: "Tradicional",
     });
 
@@ -74,7 +74,7 @@ describe("draftFromTreatment", () => {
   it("muestra los montos en pesos y detecta cambios", () => {
     const draft = draftFromTreatment({
       name: "Permanente",
-      categoryId: "nails",
+      categoryId: "korean",
       basePriceMin: "60.00",
       basePriceMax: "60.00",
       baseDurationMinMinutes: 90,

@@ -37,9 +37,9 @@ describe("client-crm", () => {
   it("filtra historial por estado y texto", () => {
     const rows = [
       { status: "COMPLETADA", treatment: "Alisado", category: "Capilar" },
-      { status: "CANCELADA", treatment: "Pedespa", category: "Uñas" },
+      { status: "CANCELADA", treatment: "Alisado", category: "Spa Coreano" },
     ] as unknown as Parameters<typeof filterHistory>[0];
     expect(filterHistory(rows, "COMPLETADA", "").length).toBe(1);
-    expect(filterHistory(rows, "ALL", "uñas")[0].treatment).toBe("Pedespa");
+    expect(filterHistory(rows, "ALL", "coreano")[0].treatment).toBe("Alisado");
   });
 });

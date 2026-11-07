@@ -9,8 +9,8 @@ import {
 
 describe("clientTagLabel", () => {
   it("añade el detalle a las etiquetas que lo llevan", () => {
-    expect(clientTagLabel({ key: "FRECUENTA", detail: "Uñas" })).toBe(
-      "Frecuenta Uñas",
+    expect(clientTagLabel({ key: "FRECUENTA", detail: "Spa Coreano" })).toBe(
+      "Frecuenta Spa Coreano",
     );
     expect(clientTagLabel({ key: "NUEVA", detail: "" })).toBe("Nueva");
   });
@@ -20,7 +20,7 @@ describe("sortClientTags", () => {
   it("pone primero las que más importan para decidir un envío", () => {
     const sorted = sortClientTags([
       { key: "EN_PAUSA", detail: "" },
-      { key: "FRECUENTA", detail: "Uñas" },
+      { key: "FRECUENTA", detail: "Spa Coreano" },
       { key: "APTA_PROMOCION", detail: "" },
     ]);
     expect(sorted.map((tag) => tag.key)).toEqual([

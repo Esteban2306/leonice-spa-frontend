@@ -11,9 +11,9 @@ const base: CalendarReservation = {
   clientName: "Ana Pérez",
   phone: "+573001234567",
   treatmentId: "t1",
-  treatmentName: "Pedespa",
-  categoryId: "cat-nails",
-  categoryName: "Uñas",
+  treatmentName: "Alisado",
+  categoryId: "cat-korean",
+  categoryName: "Spa Coreano",
   startsAt: "2026-12-09T13:00:00.000Z",
   endsAt: "2026-12-09T14:00:00.000Z",
   start: "8:00 a. m.",
@@ -39,10 +39,10 @@ const row = (overrides: Partial<CalendarReservation>) => ({
 describe("buildCalendarFilters", () => {
   it("incluye estados, categorías reales y filtros de atención", () => {
     const ids = buildCalendarFilters([
-      { id: "cat-nails", name: "Uñas", isPrincipal: false, isActive: true },
+      { id: "cat-korean", name: "Spa Coreano", isPrincipal: false, isActive: true },
     ]).map((f) => f.id);
     expect(ids).toContain("status:CONFIRMADA");
-    expect(ids).toContain("category:cat-nails");
+    expect(ids).toContain("category:cat-korean");
     expect(ids).toContain("attention:proof-review");
   });
 });
@@ -89,7 +89,7 @@ describe("matchesFilters", () => {
 
   it("la búsqueda encuentra por nombre, tratamiento o dígitos del teléfono", () => {
     expect(matchesFilters(row({}), [], "ana")).toBe(true);
-    expect(matchesFilters(row({}), [], "pedes")).toBe(true);
+    expect(matchesFilters(row({}), [], "alisa")).toBe(true);
     expect(matchesFilters(row({}), [], "300 123")).toBe(true);
     expect(matchesFilters(row({}), [], "laura")).toBe(false);
   });

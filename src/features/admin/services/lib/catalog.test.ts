@@ -50,7 +50,7 @@ describe("buildTreatmentParams", () => {
   it("envía solo los filtros activos y convierte pesos a miles", () => {
     const params = buildTreatmentParams({
       ...DEFAULT_FILTERS,
-      q: "  uñas ",
+      q: "  coreano ",
       hasActivePromotion: true,
       priceMinPesos: "60.000",
       durationMax: "150",
@@ -58,7 +58,7 @@ describe("buildTreatmentParams", () => {
     });
 
     expect(params).toEqual({
-      q: "uñas",
+      q: "coreano",
       status: "ACTIVE",
       hasActivePromotion: true,
       hasHairVariablePricing: undefined,
@@ -119,13 +119,13 @@ describe("promociones", () => {
     ) => ({ id, treatmentId, categoryId }) as Promotion;
     const promotions = [
       promo("p1", "t1", null),
-      promo("p2", null, "nails"),
+      promo("p2", null, "korean"),
       promo("p3", "t2", null),
       promo("p4", null, "hair"),
     ];
 
     expect(
-      promotionsForTreatment(promotions, { id: "t1", categoryId: "nails" }).map(
+      promotionsForTreatment(promotions, { id: "t1", categoryId: "korean" }).map(
         (p) => p.id,
       ),
     ).toEqual(["p1", "p2"]);
@@ -181,12 +181,12 @@ describe("groupTreatmentsByCategory", () => {
     const t = (id: string, categoryId: string) =>
       ({ id, categoryId }) as AdminTreatment;
     const groups = groupTreatmentsByCategory([
-      t("a", "nails"),
+      t("a", "korean"),
       t("b", "hair"),
-      t("c", "nails"),
+      t("c", "korean"),
     ]);
 
-    expect(groups.get("nails")?.map((x) => x.id)).toEqual(["a", "c"]);
+    expect(groups.get("korean")?.map((x) => x.id)).toEqual(["a", "c"]);
     expect(groups.get("hair")?.map((x) => x.id)).toEqual(["b"]);
   });
 });

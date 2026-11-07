@@ -45,7 +45,7 @@ describe("durationLabel", () => {
 
 describe("bookingMessage", () => {
   it("nombra la categoría cuando la conoce", () => {
-    expect(bookingMessage("Uñas")).toBe("Hola, quiero agendar un servicio de Uñas en Leonice.");
+    expect(bookingMessage("Spa Coreano")).toBe("Hola, quiero agendar un servicio de Spa Coreano en Leonice.");
     expect(bookingMessage()).toBe("Hola, quiero agendar una cita en Leonice.");
   });
 });

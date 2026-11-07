@@ -14,8 +14,8 @@ const group = (
   client: { id: "c1", name: "Ana", phone: "+573001234567" },
   items: items.map(({ id, proof }) => ({
     reservationId: id,
-    treatment: { id: "t", name: "Pedespa" },
-    category: { id: "k", name: "Uñas" },
+    treatment: { id: "t", name: "Alisado" },
+    category: { id: "k", name: "Spa Coreano" },
     status: "PENDIENTE_DEPOSITO",
     scheduledStart: "2026-12-09T13:00:00.000Z",
     scheduledEnd: "2026-12-09T14:00:00.000Z",

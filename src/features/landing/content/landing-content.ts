@@ -215,10 +215,6 @@ export const treatmentsContent = {
       summary: "Limpieza profunda y masaje del cuero cabelludo al estilo coreano.",
       detail: "Un momento para soltar la tensión mientras tu cuero cabelludo respira.",
     },
-    Uñas: {
-      summary: "Manos y pies cuidados con el mismo detalle que tu cabello.",
-      detail: "Elige el acabado y lo adaptamos a tu ritmo y a tus manos.",
-    },
   } as Record<string, TreatmentCopy>,
   defaultCopy: {
     summary: "Un tratamiento pensado para la salud de tu cabello.",
