@@ -33,6 +33,7 @@ import type {
   PromptType,
   PromptVersion,
   SaveTemplateRequest,
+  SystemPause,
   TemplateUsage,
   UpdateBotRequest,
   UpdateBusinessSettingsRequest,
@@ -76,6 +77,8 @@ export const conduitApi = {
   bot: () => get<ConduitBot>("/bot"),
   updateBot: (data: UpdateBotRequest) =>
     httpClient.request<ConduitBot>(`${BASE}/bot`, "PUT", data),
+  setSystemPause: (paused: boolean) =>
+    httpClient.request<SystemPause>(`${BASE}/system-pause`, "PUT", { paused }),
   toggleBot: () =>
     httpClient.request<ConduitBot>(`${BASE}/bot/toggle`, "PATCH"),
   promptSettings: () => get<PromptSettingsResponse>("/bot/prompts/settings"),

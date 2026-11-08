@@ -31,6 +31,7 @@ import {
   SkeletonRows,
 } from "../components/section-card";
 import { StatusPill } from "../components/status-pill";
+import { SystemPauseButton } from "../components/system-pause-control";
 import { QrLinkDialog } from "../connection/qr-link-dialog";
 import {
   activeLimiter,
@@ -392,6 +393,7 @@ export function ConnectionSection() {
                   Reconectar
                 </button>
               )}
+              <SystemPauseButton />
               {connection?.status !== "DISCONNECTED" && (
                 <button
                   type="button"
@@ -479,7 +481,7 @@ export function ConnectionSection() {
         onOpenChange={setConfirmDisconnect}
         tone="danger"
         title="¿Desconectar WhatsApp?"
-        description="El asistente y los recordatorios dejarán de funcionar hasta que vuelvas a vincular el número."
+        description="El asistente y los recordatorios dejarán de funcionar hasta que vuelvas a vincular el número. Si solo quieres que nada responda por un rato, usa Pausar sistema."
         submitLabel="Desconectar"
         submittingLabel="Desconectando…"
         onSubmit={actions.disconnect}

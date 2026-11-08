@@ -26,6 +26,7 @@ import {
   SkeletonRows,
 } from "../components/section-card";
 import { StatusPill } from "../components/status-pill";
+import { SystemPauseButton } from "../components/system-pause-control";
 import { useInboxCounts } from "../lib/use-inbox-counts";
 import {
   activeLimiter,
@@ -160,6 +161,7 @@ export function OverviewSection() {
               Ver conexión
             </Link>
           )}
+          <SystemPauseButton />
         </div>
         {connection?.connectedAt && copy.tone === "green" && (
           <p className="font-sans text-xs text-secondary/70">

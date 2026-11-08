@@ -98,6 +98,15 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Política anti-bloqueo actualizada.",
     error: "No se pudo cambiar la política anti-bloqueo",
   },
+  conduitSystemPause: {
+    success:
+      "Sistema en pausa. El asistente y los envíos automáticos están detenidos.",
+    error: "No se pudo pausar el sistema",
+  },
+  conduitSystemResume: {
+    success: "Sistema reanudado. El asistente vuelve a responder.",
+    error: "No se pudo reanudar el sistema",
+  },
   conduitBotOn: {
     success: "Asistente encendido. Vuelve a responder a las clientas.",
     error: "No se pudo encender el asistente",

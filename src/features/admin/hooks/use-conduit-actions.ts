@@ -122,6 +122,13 @@ export function useConduitActions() {
           connection,
         ),
 
+      setSystemPause: (paused: boolean) =>
+        run(
+          "systemPause",
+          paused ? "conduitSystemPause" : "conduitSystemResume",
+          () => conduitApi.setSystemPause(paused),
+          refresh(K.overview()),
+        ),
       toggleBot: (turnOn: boolean) =>
         run(
           "bot",

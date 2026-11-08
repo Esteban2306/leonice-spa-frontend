@@ -10,6 +10,7 @@ import { useConduitOverview } from "@/src/features/admin/hooks/use-conduit";
 import { connectionCopy } from "../lib/whatsapp-format";
 import { useInboxCounts } from "../lib/use-inbox-counts";
 import { StatusPill } from "./status-pill";
+import { SystemPauseBanner } from "./system-pause-control";
 
 const TABS = [
   { href: "/admin/whatsapp", label: "Resumen", exact: true },
@@ -64,6 +65,8 @@ export function WhatsappShell({ children }: { children: ReactNode }) {
             )}
           </Link>
         </header>
+
+        <SystemPauseBanner />
 
         <nav
           aria-label="Secciones de WhatsApp"

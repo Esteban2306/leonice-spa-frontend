@@ -97,6 +97,11 @@ export interface TemplateUsage {
   marketing: boolean;
 }
 
+export interface SystemPause {
+  paused: boolean;
+  pausedAt: string | null;
+}
+
 export interface ConduitOverview {
   reachable: boolean;
   health: ConduitServiceHealth | null;
@@ -109,6 +114,7 @@ export interface ConduitOverview {
     bot: string | null;
   };
   templates: TemplateUsage[];
+  systemPause: SystemPause | null;
 }
 
 export interface Paginated<T> {
