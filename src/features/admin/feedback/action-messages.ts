@@ -139,6 +139,22 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Modelo de IA reactivado.",
     error: "No se pudo reactivar el modelo de IA",
   },
+  verificationMode: {
+    success: "Listo. El cambio aplica desde la próxima imagen.",
+    error: "No se pudo cambiar el modo de verificación",
+  },
+  verificationRotateKey: {
+    success: "Clave actualizada. Ya no se vuelve a mostrar.",
+    error: "No se pudo cambiar la clave del modelo",
+  },
+  verificationReactivateModel: {
+    success: "Modelo reactivado.",
+    error: "No se pudo reactivar el modelo",
+  },
+  verificationReview: {
+    success: "Revisión registrada.",
+    error: "No se pudo registrar la revisión",
+  },
   conduitToolOn: {
     success: "Herramienta activada.",
     error: "No se pudo activar la herramienta",

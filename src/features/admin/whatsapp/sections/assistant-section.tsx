@@ -9,14 +9,17 @@ import {
   useConduitModels,
   useConduitPromptSettings,
   useConduitTools,
+  useVerificationStatus,
 } from "@/src/features/admin/hooks/use-conduit";
 import { useConduitActions } from "@/src/features/admin/hooks/use-conduit-actions";
+import { useVerificationActions } from "@/src/features/admin/hooks/use-verification-actions";
 
 import { GeneralTab } from "../assistant/general-tab";
 import { ModelsTab } from "../assistant/models-tab";
 import { PersonalityTab } from "../assistant/personality-tab";
 import { PromptsTab } from "../assistant/prompts-tab";
 import { ToolsTab } from "../assistant/tools-tab";
+import { VerificationTab } from "../assistant/verification-tab";
 import { ErrorPanel } from "../components/error-panel";
 import { SkeletonRows } from "../components/section-card";
 
@@ -26,6 +29,7 @@ const TABS = [
   { id: "instrucciones", label: "Instrucciones avanzadas" },
   { id: "modelos", label: "Modelos de IA" },
   { id: "herramientas", label: "Herramientas" },
+  { id: "comprobantes", label: "Comprobantes" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
@@ -59,11 +63,13 @@ export function AssistantSection() {
     ? (raw as TabId)
     : "general";
   const actions = useConduitActions();
+  const verificationActions = useVerificationActions();
 
   const bot = useConduitBot();
   const settings = useConduitPromptSettings();
   const models = useConduitModels();
   const tools = useConduitTools();
+  const verification = useVerificationStatus();
 
   const select = (id: TabId) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -131,6 +137,13 @@ export function AssistantSection() {
       {tab === "herramientas" && (
         <Loaded query={tools}>
           {(data) => <ToolsTab tools={data} actions={actions} />}
+        </Loaded>
+      )}
+      {tab === "comprobantes" && (
+        <Loaded query={verification}>
+          {(data) => (
+            <VerificationTab status={data} actions={verificationActions} />
+          )}
         </Loaded>
       )}
     </div>

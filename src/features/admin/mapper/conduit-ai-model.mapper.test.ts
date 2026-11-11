@@ -85,10 +85,13 @@ describe("el frontend nunca maneja una apiKey recibida", () => {
     expect(block).toMatch(/apiKeyLast4:/);
   });
 
-  it("apiKey solo aparece en el formulario de alta y en su tipo de solicitud", () => {
+  it("apiKey solo aparece en los formularios que la escriben y en lo que la envía", () => {
     const allowed = new Set([
       "features/admin/whatsapp/assistant/models-tab.tsx",
       "features/admin/types/conduit.types.ts",
+      "features/admin/whatsapp/assistant/verification-tab.tsx",
+      "features/admin/api/verification.api.ts",
+      "features/admin/hooks/use-verification-actions.ts",
     ]);
     const users = files
       .filter((f) => /\bapiKey\b/.test(f.text.replace(/apiKeyLast4/g, "")))
@@ -105,5 +108,24 @@ describe("el frontend nunca maneja una apiKey recibida", () => {
     expect(tab).toMatch(/autoComplete="off"/);
     expect(tab).toMatch(/if \(!open\) setDraft\(EMPTY\)/);
     expect(tab).not.toMatch(/model\.apiKey\b/);
+  });
+
+  it("la clave nueva de la pestaña de comprobantes tampoco se guarda ni se muestra", () => {
+    const tab = files.find((f) =>
+      f.path.endsWith("assistant/verification-tab.tsx"),
+    )!.text;
+    expect(tab).not.toMatch(/localStorage|sessionStorage|console\./);
+    expect(tab).toMatch(/type="password"/);
+    expect(tab).toMatch(/autoComplete="off"/);
+    expect(tab).toMatch(/setApiKey\(""\)/);
+    expect(tab).not.toMatch(/model\.apiKey\b/);
+    expect(tab).not.toMatch(/value=\{(?!apiKey\})[^}]*apiKey/);
+  });
+
+  it("los modelos que llegan del servicio de comprobantes no traen ni piden una clave", () => {
+    const types = files.find((f) =>
+      f.path.endsWith("types/verification.types.ts"),
+    )!.text;
+    expect(types).not.toMatch(/\bapiKey\b/);
   });
 });
