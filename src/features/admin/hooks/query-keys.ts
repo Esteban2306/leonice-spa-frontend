@@ -219,6 +219,8 @@ export const adminQueryKeys = {
     prompt: (type: string) =>
       [...adminQueryKeys.conduit.all(), "prompt", type] as const,
     models: () => [...adminQueryKeys.conduit.all(), "models"] as const,
+    verification: () =>
+      [...adminQueryKeys.conduit.all(), "verification"] as const,
     tools: () => [...adminQueryKeys.conduit.all(), "tools"] as const,
     escalation: () => [...adminQueryKeys.conduit.all(), "escalation"] as const,
     conversations: () =>
