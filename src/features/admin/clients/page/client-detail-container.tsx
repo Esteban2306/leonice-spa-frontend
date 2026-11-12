@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/src/features/admin/components/admin-link";
 
 import { HttpError } from "@/src/lib/api/http-error";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/src/features/admin/components/admin-link";
 import { ArrowLeft } from "lucide-react";
 
 import {

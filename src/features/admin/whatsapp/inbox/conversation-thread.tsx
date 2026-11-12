@@ -7,7 +7,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import Link from "next/link";
+import Link from "@/src/features/admin/components/admin-link";
 import {
   ArrowLeft,
   CheckCheck,
