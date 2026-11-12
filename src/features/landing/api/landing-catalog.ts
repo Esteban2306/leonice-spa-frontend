@@ -8,6 +8,7 @@ import {
   type TreatmentCopy,
 } from "@/src/features/landing/content/landing-content";
 import { allowedImageUrl } from "@/src/features/landing/lib/allowed-image";
+import { REVALIDATE_SECONDS } from "@/src/lib/cache/revalidate";
 
 interface ApiTreatment {
   id: string;
@@ -24,7 +25,6 @@ interface ApiTreatment {
   effectiveBasePriceMin?: number | null;
 }
 
-const REVALIDATE_SECONDS = 300;
 const TIMEOUT_MS = 4000;
 
 const toNumber = (value: string | number | null | undefined) =>

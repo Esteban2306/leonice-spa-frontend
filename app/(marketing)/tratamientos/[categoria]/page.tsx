@@ -8,7 +8,7 @@ import { categoryHref } from "@/src/features/treatments/lib/showcase-routes";
 import { TreatmentsShell } from "@/src/features/treatments/components/treatments-shell";
 import { TreatmentCategoryContainer } from "@/src/features/treatments/pages/category/treatment-category-container";
 
-export const revalidate = 300;
+// Sin `revalidate` propio: lo gobiernan los tiempos de los datos (src/lib/cache/revalidate.ts).
 
 export async function generateStaticParams() {
   const categories = await getShowcaseCategories().catch(() => []);

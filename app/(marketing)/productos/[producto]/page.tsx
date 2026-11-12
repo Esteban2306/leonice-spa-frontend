@@ -10,7 +10,7 @@ import { ProductDetailContainer } from "@/src/features/products-catalog/pages/pr
 
 import "@/src/features/products-catalog/products-catalog.css";
 
-export const revalidate = 300;
+// Sin `revalidate` propio: lo gobiernan los tiempos de los datos (src/lib/cache/revalidate.ts).
 
 export async function generateStaticParams() {
   const catalog = await getCatalog(EMPTY_FILTERS).catch(() => null);

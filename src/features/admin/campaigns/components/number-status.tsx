@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/src/features/admin/components/admin-link";
 
 import { useConduitOverview } from "@/src/features/admin/hooks/use-conduit";
 import type {

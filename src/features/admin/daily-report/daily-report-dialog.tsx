@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
+import Link from "@/src/features/admin/components/admin-link";
 import {
   ArrowUpRight,
   BadgeCheck,

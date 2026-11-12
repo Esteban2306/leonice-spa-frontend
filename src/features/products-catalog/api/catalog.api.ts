@@ -7,10 +7,11 @@ import { toApiQuery } from "@/src/features/products-catalog/lib/catalog-filters"
 import { allowedImageUrl } from "@/src/features/landing/lib/allowed-image";
 import type { CatalogProductCard } from "@/src/features/products-catalog/api/catalog.types";
 import { tunnelHeaders } from "@/src/lib/api/tunnel-headers";
+import { REVALIDATE_SECONDS } from "@/src/lib/cache/revalidate";
 
-const REVALIDATE_SECONDS = 300;
 const TIMEOUT_MS = 6000;
-const BROWSER_CACHE_MS = REVALIDATE_SECONDS * 1000;
+// Caché en memoria del navegador: se mantiene en 5 min, no depende de la caché del servidor.
+const BROWSER_CACHE_MS = 300 * 1000;
 
 const browserCache = new Map<string, { at: number; result: CatalogResult }>();
 

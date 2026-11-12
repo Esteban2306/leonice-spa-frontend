@@ -3,6 +3,7 @@ import {
   type StoryItem,
 } from "@/src/features/landing/content/landing-content";
 import { allowedImageUrl } from "@/src/features/landing/lib/allowed-image";
+import { TESTIMONIALS_REVALIDATE_SECONDS } from "@/src/lib/cache/revalidate";
 
 interface ApiTestimonial {
   id: string;
@@ -13,7 +14,6 @@ interface ApiTestimonial {
   afterImageUrl: string | null;
 }
 
-const REVALIDATE_SECONDS = 60;
 const TIMEOUT_MS = 4000;
 
 function isApiTestimonial(value: unknown): value is ApiTestimonial {
@@ -46,7 +46,7 @@ export async function getLandingStories(): Promise<StoryItem[]> {
 
   try {
     const response = await fetch(`${apiUrl}/testimonials`, {
-      next: { revalidate: REVALIDATE_SECONDS },
+      next: { revalidate: TESTIMONIALS_REVALIDATE_SECONDS },
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
     if (!response.ok) return storiesContent.items;

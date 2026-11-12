@@ -1,3 +1,5 @@
+import { REVALIDATE_SECONDS } from "@/src/lib/cache/revalidate";
+
 export interface BusinessHoursWindow {
   opens: string;
   closes: string;
@@ -8,7 +10,6 @@ export interface BusinessHours {
   days: { dayOfWeek: number; windows: BusinessHoursWindow[] }[];
 }
 
-const REVALIDATE_SECONDS = 300;
 const TIMEOUT_MS = 4000;
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 

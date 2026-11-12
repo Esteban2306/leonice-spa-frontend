@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/src/features/admin/components/admin-link";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 
 import type {
