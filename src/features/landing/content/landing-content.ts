@@ -105,6 +105,7 @@ export interface MetricItem {
 }
 
 export const heroContent = {
+  eyebrow: "Spa capilar en Granada, Meta",
   title: "Recupera la fuerza y el brillo de tu cabello",
   lead: "Diagnóstico personalizado y procedimientos de grado profesional, en un espacio pensado para devolverte la confianza de llevar tu cabello como quieras.",
   primaryAction: "Agenda tu diagnóstico capilar",
