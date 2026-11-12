@@ -12,6 +12,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Se fija al compilar: así el modo de caché es el mismo en el servidor aunque el Worker no reciba la variable.
+  env: { PUBLIC_CACHE_MODE: process.env.PUBLIC_CACHE_MODE ?? "" },
   experimental: {
     optimizePackageImports: ["@base-ui/react", "react-day-picker", "motion", "gsap"],
   },

@@ -3,8 +3,8 @@ import type {
   ShowcaseCategorySummary,
   ShowcaseTreatmentDetail,
 } from "@/src/features/treatments/api/showcase.types";
+import { REVALIDATE_SECONDS } from "@/src/lib/cache/revalidate";
 
-const REVALIDATE_SECONDS = 300;
 const TIMEOUT_MS = 5000;
 
 export class ShowcaseUnavailableError extends Error {}

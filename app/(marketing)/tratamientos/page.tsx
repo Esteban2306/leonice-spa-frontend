@@ -4,7 +4,7 @@ import { pageMetadata } from "@/src/features/landing/lib/seo";
 import { TreatmentsShell } from "@/src/features/treatments/components/treatments-shell";
 import { TreatmentCategoriesContainer } from "@/src/features/treatments/pages/categories/treatment-categories-container";
 
-export const revalidate = 300;
+// Sin `revalidate` propio: lo gobiernan los tiempos de los datos (src/lib/cache/revalidate.ts).
 
 export const metadata: Metadata = pageMetadata({
   title: "Tratamientos capilares",

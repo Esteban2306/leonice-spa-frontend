@@ -8,7 +8,7 @@ import { categoryHref, treatmentHref } from "@/src/features/treatments/lib/showc
 import { TreatmentsShell } from "@/src/features/treatments/components/treatments-shell";
 import { TreatmentDetailContainer } from "@/src/features/treatments/pages/treatment/treatment-detail-container";
 
-export const revalidate = 300;
+// Sin `revalidate` propio: lo gobiernan los tiempos de los datos (src/lib/cache/revalidate.ts).
 
 export async function generateStaticParams() {
   return listShowcaseTreatmentPaths();

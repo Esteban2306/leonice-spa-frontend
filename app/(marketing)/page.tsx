@@ -14,7 +14,7 @@ import { pageMetadata } from "@/src/features/landing/lib/seo";
 import { localBusinessJsonLd, websiteJsonLd } from "@/src/features/landing/lib/structured-data";
 import { SPA_NAME } from "@/src/features/landing/lib/site-config";
 
-export const revalidate = 60;
+// Sin `revalidate` propio: lo gobiernan los tiempos de los datos (src/lib/cache/revalidate.ts).
 
 const home = pageMetadata({
   title: `${SPA_NAME} · Tratamientos capilares en Granada, Meta`,
