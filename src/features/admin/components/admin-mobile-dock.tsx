@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 
 import Dock from "@/src/components/ui/Dock";
 import { useLogout } from "@/src/features/auth/hooks/use-auth";
@@ -11,6 +12,18 @@ import {
   WHATSAPP_HREF,
   isActiveAdminRoute,
 } from "@/src/features/admin/navigation/admin-navigation";
+
+import { AdminMobileMoreSheet } from "./admin-mobile-more-sheet";
+
+const PRIMARY_HREFS: readonly string[] = [
+  "/admin",
+  "/admin/calendar",
+  "/admin/clients",
+  WHATSAPP_HREF,
+];
+
+const PRIMARY_ITEMS = ADMIN_NAVIGATION.filter((item) => PRIMARY_HREFS.includes(item.href));
+const MORE_ITEMS = ADMIN_NAVIGATION.filter((item) => !PRIMARY_HREFS.includes(item.href));
 
 const BRAND_TOKENS = {
   "--dock-panel": "rgba(6, 33, 18, 0.86)",
@@ -43,13 +56,14 @@ export function AdminMobileDock() {
   const router = useRouter();
   const logout = useLogout();
   const inbox = useInboxCounts();
+  const [moreOpen, setMoreOpen] = useState(false);
 
-  const navigationItems = ADMIN_NAVIGATION.map((item) => {
+  const navigationItems = PRIMARY_ITEMS.map((item) => {
     const Icon = item.icon;
     const active = isActiveAdminRoute(pathname, item.href);
     return {
       label: item.shortName,
-      icon: <Icon className="size-5" strokeWidth={1.8} aria-hidden="true" />,
+      icon: <Icon className="size-6" strokeWidth={1.8} aria-hidden="true" />,
       active,
       className: active ? ACTIVE_TILE : "",
       badge:
@@ -64,41 +78,62 @@ export function AdminMobileDock() {
     };
   });
 
+  const moreActive = MORE_ITEMS.some((item) => isActiveAdminRoute(pathname, item.href));
+
   const items = [
     ...navigationItems,
-    { separator: true },
     {
-      label: "Cerrar sesión",
-      icon: <LogOut className="size-5" strokeWidth={1.8} aria-hidden="true" />,
-      onClick: () => {
-        if (logout.isPending) return;
-        logout.mutate(undefined, {
-          onSettled: () => router.replace("/admin/login"),
-        });
-      },
+      label: "Más",
+      icon: <Ellipsis className="size-6" strokeWidth={1.8} aria-hidden="true" />,
+      active: moreActive,
+      className: moreActive ? ACTIVE_TILE : "",
+      onClick: () => setMoreOpen(true),
     },
   ];
 
+  const navigateFromSheet = (href: string) => {
+    setMoreOpen(false);
+    if (pathname !== href) router.push(href);
+  };
+
+  const logoutFromSheet = () => {
+    if (logout.isPending) return;
+    logout.mutate(undefined, {
+      onSettled: () => router.replace("/admin/login"),
+    });
+  };
+
   return (
-    <nav
-      aria-label="Navegación del panel"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[var(--admin-dock-space)] desk:hidden"
-    >
-      <Dock
-        items={items}
-        position="bottom"
-        theme="dark"
-        baseItemSize={46}
-        magnification={60}
-        distance={140}
-        panelHeight={62}
-        gap={8}
-        roundness={0.55}
-        badgeColor="#b91c1c"
-        accentColor="#BF9250"
-        className="pointer-events-auto"
-        style={BRAND_TOKENS}
+    <>
+      <nav
+        aria-label="Navegación del panel"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-[var(--admin-dock-space)] desk:hidden"
+      >
+        <Dock
+          items={items}
+          position="bottom"
+          theme="dark"
+          baseItemSize={54}
+          magnification={62}
+          distance={140}
+          panelHeight={70}
+          gap={10}
+          roundness={0.55}
+          badgeColor="#b91c1c"
+          accentColor="#BF9250"
+          className="pointer-events-auto"
+          style={BRAND_TOKENS}
+        />
+      </nav>
+      <AdminMobileMoreSheet
+        open={moreOpen}
+        onOpenChange={setMoreOpen}
+        items={MORE_ITEMS}
+        pathname={pathname}
+        onNavigate={navigateFromSheet}
+        onLogout={logoutFromSheet}
+        isLoggingOut={logout.isPending}
       />
-    </nav>
+    </>
   );
 }

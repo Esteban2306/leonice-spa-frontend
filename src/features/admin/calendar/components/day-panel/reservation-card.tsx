@@ -1,4 +1,4 @@
-import { Ellipsis } from "lucide-react";
+import { ChevronDown, Ellipsis } from "lucide-react";
 
 import { AssessmentCallout } from "@/src/features/admin/components/hair-assessment/assessment-callout";
 import { ReservationOptionsMenu } from "@/src/features/admin/components/reservation-actions/reservation-options-menu";
@@ -31,6 +31,7 @@ export function ReservationCard({
 }: ReservationCardProps) {
   const isToday = reservation.dateKey === todayKey;
   const isUpcoming = new Date(reservation.startsAt).getTime() > nowMs;
+  const detailsId = `reservation-details-${reservation.id}`;
 
   return (
     <article
@@ -42,6 +43,7 @@ export function ReservationCard({
         <button
           type="button"
           aria-expanded={isSelected}
+          aria-controls={detailsId}
           onClick={() => onSelect(isSelected ? null : reservation.id)}
           className="flex min-w-0 flex-1 cursor-pointer items-start justify-between gap-3 rounded-2xl p-4 pr-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
         >
@@ -70,10 +72,25 @@ export function ReservationCard({
             </span>
           </span>
 
-          <ReservationStatusBadge
-            status={reservation.status}
-            cancellationSource={reservation.cancellationSource}
-          />
+          <span className="flex shrink-0 flex-col items-end gap-2.5">
+            <ReservationStatusBadge
+              status={reservation.status}
+              cancellationSource={reservation.cancellationSource}
+            />
+            <span className="flex items-center gap-1.5 font-sans text-xs text-secondary/70">
+              {isSelected ? "Ocultar" : "Detalles"}
+              <span
+                aria-hidden="true"
+                className="grid size-7 place-items-center rounded-full bg-secondary/8"
+              >
+                <ChevronDown
+                  className={`size-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+                    isSelected ? "rotate-180" : ""
+                  }`}
+                />
+              </span>
+            </span>
+          </span>
         </button>
 
         <ReservationOptionsMenu
@@ -112,21 +129,29 @@ export function ReservationCard({
         </div>
       )}
 
-      {isSelected && (
-        <div className="flex flex-col gap-4 border-t border-secondary/10 p-4">
-          <ReservationDetails reservation={reservation} />
+      <div
+        id={detailsId}
+        inert={!isSelected}
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+          isSelected ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="flex flex-col gap-4 border-t border-secondary/10 p-4">
+            <ReservationDetails reservation={reservation} />
 
-          <ReservationActions
-            reservation={reservation}
-            isToday={isToday}
-            isUpcoming={isUpcoming}
-            belongsToCombo={belongsToCombo}
-            actions={actions}
-            onViewClient={onViewClient}
-            onReschedule={onReschedule}
-          />
+            <ReservationActions
+              reservation={reservation}
+              isToday={isToday}
+              isUpcoming={isUpcoming}
+              belongsToCombo={belongsToCombo}
+              actions={actions}
+              onViewClient={onViewClient}
+              onReschedule={onReschedule}
+            />
+          </div>
         </div>
-      )}
+      </div>
     </article>
   );
 }
