@@ -26,15 +26,6 @@ export default function DataPolicyPage() {
           <h1 className="font-heading text-4xl leading-tight sm:text-5xl">
             Política de tratamiento de datos personales
           </h1>
-          {!DATA_POLICY_REVIEWED && (
-            <p
-              role="note"
-              className="rounded-2xl border border-[#BF9250]/50 bg-[#E0BC87]/25 p-4 font-sans text-sm leading-relaxed"
-            >
-              Borrador pendiente de revisión legal. El contenido puede cambiar antes de su versión
-              definitiva.
-            </p>
-          )}
         </header>
         {dataPolicySections.map((section) => (
           <section key={section.id} id={section.id} aria-labelledby={`${section.id}-titulo`} className="flex flex-col gap-3">
