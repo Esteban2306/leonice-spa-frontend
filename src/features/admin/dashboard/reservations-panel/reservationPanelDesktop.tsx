@@ -31,8 +31,8 @@ export function ReservationPanelDesktop({
   };
 
   return (
-    <div className="grid divide-y divide-tertiary/25 lg:grid-cols-[1.2fr_3.3fr] lg:divide-x lg:divide-y-0">
-      <section className="p-4 sm:p-5">
+    <div className="grid divide-y divide-tertiary/25 @5xl:grid-cols-[1.2fr_3.3fr] @5xl:divide-x @5xl:divide-y-0">
+      <section className="min-w-0 p-4 sm:p-5">
         <div className="flex items-start gap-4">
           <ClientAvatar name={client.name} size="lg" />
 
@@ -70,9 +70,9 @@ export function ReservationPanelDesktop({
         {items.map((item) => (
           <div
             key={item.reservationId}
-            className="grid divide-y divide-tertiary/25 lg:grid-cols-[1fr_1.3fr_14rem] lg:divide-x lg:divide-y-0"
+            className="grid divide-y divide-tertiary/25 @5xl:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_14rem] @5xl:divide-x @5xl:divide-y-0"
           >
-            <section className="p-4 sm:p-5">
+            <section className="min-w-0 p-4 sm:p-5">
               <span className="font-sans text-xs uppercase tracking-[0.18em] text-secondary/70">
                 Fecha
               </span>
@@ -86,11 +86,11 @@ export function ReservationPanelDesktop({
               </div>
             </section>
 
-            <section className="p-4 sm:p-5">
+            <section className="min-w-0 p-4 sm:p-5">
               <ReservationItemTreatment item={item} clientName={client.name} />
             </section>
 
-            <section className="flex flex-col justify-center p-4 sm:p-3">
+            <section className="flex min-w-0 flex-col justify-center p-4 sm:p-3">
               <ReservationItemActions
                 item={item}
                 client={panelClient}

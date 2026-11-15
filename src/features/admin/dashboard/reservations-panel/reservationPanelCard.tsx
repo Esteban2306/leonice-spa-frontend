@@ -12,11 +12,11 @@ interface ReservationPanelCardProps extends ReservationPanelHandlers {
 
 export function ReservationPanelCard(props: ReservationPanelCardProps) {
   return (
-    <article className="overflow-hidden rounded-[1.5rem] border border-tertiary/30 bg-[#FCF6EB]">
-      <div className="lg:hidden">
+    <article className="@container overflow-hidden rounded-[1.5rem] border border-tertiary/30 bg-[#FCF6EB]">
+      <div className="@5xl:hidden">
         <ReservationPanelMobile {...props} />
       </div>
-      <div className="hidden lg:block">
+      <div className="hidden @5xl:block">
         <ReservationPanelDesktop {...props} />
       </div>
     </article>
