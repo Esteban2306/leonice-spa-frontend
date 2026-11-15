@@ -31,6 +31,10 @@ export const promotionsApi = {
     );
   },
 
+  remove(promotionId: string) {
+    return httpClient.request<null>(`/promotions/${promotionId}`, "DELETE");
+  },
+
   deactivate(promotionId: string) {
     return httpClient.request<Promotion>(
       `/promotions/${promotionId}/deactivate`,

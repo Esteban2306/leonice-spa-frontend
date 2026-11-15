@@ -123,6 +123,15 @@ export function PromotionsContainer() {
             onConfirm: () => actions.deactivatePromotion(promotion.id),
           })
         }
+        onDelete={(promotion) =>
+          setConfirmation({
+            title: `¿Eliminar ${promotion.name}?`,
+            description:
+              "Se borra por completo y ya no aparecerá en el panel. Si estaba vigente, el descuento deja de aplicarse de inmediato. No se puede deshacer.",
+            submitLabel: "Eliminar promoción",
+            onConfirm: () => actions.removePromotion(promotion.id),
+          })
+        }
         onRetry={() => void promotionsQuery.refetch()}
       />
 
