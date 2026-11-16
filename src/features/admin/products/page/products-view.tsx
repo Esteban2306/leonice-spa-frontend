@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Plus, Tags } from "lucide-react";
+import { Layers, Plus, Tags } from "lucide-react";
 
 import type {
   AdminProduct,
@@ -31,6 +31,8 @@ export interface ProductsViewProps {
   onFiltersChange: (patch: Partial<ProductFilters>) => void;
   onResetFilters: () => void;
   onCreateProduct: () => void;
+  onCreateRitual: () => void;
+  canCreateRitual: boolean;
   onManageTaxonomy: () => void;
   onRetry: () => void;
 }
@@ -148,7 +150,8 @@ export function ProductsView(props: ProductsViewProps) {
             <h1 className="font-heading text-4xl sm:text-5xl">Productos</h1>
             <p className="mt-2 hidden max-w-xl font-sans text-sm text-primary/70 sm:block">
               Lo que vendes en el spa, con sus marcas, presentaciones, precios y
-              fotos. Solo los productos activos se muestran en la web.
+              fotos, y los Rituales que los combinan con precio especial. Solo
+              lo activo se muestra en la web.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -159,6 +162,20 @@ export function ProductsView(props: ProductsViewProps) {
             >
               <Tags className="size-4" strokeWidth={1.8} />
               Categorías y etiquetas
+            </button>
+            <button
+              type="button"
+              onClick={props.onCreateRitual}
+              disabled={!props.canCreateRitual}
+              title={
+                props.canCreateRitual
+                  ? "Combo de productos con precio especial"
+                  : "Falta la categoría Combos"
+              }
+              className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-quaternary/60 px-5 font-sans text-sm text-quaternary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quaternary disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Layers className="size-4" strokeWidth={1.8} />
+              Nuevo Ritual
             </button>
             <button
               type="button"

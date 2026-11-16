@@ -2,6 +2,7 @@ import { formatCop } from "@/src/lib/money/cop";
 import type {
   AdminProduct,
   CreateProductVariantRequest,
+  ProductKind,
   ProductStatusFilter,
   ProductVariant,
 } from "@/src/features/admin/types/products.types";
@@ -11,12 +12,14 @@ export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export type ProductQuickFilter = "all" | "missingPhoto" | "noVariants";
+export type ProductKindFilter = "ALL" | ProductKind;
 
 export interface ProductFilters {
   q: string;
   status: ProductStatusFilter;
   productCategoryId: string;
   quick: ProductQuickFilter;
+  kind: ProductKindFilter;
 }
 
 export const DEFAULT_PRODUCT_FILTERS: ProductFilters = {
@@ -24,6 +27,7 @@ export const DEFAULT_PRODUCT_FILTERS: ProductFilters = {
   status: "ALL",
   productCategoryId: "",
   quick: "all",
+  kind: "ALL",
 };
 
 export function activeVariants(product: AdminProduct): ProductVariant[] {

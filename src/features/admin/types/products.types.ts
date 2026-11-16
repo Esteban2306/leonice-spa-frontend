@@ -1,4 +1,5 @@
 export type ProductStatusFilter = "ACTIVE" | "INACTIVE" | "ALL";
+export type ProductKind = "SINGLE" | "COMBO";
 
 export interface ProductVariant {
   id: string;
@@ -18,8 +19,41 @@ export interface ProductTag {
   isActive: boolean;
 }
 
-export interface AdminProduct {
+export interface AdminRitualItem {
+  variantId: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  brand: string;
+  presentation: string;
+  quantity: number;
+  unitPricePesos: number;
+  imageUrl: string | null;
+  isAvailable: boolean;
+}
+
+export interface AdminRitual {
+  pricePesos: number;
+  separatePricePesos: number;
+  savingsPesos: number;
+  savingsPercent: number;
+  isComplete: boolean;
+  items: AdminRitualItem[];
+}
+
+export interface ProductContent {
+  tagline: string | null;
+  purpose: string | null;
+  benefits: string[];
+  howToUse: string[];
+  idealFor: string[];
+  usageFrequency: string | null;
+  precautions: string[];
+}
+
+export interface AdminProduct extends ProductContent {
   id: string;
+  kind: ProductKind;
   productCategoryId: string;
   name: string;
   description: string | null;
@@ -31,6 +65,8 @@ export interface AdminProduct {
   category: { id: string; name: string; isActive: boolean };
   tagAssignments: { id: string; tagId: string; tag: ProductTag }[];
   _count: { viewLogs: number; recommendations: number };
+  ritual: AdminRitual | null;
+  includedInRituals: { id: string; name: string; slug: string }[];
 }
 
 export interface ProductRecommendation {
@@ -46,6 +82,7 @@ export interface AdminProductDetail extends AdminProduct {
 export interface AdminProductCategory {
   id: string;
   name: string;
+  slug: string;
   isActive: boolean;
   _count: { products: number };
 }
@@ -59,6 +96,7 @@ export interface FindAdminProductsParams {
   q?: string;
   productCategoryId?: string;
   status?: ProductStatusFilter;
+  kind?: ProductKind;
 }
 
 export interface CreateProductVariantRequest {
@@ -76,12 +114,25 @@ export interface CreateProductRequest {
   variants?: CreateProductVariantRequest[];
 }
 
-export interface UpdateProductRequest {
+export interface UpdateProductRequest extends Partial<ProductContent> {
   productCategoryId?: string;
   name?: string;
   description?: string | null;
   isActive?: boolean;
   isFeatured?: boolean;
+}
+
+export interface RitualItemRequest {
+  variantId: string;
+  quantity: number;
+}
+
+export interface CreateRitualRequest extends Partial<ProductContent> {
+  name: string;
+  description?: string | null;
+  isFeatured?: boolean;
+  price: number;
+  items: RitualItemRequest[];
 }
 
 export interface CreateProductCategoryRequest {

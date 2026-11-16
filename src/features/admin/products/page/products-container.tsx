@@ -23,6 +23,7 @@ import type {
 } from "@/src/features/admin/types/products.types";
 
 import { CreateProductDialog } from "../components/create-product-dialog";
+import { CreateRitualDialog } from "../components/create-ritual-dialog";
 import {
   ProductDrawer,
   type TreatmentOption,
@@ -45,6 +46,11 @@ import {
   productTotals,
   type ProductFilters,
 } from "../lib/product-catalog";
+import {
+  isComboCategory,
+  isRitual,
+  ritualVariantOptions,
+} from "../lib/ritual-catalog";
 import { ProductsView } from "./products-view";
 
 const TEXT_DEBOUNCE_MS = 350;
@@ -91,6 +97,7 @@ export function ProductsContainer() {
     new Set(),
   );
   const [createVersion, setCreateVersion] = useState<number | null>(null);
+  const [ritualVersion, setRitualVersion] = useState<number | null>(null);
   const [variantTarget, setVariantTarget] =
     useState<VariantDialogTarget | null>(null);
   const [taxonomyOpen, setTaxonomyOpen] = useState(false);
@@ -106,8 +113,9 @@ export function ProductsContainer() {
       ...(filters.productCategoryId
         ? { productCategoryId: filters.productCategoryId }
         : {}),
+      ...(filters.kind !== "ALL" ? { kind: filters.kind } : {}),
     }),
-    [filters.status, filters.productCategoryId, debouncedQ],
+    [filters.status, filters.productCategoryId, filters.kind, debouncedQ],
   );
 
   const productsQuery = useAdminProducts(listParams);
@@ -138,6 +146,15 @@ export function ProductsContainer() {
     [productsQuery.data, filters.quick, sort],
   );
   const totals = useMemo(() => productTotals(allProducts), [allProducts]);
+  const ritualOptions = useMemo(
+    () => ritualVariantOptions(allProducts),
+    [allProducts],
+  );
+  const productCategories = useMemo(
+    () => categories.filter((category) => !isComboCategory(category)),
+    [categories],
+  );
+  const hasComboCategory = categories.some(isComboCategory);
   const treatments = useMemo<TreatmentOption[]>(
     () =>
       (treatmentsQuery.data ?? []).map((treatment) => ({
@@ -164,7 +181,8 @@ export function ProductsContainer() {
     filters.q.trim() !== "" ||
     filters.status !== DEFAULT_PRODUCT_FILTERS.status ||
     filters.productCategoryId !== "" ||
-    filters.quick !== "all";
+    filters.quick !== "all" ||
+    filters.kind !== DEFAULT_PRODUCT_FILTERS.kind;
 
   const setSelected = (productId: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -181,6 +199,19 @@ export function ProductsContainer() {
     products.find((product) => product.id === productId);
 
   const confirmDeleteProduct = (product: AdminProduct) => {
+    if (product.includedInRituals.length > 0) {
+      const names = product.includedInRituals.map((r) => r.name).join(", ");
+      setConfirmation({
+        title: `No se puede borrar ${product.name}`,
+        description: `Está incluido en ${names}. Quítalo de ese Ritual primero, o desactívalo: el Ritual quedará incompleto y se ocultará de la web.`,
+        submitLabel: product.isActive ? "Desactivar" : "Entendido",
+        onConfirm: () =>
+          product.isActive
+            ? actions.setProductActive(product, false)
+            : Promise.resolve(true),
+      });
+      return;
+    }
     const blocked =
       product._count.viewLogs > 0 || product._count.recommendations > 0;
     if (blocked) {
@@ -198,8 +229,10 @@ export function ProductsContainer() {
     }
     setConfirmation({
       title: `¿Eliminar ${product.name}?`,
-      description: `Se borran sus ${product.variants.length} variantes, sus etiquetas y sus fotos. No se puede deshacer.`,
-      submitLabel: "Eliminar producto",
+      description: isRitual(product)
+        ? "Se borra el Ritual con su foto. Los productos que incluye no se tocan. No se puede deshacer."
+        : `Se borran sus ${product.variants.length} variantes, sus etiquetas y sus fotos. No se puede deshacer.`,
+      submitLabel: isRitual(product) ? "Eliminar Ritual" : "Eliminar producto",
       onConfirm: async () => {
         const ok = await actions.removeProduct(product.id);
         if (ok && selectedId === product.id) setSelected(null);
@@ -278,6 +311,8 @@ export function ProductsContainer() {
         onCreateProduct={() =>
           setCreateVersion((version) => (version ?? 0) + 1)
         }
+        onCreateRitual={() => setRitualVersion((version) => (version ?? 0) + 1)}
+        canCreateRitual={hasComboCategory}
         onManageTaxonomy={() => setTaxonomyOpen(true)}
         onRetry={() => void productsQuery.refetch()}
       />
@@ -286,11 +321,13 @@ export function ProductsContainer() {
         <CreateProductDialog
           key={createVersion}
           open
-          categories={categories}
+          categories={productCategories}
           defaultCategoryId={
-            filters.productCategoryId ||
-            (categories.filter((c) => c.isActive).length === 1
-              ? (categories.find((c) => c.isActive)?.id ?? "")
+            (productCategories.some((c) => c.id === filters.productCategoryId)
+              ? filters.productCategoryId
+              : "") ||
+            (productCategories.filter((c) => c.isActive).length === 1
+              ? (productCategories.find((c) => c.isActive)?.id ?? "")
               : "")
           }
           onOpenChange={(open) => !open && setCreateVersion(null)}
@@ -309,6 +346,20 @@ export function ProductsContainer() {
               setExpandedIds((current) => new Set(current).add(created.id));
               setSelected(created.id);
             }
+            return created;
+          }}
+        />
+      )}
+
+      {ritualVersion !== null && (
+        <CreateRitualDialog
+          key={ritualVersion}
+          open
+          options={ritualOptions}
+          onOpenChange={(open) => !open && setRitualVersion(null)}
+          onCreate={async (data) => {
+            const created = await actions.createRitual(data);
+            if (created) setSelected(created.id);
             return created;
           }}
         />
@@ -353,6 +404,9 @@ export function ProductsContainer() {
           void actions.removeRecommendation(recommendationId)
         }
         onDelete={confirmDeleteProduct}
+        ritualOptions={ritualOptions}
+        onSaveRitualItems={actions.saveRitualItems}
+        onOpenProduct={setSelected}
       />
 
       <TaxonomySheet

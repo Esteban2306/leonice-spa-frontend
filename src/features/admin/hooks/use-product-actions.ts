@@ -8,6 +8,8 @@ import {
   useCreateProductRecommendation,
   useCreateProductTag,
   useCreateProductVariant,
+  useCreateRitual,
+  useReplaceRitualItems,
   useRemoveProduct,
   useRemoveProductCategory,
   useRemoveProductRecommendation,
@@ -28,7 +30,9 @@ import type {
   AdminProductCategory,
   CreateProductRequest,
   CreateProductVariantRequest,
+  CreateRitualRequest,
   ProductTag,
+  RitualItemRequest,
   UpdateProductCategoryRequest,
   UpdateProductRequest,
   UpdateProductTagRequest,
@@ -38,6 +42,11 @@ import { prepareImageForUpload } from "../products/lib/prepare-image";
 
 export interface ProductActions {
   createProduct: (data: CreateProductRequest) => Promise<AdminProduct | null>;
+  createRitual: (data: CreateRitualRequest) => Promise<AdminProduct | null>;
+  saveRitualItems: (
+    ritualId: string,
+    items: RitualItemRequest[],
+  ) => Promise<boolean>;
   updateProduct: (id: string, data: UpdateProductRequest) => Promise<boolean>;
   setProductActive: (
     product: AdminProduct,
@@ -78,6 +87,8 @@ export function useProductActions(): ProductActions {
   const singleFlight = useSingleFlight();
 
   const createProduct = useCreateProduct();
+  const createRitual = useCreateRitual();
+  const replaceRitualItems = useReplaceRitualItems();
   const updateProduct = useUpdateProduct();
   const toggleProduct = useToggleProductActive();
   const removeProduct = useRemoveProduct();
@@ -97,6 +108,8 @@ export function useProductActions(): ProductActions {
   const removeRecommendation = useRemoveProductRecommendation();
 
   const { mutateAsync: createProductAsync } = createProduct;
+  const { mutateAsync: createRitualAsync } = createRitual;
+  const { mutateAsync: replaceRitualItemsAsync } = replaceRitualItems;
   const { mutateAsync: updateProductAsync } = updateProduct;
   const { mutateAsync: toggleProductAsync } = toggleProduct;
   const { mutateAsync: removeProductAsync } = removeProduct;
@@ -123,6 +136,20 @@ export function useProductActions(): ProductActions {
             createProductAsync(data),
           );
           return outcome.ok ? outcome.value : null;
+        }),
+      createRitual: (data: CreateRitualRequest) =>
+        singleFlight("ritual:create", async () => {
+          const outcome = await runAdminAction("createRitual", () =>
+            createRitualAsync(data),
+          );
+          return outcome.ok ? outcome.value : null;
+        }),
+      saveRitualItems: (ritualId: string, items: RitualItemRequest[]) =>
+        singleFlight(`ritual:items:${ritualId}`, async () => {
+          const outcome = await runAdminAction("saveRitualItems", () =>
+            replaceRitualItemsAsync({ ritualId, items }),
+          );
+          return outcome.ok;
         }),
       updateProduct: (id: string, data: UpdateProductRequest) =>
         singleFlight(`product:update:${id}`, async () => {
@@ -254,6 +281,8 @@ export function useProductActions(): ProductActions {
     [
       singleFlight,
       createProductAsync,
+      createRitualAsync,
+      replaceRitualItemsAsync,
       updateProductAsync,
       toggleProductAsync,
       removeProductAsync,
@@ -282,6 +311,8 @@ export function useProductActions(): ProductActions {
 
   const isSaving = [
     createProduct,
+    createRitual,
+    replaceRitualItems,
     updateProduct,
     toggleProduct,
     removeProduct,
