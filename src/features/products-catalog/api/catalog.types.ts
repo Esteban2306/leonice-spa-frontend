@@ -8,10 +8,36 @@ export interface CatalogVariant {
   imageUrl: string | null;
 }
 
+export interface CatalogRitualSummary {
+  separatePricePesos: number;
+  savingsPesos: number;
+  savingsPercent: number;
+  itemCount: number;
+}
+
+export interface CatalogRitualItem {
+  productSlug: string;
+  productName: string;
+  brand: string;
+  presentation: string;
+  quantity: number;
+  unitPricePesos: number;
+  imageUrl: string | null;
+}
+
+export interface CatalogRitualReference {
+  slug: string;
+  name: string;
+  pricePesos: number | null;
+  savingsPercent: number;
+}
+
 export interface CatalogProductCard {
   id: string;
   slug: string;
   name: string;
+  kind?: "single" | "ritual";
+  ritual?: CatalogRitualSummary | null;
   tagline: string | null;
   purpose: string | null;
   category: { slug: string; name: string };
@@ -39,6 +65,8 @@ export interface CatalogProductDetail extends CatalogProductCard {
     categoryName: string;
   }[];
   related: CatalogProductCard[];
+  ritualItems?: CatalogRitualItem[];
+  includedIn?: CatalogRitualReference[];
 }
 
 export interface CatalogFacetOption {

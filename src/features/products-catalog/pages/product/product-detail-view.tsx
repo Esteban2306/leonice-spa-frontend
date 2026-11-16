@@ -11,6 +11,9 @@ import { ProductGrid } from "@/src/features/products-catalog/components/product-
 import { ProductMedia } from "@/src/features/products-catalog/components/product-media";
 import { UsageSteps } from "@/src/features/products-catalog/components/usage-steps";
 import { VariantPicker } from "@/src/features/products-catalog/components/variant-picker";
+import { RitualPrice } from "@/src/features/products-catalog/components/ritual-price";
+import { AlsoInRitual, RitualIncludes } from "@/src/features/products-catalog/components/ritual-sections";
+import { ritualOf, ritualOrderMessage } from "@/src/features/products-catalog/lib/ritual-format";
 import {
   PRODUCTS_ROOT,
   productOrderMessage,
@@ -18,6 +21,8 @@ import {
 
 export function ProductDetailView({ product }: { product: CatalogProductDetail }) {
   const categoryHref = `${PRODUCTS_ROOT}?categoria=${product.category.slug}`;
+  const ritual = ritualOf(product);
+  const orderMessage = ritual ? ritualOrderMessage(product.name) : productOrderMessage(product.name);
 
   return (
     <>
@@ -64,11 +69,19 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
                   ))}
                 </ul>
               )}
-              <VariantPicker productName={product.name} variants={product.variants} />
+              {ritual ? (
+                <RitualPrice name={product.name} pricePesos={product.priceMinPesos} ritual={ritual} />
+              ) : (
+                <VariantPicker productName={product.name} variants={product.variants} />
+              )}
             </div>
           </div>
         </div>
       </header>
+
+      {ritual && (
+        <RitualIncludes items={product.ritualItems ?? []} pricePesos={product.priceMinPesos} ritual={ritual} />
+      )}
 
       {(product.purpose || product.benefits.length > 0) && (
         <section aria-labelledby="para-que-sirve" className="px-5 pb-24 sm:px-8 sm:pb-32">
@@ -189,6 +202,8 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
         </section>
       )}
 
+      {!ritual && <AlsoInRitual rituals={product.includedIn ?? []} />}
+
       {product.related.length > 0 && (
         <section aria-labelledby="relacionados" className="px-5 pb-24 sm:px-8 sm:pb-32">
           <div className="mx-auto flex max-w-[1440px] flex-col gap-8">
@@ -205,14 +220,14 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
         lead="En tu diagnóstico capilar revisamos tu cabello y te decimos qué productos usar y en qué orden."
         message="Hola, quiero agendar un diagnóstico capilar y que me recomienden productos."
         actionLabel="Agenda tu diagnóstico"
-        secondary={{ label: "Pedir este producto", message: productOrderMessage(product.name) }}
+        secondary={{ label: ritual ? "Pedir este Ritual" : "Pedir este producto", message: orderMessage }}
       />
 
       <StickyBookingBar
         watchId="producto-portada"
         title={product.name}
         detail={product.priceMinPesos !== null ? `Desde ${formatPesos(product.priceMinPesos)}` : null}
-        message={productOrderMessage(product.name)}
+        message={orderMessage}
         actionLabel="Pedir"
       />
     </>
