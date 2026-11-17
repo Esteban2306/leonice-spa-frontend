@@ -17,7 +17,18 @@ import type {
   ProductStatusFilter,
 } from "@/src/features/admin/types/products.types";
 
-import type { ProductFilters, ProductTotals } from "../lib/product-catalog";
+import type {
+  ProductFilters,
+  ProductKindFilter,
+  ProductTotals,
+} from "../lib/product-catalog";
+
+const KIND_OPTIONS: ReadonlyArray<{ value: ProductKindFilter; label: string }> =
+  [
+    { value: "ALL", label: "Todo" },
+    { value: "SINGLE", label: "Productos" },
+    { value: "COMBO", label: "Rituales" },
+  ];
 
 const STATUS_OPTIONS: ReadonlyArray<{
   value: ProductStatusFilter;
@@ -105,7 +116,7 @@ export function ProductsToolbar({
       aria-label="Buscar y filtrar productos"
       className="flex flex-col gap-3 rounded-[2rem] border border-tertiary/25 bg-[#FCF6EB] p-3 sm:p-4"
     >
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center">
         <div className="relative flex-1">
           <Search
             aria-hidden="true"
@@ -131,7 +142,7 @@ export function ProductsToolbar({
           )}
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
           <label className="sr-only" htmlFor="products-category">
             Categoría
           </label>
@@ -157,6 +168,14 @@ export function ProductsToolbar({
               className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-secondary/70"
             />
           </div>
+          <div className="w-full sm:w-72">
+            <ChoicePills<ProductKindFilter>
+              ariaLabel="Tipo de producto"
+              value={filters.kind}
+              options={KIND_OPTIONS}
+              onChange={(kind) => onChange({ kind })}
+            />
+          </div>
           <div className="w-full sm:w-80">
             <ChoicePills<ProductStatusFilter>
               ariaLabel="Estado de los productos"
@@ -173,9 +192,13 @@ export function ProductsToolbar({
           <span aria-live="polite">
             {resultCount === null
               ? "Buscando…"
-              : resultCount === 1
-                ? "1 producto"
-                : `${resultCount} productos`}
+              : filters.kind === "COMBO"
+                ? resultCount === 1
+                  ? "1 Ritual"
+                  : `${resultCount} Rituales`
+                : resultCount === 1
+                  ? "1 producto"
+                  : `${resultCount} productos`}
             {filters.quick === "missingPhoto" && " a los que les falta foto"}
             {filters.quick === "noVariants" && " sin variantes"}
           </span>

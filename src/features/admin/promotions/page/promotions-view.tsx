@@ -19,6 +19,7 @@ interface PromotionsViewProps {
   onCreate: () => void;
   onEdit: (promotion: Promotion) => void;
   onDeactivate: (promotion: Promotion) => void;
+  onDelete: (promotion: Promotion) => void;
   onRetry: () => void;
 }
 
@@ -122,6 +123,7 @@ export function PromotionsView(props: PromotionsViewProps) {
           onCreate={props.onCreate}
           onEdit={props.onEdit}
           onDeactivate={props.onDeactivate}
+          onDelete={props.onDelete}
         />
       </div>
     </main>

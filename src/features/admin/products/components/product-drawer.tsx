@@ -22,8 +22,10 @@ import type {
   AdminProductCategory,
   AdminProductDetail,
   AdminProductTag,
+  RitualItemRequest,
   UpdateProductRequest,
 } from "@/src/features/admin/types/products.types";
+import { formatCop } from "@/src/lib/money/cop";
 
 import {
   formatPriceRangePesos,
@@ -33,6 +35,13 @@ import {
   validateProductDraft,
   type ProductDraftErrors,
 } from "../lib/product-catalog";
+import {
+  isComboCategory,
+  isRitual,
+  type RitualVariantOption,
+} from "../lib/ritual-catalog";
+import { ProductContentEditor } from "./product-content-editor";
+import { IncludedInRituals, RitualItemsSection } from "./ritual-sections";
 import { SelectControl } from "./select-control";
 import { VariantRow, type VariantHandlers } from "./variant-row";
 
@@ -64,6 +73,12 @@ interface ProductDrawerProps {
   ) => Promise<boolean>;
   onRemoveRecommendation: (recommendationId: string) => void;
   onDelete: (product: AdminProduct) => void;
+  ritualOptions: readonly RitualVariantOption[];
+  onSaveRitualItems: (
+    ritualId: string,
+    items: RitualItemRequest[],
+  ) => Promise<boolean>;
+  onOpenProduct: (productId: string) => void;
 }
 
 function Section({
@@ -330,7 +345,14 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
     draft.description !== original.description;
   const price = formatPriceRangePesos(priceRangePesos(product));
   const coverage = photoCoverage(product);
+  const ritual = isRitual(product) ? product.ritual : null;
+  const inRituals = product.includedInRituals.length > 0;
   const withHistory = hasHistory(product);
+  const blocked = withHistory || inRituals;
+  const categoryOptions = categories.filter(
+    (category) =>
+      !isComboCategory(category) || category.id === product.productCategoryId,
+  );
 
   const save = async () => {
     const result = validateProductDraft(draft);
@@ -348,8 +370,11 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
             {product.name}
           </SheetTitle>
           <SheetDescription className="mt-1 font-sans text-sm text-primary/70">
-            {product.category.name} · {product.variants.length}{" "}
-            {product.variants.length === 1 ? "variante" : "variantes"}
+            {ritual
+              ? `Ritual · ${ritual.items.length} productos${ritual.isComplete ? "" : " · incompleto"}`
+              : `${product.category.name} · ${product.variants.length} ${
+                  product.variants.length === 1 ? "variante" : "variantes"
+                }`}
           </SheetDescription>
         </div>
         <dl className="grid grid-cols-2 gap-3">
@@ -361,14 +386,25 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
               {price ?? "Sin variantes"}
             </dd>
           </div>
-          <div className="rounded-2xl border border-primary/15 bg-primary/[0.06] p-3">
-            <dt className="font-sans text-xs text-primary/70">Fotos</dt>
-            <dd className="mt-1 font-sans text-xl leading-tight font-light text-quaternary tabular-nums">
-              {coverage.total === 0
-                ? "—"
-                : `${coverage.withPhoto} de ${coverage.total}`}
-            </dd>
-          </div>
+          {ritual ? (
+            <div className="rounded-2xl border border-primary/15 bg-primary/[0.06] p-3">
+              <dt className="font-sans text-xs text-primary/70">
+                Ahorro frente a {formatCop(ritual.separatePricePesos)}
+              </dt>
+              <dd className="mt-1 font-sans text-xl leading-tight font-light text-quaternary tabular-nums">
+                {formatCop(ritual.savingsPesos)} ({ritual.savingsPercent} %)
+              </dd>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-primary/15 bg-primary/[0.06] p-3">
+              <dt className="font-sans text-xs text-primary/70">Fotos</dt>
+              <dd className="mt-1 font-sans text-xl leading-tight font-light text-quaternary tabular-nums">
+                {coverage.total === 0
+                  ? "—"
+                  : `${coverage.withPhoto} de ${coverage.total}`}
+              </dd>
+            </div>
+          )}
         </dl>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="inline-flex items-center gap-1.5 font-sans text-xs text-primary/70 tabular-nums">
@@ -415,7 +451,10 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
       </header>
 
       <div className="flex-1 overflow-y-auto">
-        <Section id="product-details" title="Datos del producto">
+        <Section
+          id="product-details"
+          title={ritual ? "Datos del Ritual" : "Datos del producto"}
+        >
           <Field label="Nombre" htmlFor={`product-${product.id}-name`}>
             <input
               id={`product-${product.id}-name`}
@@ -433,15 +472,20 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
               </p>
             )}
           </Field>
-          <Field label="Categoría" htmlFor={`product-${product.id}-category`}>
+          <Field
+            label="Categoría"
+            htmlFor={`product-${product.id}-category`}
+            hint={ritual ? "Los Rituales siempre van en Combos." : undefined}
+          >
             <SelectControl
               id={`product-${product.id}-category`}
               value={draft.productCategoryId}
+              disabled={Boolean(ritual)}
               onChange={(event) =>
                 setDraft({ ...draft, productCategoryId: event.target.value })
               }
             >
-              {categories.map((category) => (
+              {categoryOptions.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                   {category.isActive ? "" : " (inactiva)"}
@@ -466,18 +510,43 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
           </Field>
         </Section>
 
+        {ritual && (
+          <Section id="ritual-items" title="Qué incluye">
+            <RitualItemsSection
+              key={ritual.items
+                .map((item) => `${item.variantId}:${item.quantity}`)
+                .join(",")}
+              product={product}
+              options={props.ritualOptions}
+              isSaving={props.isSaving}
+              onSave={(items) => props.onSaveRitualItems(product.id, items)}
+            />
+          </Section>
+        )}
+
+        {inRituals && (
+          <Section id="product-in-rituals" title="Incluido en Rituales">
+            <IncludedInRituals
+              product={product}
+              onOpenProduct={props.onOpenProduct}
+            />
+          </Section>
+        )}
+
         <Section
           id="product-variants"
-          title="Variantes y fotos"
+          title={ritual ? "Precio y foto" : "Variantes y fotos"}
           aside={
-            <button
-              type="button"
-              onClick={() => props.onAddVariant(product)}
-              className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full border border-tertiary/50 px-3.5 font-sans text-sm text-secondary transition-colors hover:bg-quaternary/30"
-            >
-              <Plus className="size-4" strokeWidth={2} />
-              Agregar
-            </button>
+            ritual ? undefined : (
+              <button
+                type="button"
+                onClick={() => props.onAddVariant(product)}
+                className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full border border-tertiary/50 px-3.5 font-sans text-sm text-secondary transition-colors hover:bg-quaternary/30"
+              >
+                <Plus className="size-4" strokeWidth={2} />
+                Agregar
+              </button>
+            )
           }
         >
           {product.variants.length === 0 ? (
@@ -492,14 +561,24 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
                   variant={variant}
                   isUploading={props.uploadingVariantIds.has(variant.id)}
                   handlers={props.variantHandlers}
+                  locked={Boolean(ritual)}
                 />
               ))}
             </ul>
           )}
           <p className="font-sans text-xs text-secondary/70">
-            Toca o arrastra una imagen sobre la casilla para subir la foto (JPG,
-            PNG o WebP, hasta 5 MB). La primera foto activa es la portada.
+            {ritual
+              ? "Toca el precio para cambiarlo. Sube una foto del Ritual completo, como los productos juntos sobre el tocador (JPG, PNG o WebP, hasta 5 MB)."
+              : "Toca o arrastra una imagen sobre la casilla para subir la foto (JPG, PNG o WebP, hasta 5 MB). La primera foto activa es la portada."}
           </p>
+        </Section>
+
+        <Section id="product-content" title="Contenido en la web">
+          <ProductContentEditor
+            product={product}
+            isSaving={props.isSaving}
+            onSave={(content) => props.onSave(product.id, content)}
+          />
         </Section>
 
         <Section id="product-tags" title="Etiquetas">
@@ -531,34 +610,40 @@ function DrawerBody(props: ProductDrawerProps & { product: AdminProduct }) {
             id="product-danger"
             className="font-heading text-xl text-secondary"
           >
-            Eliminar producto
+            {ritual ? "Eliminar Ritual" : "Eliminar producto"}
           </h3>
           <p className="font-sans text-sm text-secondary/65">
-            {withHistory
-              ? "Este producto ya tiene historial (vistas de clientas o recomendaciones), así que no se puede borrar. Desactívalo para ocultarlo de la web sin perder ese historial."
-              : "Se borra el producto con sus variantes, etiquetas y fotos. No se puede deshacer."}
+            {inRituals
+              ? `Está incluido en ${product.includedInRituals.map((r) => r.name).join(", ")}, así que no se puede borrar. Quítalo de ese Ritual primero o desactívalo.`
+              : withHistory
+                ? "Este producto ya tiene historial (vistas de clientas o recomendaciones), así que no se puede borrar. Desactívalo para ocultarlo de la web sin perder ese historial."
+                : ritual
+                  ? "Se borra el Ritual con su foto. Los productos que incluye no se tocan. No se puede deshacer."
+                  : "Se borra el producto con sus variantes, etiquetas y fotos. No se puede deshacer."}
           </p>
           <button
             type="button"
             onClick={() =>
-              withHistory
+              blocked
                 ? props.onToggleActive(product, false)
                 : props.onDelete(product)
             }
-            disabled={withHistory && !product.isActive}
+            disabled={blocked && !product.isActive}
             className={cn(
               "inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded-full border px-4 font-sans text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-              withHistory
+              blocked
                 ? "border-secondary/20 text-secondary hover:bg-secondary/5"
                 : "border-red-300 text-red-700 hover:bg-red-50",
             )}
           >
             <Trash2 className="size-4" />
-            {withHistory
+            {blocked
               ? product.isActive
                 ? "Desactivar en su lugar"
                 : "Ya está desactivado"
-              : "Eliminar producto"}
+              : ritual
+                ? "Eliminar Ritual"
+                : "Eliminar producto"}
           </button>
         </section>
 

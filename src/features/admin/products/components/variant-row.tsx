@@ -24,6 +24,7 @@ interface VariantRowProps {
   variant: ProductVariant;
   isUploading: boolean;
   handlers: VariantHandlers;
+  locked?: boolean;
 }
 
 export function variantLabel(variant: ProductVariant): string {
@@ -34,6 +35,7 @@ export function VariantRow({
   variant,
   isUploading,
   handlers,
+  locked = false,
 }: VariantRowProps) {
   const label = variantLabel(variant);
 
@@ -72,7 +74,7 @@ export function VariantRow({
           label={label}
           onCommit={(pesos) => handlers.onChangePrice(variant, pesos)}
         />
-        <div className="sm:hidden">
+        <div className={cn("sm:hidden", locked && "hidden")}>
           <CatalogSwitch
             checked={variant.isActive}
             label={variant.isActive ? `Ocultar ${label}` : `Mostrar ${label}`}
@@ -81,7 +83,12 @@ export function VariantRow({
         </div>
       </div>
 
-      <div className="col-start-3 row-start-1 flex items-center gap-1.5 sm:col-start-4">
+      <div
+        className={cn(
+          "col-start-3 row-start-1 flex items-center gap-1.5 sm:col-start-4",
+          locked && "hidden",
+        )}
+      >
         <div className="hidden sm:block">
           <CatalogSwitch
             checked={variant.isActive}

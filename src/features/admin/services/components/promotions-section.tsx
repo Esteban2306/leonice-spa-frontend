@@ -1,4 +1,4 @@
-import { BadgePercent, Pencil, Plus, Power } from "lucide-react";
+import { BadgePercent, Pencil, Plus, Power, Trash2 } from "lucide-react";
 
 import type { Promotion } from "@/src/features/admin/types/promotions.types";
 
@@ -24,6 +24,7 @@ interface PromotionsSectionProps {
   onCreate: () => void;
   onEdit: (promotion: Promotion) => void;
   onDeactivate: (promotion: Promotion) => void;
+  onDelete?: (promotion: Promotion) => void;
   emptyLabel?: string;
   showCreate?: boolean;
 }
@@ -38,6 +39,7 @@ export function PromotionsSection({
   onCreate,
   onEdit,
   onDeactivate,
+  onDelete,
   emptyLabel = "Sin promociones para este servicio ni para su categoría.",
   showCreate = true,
 }: PromotionsSectionProps) {
@@ -99,6 +101,16 @@ export function PromotionsSection({
                     className={`${ICON_BUTTON} hover:bg-red-50 hover:text-red-700`}
                   >
                     <Power className="size-4" strokeWidth={1.7} />
+                  </button>
+                )}
+                {onDelete && (
+                  <button
+                    type="button"
+                    aria-label={`Eliminar ${promotion.name}`}
+                    onClick={() => onDelete(promotion)}
+                    className={`${ICON_BUTTON} hover:bg-red-50 hover:text-red-700`}
+                  >
+                    <Trash2 className="size-4" strokeWidth={1.7} />
                   </button>
                 )}
               </li>

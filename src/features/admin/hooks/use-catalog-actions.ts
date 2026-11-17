@@ -9,6 +9,7 @@ import { useCreateCategory, useUpdateCategory } from "./use-categories";
 import {
   useCreatePromotion,
   useDeactivatePromotion,
+  useRemovePromotion,
   useUpdatePromotion,
 } from "./use-promotions";
 import { useSingleFlight } from "./use-single-flight";
@@ -73,6 +74,7 @@ export interface CatalogActions {
     data: UpdatePromotionRequest,
   ) => Promise<boolean>;
   deactivatePromotion: (id: string) => Promise<boolean>;
+  removePromotion: (id: string) => Promise<boolean>;
   isSaving: boolean;
 }
 
@@ -92,6 +94,7 @@ export function useCatalogActions(): CatalogActions {
   const createPromotion = useCreatePromotion();
   const updatePromotion = useUpdatePromotion();
   const deactivatePromotion = useDeactivatePromotion();
+  const removePromotion = useRemovePromotion();
 
   const { mutateAsync: createCategoryAsync } = createCategory;
   const { mutateAsync: updateCategoryAsync } = updateCategory;
@@ -106,6 +109,7 @@ export function useCatalogActions(): CatalogActions {
   const { mutateAsync: createPromotionAsync } = createPromotion;
   const { mutateAsync: updatePromotionAsync } = updatePromotion;
   const { mutateAsync: deactivatePromotionAsync } = deactivatePromotion;
+  const { mutateAsync: removePromotionAsync } = removePromotion;
 
   const actions = useMemo(
     () => ({
@@ -230,6 +234,13 @@ export function useCatalogActions(): CatalogActions {
           );
           return outcome.ok;
         }),
+      removePromotion: (id: string) =>
+        singleFlight(`promotion:update:${id}`, async () => {
+          const outcome = await runAdminAction("removePromotion", () =>
+            removePromotionAsync(id),
+          );
+          return outcome.ok;
+        }),
     }),
     [
       singleFlight,
@@ -246,6 +257,7 @@ export function useCatalogActions(): CatalogActions {
       createPromotionAsync,
       updatePromotionAsync,
       deactivatePromotionAsync,
+      removePromotionAsync,
     ],
   );
 

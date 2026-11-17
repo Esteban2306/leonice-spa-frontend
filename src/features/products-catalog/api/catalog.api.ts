@@ -36,7 +36,15 @@ function safeResult(result: CatalogResult): CatalogResult {
 }
 
 function safeDetail(detail: CatalogProductDetail): CatalogProductDetail {
-  return { ...safeCard(detail), related: detail.related.map(safeCard) };
+  return {
+    ...safeCard(detail),
+    related: detail.related.map(safeCard),
+    ritualItems: (detail.ritualItems ?? []).map((item) => ({
+      ...item,
+      imageUrl: allowedImageUrl(item.imageUrl),
+    })),
+    includedIn: detail.includedIn ?? [],
+  };
 }
 
 function unwrap<T>(payload: T | { data: T }): T {

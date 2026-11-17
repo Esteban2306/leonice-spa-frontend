@@ -319,6 +319,18 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Promoción desactivada.",
     error: "No se pudo desactivar la promoción",
   },
+  removePromotion: {
+    success: "Promoción eliminada.",
+    error: "No se pudo eliminar la promoción",
+  },
+  createRitual: {
+    success: "Ritual creado. Súbele una foto desde su detalle.",
+    error: "No se pudo crear el Ritual",
+  },
+  saveRitualItems: {
+    success: "Productos del Ritual guardados.",
+    error: "No se pudieron guardar los productos del Ritual",
+  },
   createProduct: {
     success: "Producto creado.",
     error: "No se pudo crear el producto",

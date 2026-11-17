@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Eye, ImageOff, Sparkle } from "lucide-react";
+import { ArrowUpRight, Eye, ImageOff, Layers, Sparkle } from "lucide-react";
 
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
 import type { CatalogProductCard } from "@/src/features/products-catalog/api/catalog.types";
 import { priceRangeLabel, productHref } from "@/src/features/products-catalog/lib/catalog-format";
+import { formatPesos } from "@/src/features/landing/lib/format";
+import { hasSavings, itemCountLabel, ritualOf } from "@/src/features/products-catalog/lib/ritual-format";
 
 interface ProductCardProps {
   product: CatalogProductCard;
@@ -17,7 +19,10 @@ interface ProductCardProps {
 export function ProductCard({ product, priority = false, onQuickView }: ProductCardProps) {
   const glowRef = useSurfaceGlow<HTMLDivElement>();
   const price = priceRangeLabel(product.priceMinPesos, product.priceMaxPesos);
-  const presentations = product.variants.map((variant) => variant.presentation).join(" · ");
+  const ritual = ritualOf(product);
+  const presentations = ritual
+    ? itemCountLabel(ritual.itemCount)
+    : product.variants.map((variant) => variant.presentation).join(" · ");
 
   return (
     <article className="product-card group/card bezel lit-hover h-full">
@@ -53,7 +58,19 @@ export function ProductCard({ product, priority = false, onQuickView }: ProductC
           )}
           <span aria-hidden="true" className="product-card-sheen" />
 
-          {product.tags.length > 0 && (
+          {ritual ? (
+            <p className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#062112] px-2.5 py-1 font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#E0BC87]">
+                <Layers className="size-3" aria-hidden="true" />
+                Ritual
+              </span>
+              {hasSavings(ritual) && (
+                <span className="rounded-full bg-[#E0BC87] px-2.5 py-1 font-sans text-[11px] font-bold tabular-nums text-[#062112]">
+                  Ahorra {ritual.savingsPercent} %
+                </span>
+              )}
+            </p>
+          ) : product.tags.length > 0 && (
             <ul className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1.5" aria-label="Necesidades">
               {product.tags.slice(0, 2).map((tag) => (
                 <li
@@ -107,6 +124,9 @@ export function ProductCard({ product, priority = false, onQuickView }: ProductC
 
           <div className="mt-auto flex items-end justify-between gap-3 border-t border-[#BF9250]/25 pt-4">
             <div className="flex min-w-0 flex-col">
+              {hasSavings(ritual) && (
+                <s className="font-sans text-xs tabular-nums text-[#062112]/60">{formatPesos(ritual.separatePricePesos)}</s>
+              )}
               {price && <span className="font-sans text-base font-bold tabular-nums text-[#062112]">{price}</span>}
               {presentations && (
                 <span className="truncate font-sans text-xs tabular-nums text-[#062112]/70">{presentations}</span>

@@ -72,7 +72,7 @@ export function AssessmentCallout({
           setOpen(true);
         }}
         title={detail}
-        className="inline-flex h-9 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-secondary px-4 font-sans text-xs font-medium text-primary transition-colors hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
+        className="inline-flex h-9 max-w-full shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-secondary px-4 font-sans text-xs font-medium text-primary transition-colors hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
       >
         <ClipboardPen className="size-3.5" strokeWidth={1.8} />
         Registrar valoración

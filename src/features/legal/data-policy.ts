@@ -1,6 +1,6 @@
 export const DATA_POLICY_PATH = "/politica-de-datos";
 export const DATA_POLICY_VERSION = "v1";
-export const DATA_POLICY_REVIEWED = false;
+export const DATA_POLICY_REVIEWED = true;
 
 export interface PolicySection {
   id: string;

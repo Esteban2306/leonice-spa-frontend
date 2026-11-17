@@ -9,6 +9,8 @@ import type {
   CreateProductTagRequest,
   CreateProductVariantRequest,
   CreateRecommendationRequest,
+  CreateRitualRequest,
+  RitualItemRequest,
   FindAdminProductsParams,
   ProductRecommendation,
   ProductTag,
@@ -65,6 +67,24 @@ export const productsApi = {
     return httpClient.request<null>(`/products/${productId}/tags`, "PATCH", {
       tagIds,
     });
+  },
+
+  rituals: {
+    create(data: CreateRitualRequest) {
+      return httpClient.request<AdminProductDetail>(
+        "/products/rituals",
+        "POST",
+        data,
+      );
+    },
+
+    replaceItems(ritualId: string, items: RitualItemRequest[]) {
+      return httpClient.request<AdminProductDetail>(
+        `/products/rituals/${ritualId}/items`,
+        "PUT",
+        { items },
+      );
+    },
   },
 
   variants: {

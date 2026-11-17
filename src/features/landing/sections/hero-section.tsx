@@ -202,6 +202,9 @@ export function HeroSection({ videoSrc = null }: { videoSrc?: string | null }) {
         className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-5 sm:px-8 desk:grid-cols-[minmax(0,1fr)_auto_minmax(0,25rem)] desk:gap-16"
       >
         <div className="flex max-w-[44rem] flex-col gap-8">
+          <p className="font-sans text-sm font-bold uppercase tracking-[0.22em] text-[#062112]/80">
+            {heroContent.eyebrow}
+          </p>
           <h1
             id="hero-title"
             data-hero-title

@@ -14,6 +14,9 @@ import { ProductMedia } from "@/src/features/products-catalog/components/product
 import { UsageSteps } from "@/src/features/products-catalog/components/usage-steps";
 import { VariantPicker } from "@/src/features/products-catalog/components/variant-picker";
 import { productHref } from "@/src/features/products-catalog/lib/catalog-format";
+import { RitualPrice } from "@/src/features/products-catalog/components/ritual-price";
+import { formatPesos } from "@/src/features/landing/lib/format";
+import { ritualOf } from "@/src/features/products-catalog/lib/ritual-format";
 
 interface QuickViewSheetProps {
   product: CatalogProductCard | null;
@@ -29,6 +32,7 @@ function Item({ index, children }: { index: number; children: ReactNode }) {
 }
 
 export function QuickViewSheet({ product, onClose }: QuickViewSheetProps) {
+  const ritual = product ? ritualOf(product) : null;
   const [loaded, setLoaded] = useState<{ slug: string; detail: CatalogProductDetail | null; failed: boolean } | null>(null);
   const current = product && loaded?.slug === product.slug ? loaded : null;
   const detail = current?.detail ?? null;
@@ -96,8 +100,42 @@ export function QuickViewSheet({ product, onClose }: QuickViewSheetProps) {
               )}
 
               <Item index={3}>
-                <VariantPicker productName={product.name} variants={product.variants} size="md" />
+                {ritual ? (
+                  <RitualPrice name={product.name} pricePesos={product.priceMinPesos} ritual={ritual} size="md" />
+                ) : (
+                  <VariantPicker productName={product.name} variants={product.variants} size="md" />
+                )}
               </Item>
+
+              {ritual && detail && (detail.ritualItems ?? []).length > 0 && (
+                <Item index={4}>
+                  <section aria-label="Qué incluye" className="flex flex-col gap-3">
+                    <h3 className="font-heading text-2xl text-[#062112]">Qué incluye</h3>
+                    <ul className="flex flex-col gap-2">
+                      {(detail.ritualItems ?? []).map((item) => (
+                        <li key={`${item.productSlug}-${item.presentation}`}>
+                          <Link
+                            href={productHref(item.productSlug)}
+                            onClick={onClose}
+                            className="flex items-center justify-between gap-3 rounded-2xl bg-[#F2EBDB] px-4 py-2.5 transition-colors hover:bg-[#E0BC87]/50"
+                          >
+                            <span className="min-w-0">
+                              <span className="block truncate font-sans text-sm font-bold text-[#062112]">
+                                {item.quantity > 1 ? `${item.quantity} × ` : ""}
+                                {item.productName}
+                              </span>
+                              <span className="block font-sans text-xs text-[#062112]/70">{item.presentation}</span>
+                            </span>
+                            <span className="shrink-0 font-sans text-sm tabular-nums text-[#062112]/80">
+                              {formatPesos(item.unitPricePesos)}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                </Item>
+              )}
 
               <Item index={4}>
                 <section aria-label="Cómo usarlo" className="flex flex-col gap-3">

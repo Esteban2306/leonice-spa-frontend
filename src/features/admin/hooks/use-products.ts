@@ -15,6 +15,8 @@ import type {
   CreateProductTagRequest,
   CreateProductVariantRequest,
   CreateRecommendationRequest,
+  CreateRitualRequest,
+  RitualItemRequest,
   FindAdminProductsParams,
   UpdateProductCategoryRequest,
   UpdateProductRequest,
@@ -113,6 +115,20 @@ export function useAssignProductTags() {
     "assign-tags",
     ({ productId, tagIds }: { productId: string; tagIds: string[] }) =>
       productsApi.assignTags(productId, tagIds),
+  );
+}
+
+export function useCreateRitual() {
+  return useProductsMutation("rituals-create", (data: CreateRitualRequest) =>
+    productsApi.rituals.create(data),
+  );
+}
+
+export function useReplaceRitualItems() {
+  return useProductsMutation(
+    "rituals-items",
+    ({ ritualId, items }: { ritualId: string; items: RitualItemRequest[] }) =>
+      productsApi.rituals.replaceItems(ritualId, items),
   );
 }
 

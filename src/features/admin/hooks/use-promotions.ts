@@ -70,6 +70,16 @@ export function useUpdatePromotion() {
   });
 }
 
+export function useRemovePromotion() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "promotions", "remove"],
+    mutationFn: (promotionId: string) => promotionsApi.remove(promotionId),
+    onSuccess: () => invalidateCatalogDomain(queryClient),
+  });
+}
+
 export function useDeactivatePromotion() {
   const queryClient = useQueryClient();
 

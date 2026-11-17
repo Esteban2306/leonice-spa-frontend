@@ -23,7 +23,7 @@ Spa capilar y de bienestar en Bogotá con perfil capilar por clienta, precios va
 ## Operating Context
 
 - Zona horaria America/Bogota; montos en miles de COP en la API (35 = $35.000).
-- Categorías actuales: Spa Capilar, Spa Coreano, Uñas (y una categoría de pruebas QA).
+- Categorías actuales: Spa Capilar y Spa Coreano.
 - La capacidad se controla por pools por categoría (citas simultáneas).
 - Un servicio desactivado deja de ofrecerse para nuevas reservas; no existe borrado.
 
@@ -41,7 +41,7 @@ Spa capilar y de bienestar en Bogotá con perfil capilar por clienta, precios va
 
 ## Evidence on Hand
 
-- Catálogo real en base de datos (categorías, servicios, pools). Precios de Uñas entregados por el usuario el 2026-10-09.
+- Catálogo real en base de datos (categorías, servicios, pools).
 - No hay fotos de servicios ni testimonios; no se deben inventar.
 
 ## Product Principles

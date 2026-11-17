@@ -8,6 +8,7 @@ import {
   ChevronDown,
   Ellipsis,
   ImageOff,
+  Layers,
   PanelRightOpen,
   Plus,
   Power,
@@ -28,7 +29,41 @@ import {
   priceRangePesos,
   isOptimizableImage,
 } from "../lib/product-catalog";
+import { isRitual } from "../lib/ritual-catalog";
 import { VariantRow, type VariantHandlers } from "./variant-row";
+
+function RitualBadges({ product }: { product: AdminProduct }) {
+  if (!product.ritual) return null;
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1 align-middle">
+      <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-px font-sans text-[11px] text-primary">
+        <Layers className="size-3" strokeWidth={2} aria-hidden="true" />
+        Ritual
+      </span>
+      {product.ritual.savingsPesos > 0 && (
+        <span className="rounded-full bg-emerald-100 px-2 py-px font-sans text-[11px] text-emerald-900 tabular-nums">
+          Ahorra {product.ritual.savingsPercent} %
+        </span>
+      )}
+      {!product.ritual.isComplete && (
+        <span className="rounded-full bg-red-100 px-2 py-px font-sans text-[11px] text-red-800">
+          Incompleto
+        </span>
+      )}
+    </span>
+  );
+}
+
+function subtitle(product: AdminProduct, brands: string[]): string {
+  if (product.ritual) {
+    const count = product.ritual.items.length;
+    return `${count} ${count === 1 ? "producto" : "productos"} incluidos`;
+  }
+  const variants = `${product.variants.length} ${
+    product.variants.length === 1 ? "variante" : "variantes"
+  }`;
+  return `${brands.length > 0 ? brands.join(" · ") : "Sin marca"} · ${variants}`;
+}
 
 export type ProductSortKey = "name" | "price" | "updatedAt";
 export interface ProductSort {
@@ -181,12 +216,16 @@ function ProductMenu({
           label: "Abrir detalle",
           onSelect: () => handlers.onOpen(product.id),
         },
-        {
-          key: "variant",
-          icon: Plus,
-          label: "Agregar variante",
-          onSelect: () => handlers.onAddVariant(product),
-        },
+        ...(isRitual(product)
+          ? []
+          : [
+              {
+                key: "variant",
+                icon: Plus,
+                label: "Agregar variante",
+                onSelect: () => handlers.onAddVariant(product),
+              },
+            ]),
         {
           key: "featured",
           icon: Star,
@@ -205,7 +244,7 @@ function ProductMenu({
         {
           key: "delete",
           icon: Trash2,
-          label: "Eliminar producto",
+          label: isRitual(product) ? "Eliminar Ritual" : "Eliminar producto",
           tone: "danger",
           separated: true,
           onSelect: () => handlers.onDelete(product),
@@ -245,6 +284,7 @@ function VariantShelf({
               variant={variant}
               isUploading={uploadingVariantIds.has(variant.id)}
               handlers={handlers.variant}
+              locked={isRitual(product)}
             />
           ))}
         </ul>
@@ -252,6 +292,7 @@ function VariantShelf({
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-tertiary/20 px-1 pt-2">
         <button
           type="button"
+          hidden={isRitual(product)}
           onClick={() => handlers.onAddVariant(product)}
           className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full border border-tertiary/50 px-4 font-sans text-sm text-secondary transition-colors hover:bg-quaternary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
         >
@@ -264,7 +305,9 @@ function VariantShelf({
           className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full px-3 font-sans text-sm text-secondary/70 transition-colors hover:bg-secondary/5 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
         >
           <PanelRightOpen className="size-4" strokeWidth={1.8} />
-          Descripción, etiquetas y más
+          {isRitual(product)
+            ? "Qué incluye, contenido y más"
+            : "Descripción, etiquetas y más"}
         </button>
       </div>
     </div>
@@ -412,13 +455,9 @@ export function ProductsTable({
                             />
                           </span>
                         )}
+                        <RitualBadges product={product} />
                         <p className="truncate font-sans text-xs text-secondary/70">
-                          {brands.length > 0 ? brands.join(" · ") : "Sin marca"}
-                          {" · "}
-                          {product.variants.length}{" "}
-                          {product.variants.length === 1
-                            ? "variante"
-                            : "variantes"}
+                          {subtitle(product, brands)}
                         </p>
                       </div>
                     </div>
@@ -500,6 +539,7 @@ export function ProductsTable({
                   >
                     {product.name}
                   </button>
+                  <RitualBadges product={product} />
                   <p className="font-sans text-xs text-secondary/70">
                     {product.category.name}
                   </p>

@@ -35,6 +35,16 @@ const variant = (overrides: Partial<ProductVariant> = {}): ProductVariant => ({
 
 const product = (overrides: Partial<AdminProduct> = {}): AdminProduct => ({
   id: "p1",
+  kind: "SINGLE",
+  tagline: null,
+  purpose: null,
+  benefits: [],
+  howToUse: [],
+  idealFor: [],
+  usageFrequency: null,
+  precautions: [],
+  ritual: null,
+  includedInRituals: [],
   productCategoryId: "c1",
   name: "Shampoo reparador",
   description: null,
