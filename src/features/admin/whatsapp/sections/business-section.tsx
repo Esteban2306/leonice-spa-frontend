@@ -77,6 +77,8 @@ const FIELDS: ReadonlyArray<{
   },
 ];
 
+const OWNER_PHONE_PATTERN = /^\+?[0-9][0-9 ]{6,28}$/;
+
 function toPesosInput(thousands: number | null): string {
   return thousands === null ? "" : formatPesosInput(String(thousands * 1000));
 }
@@ -85,6 +87,12 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
   const actions = useConduitActions();
   const schedule = useBaseSchedule();
   const [deposit, setDeposit] = useState(toPesosInput(settings.depositAmount));
+  const [ownerPhone, setOwnerPhone] = useState(
+    settings.ownerContactPhone ?? "",
+  );
+  const ownerPhoneValue = ownerPhone.trim() || null;
+  const ownerPhoneInvalid =
+    ownerPhoneValue !== null && !OWNER_PHONE_PATTERN.test(ownerPhoneValue);
   const [texts, setTexts] = useState<Record<TextKey, string>>({
     depositInstructions: settings.depositInstructions ?? "",
     depositPolicy: settings.depositPolicy ?? "",
@@ -103,12 +111,14 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
 
   const payload: UpdateBusinessSettingsRequest = {
     depositAmount: depositThousands,
+    ownerContactPhone: ownerPhoneValue,
     ...Object.fromEntries(
       FIELDS.map(({ key }) => [key, texts[key].trim() || null]),
     ),
   };
   const dirty =
     payload.depositAmount !== settings.depositAmount ||
+    ownerPhoneValue !== (settings.ownerContactPhone ?? null) ||
     FIELDS.some(
       ({ key }) => (payload[key] ?? null) !== (settings[key] ?? null),
     );
@@ -172,10 +182,35 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
             />
           </Field>
         ))}
+        <Field
+          label="WhatsApp de Leo"
+          htmlFor="b-owner-phone"
+          hint={
+            ownerPhoneInvalid
+              ? "Solo dígitos, espacios y un + inicial (entre 7 y 30 caracteres)."
+              : "El asistente lo comparte cuando una clienta pregunta por Leo para algo que no es una cita. Vacío: ofrece avisarle."
+          }
+        >
+          <input
+            id="b-owner-phone"
+            inputMode="tel"
+            value={ownerPhone}
+            maxLength={30}
+            aria-invalid={ownerPhoneInvalid}
+            placeholder="+57 300 123 4567"
+            onChange={(e) => setOwnerPhone(e.target.value)}
+            className={`${INPUT_CLASS} max-w-xs tabular-nums`}
+          />
+        </Field>
         <button
           type="button"
           className={`${PRIMARY_BUTTON} w-fit`}
-          disabled={!dirty || depositInvalid || actions.busy.has("business")}
+          disabled={
+            !dirty ||
+            depositInvalid ||
+            ownerPhoneInvalid ||
+            actions.busy.has("business")
+          }
           onClick={() => void actions.saveBusinessSettings(payload)}
         >
           Guardar información
@@ -202,6 +237,11 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
           {texts.cancellationPolicy.trim() && (
             <PreviewBlock title="Cancelaciones">
               {texts.cancellationPolicy.trim()}
+            </PreviewBlock>
+          )}
+          {ownerPhoneValue && !ownerPhoneInvalid && (
+            <PreviewBlock title="Si preguntan por Leo">
+              {`Ahora las citas se atienden por aquí. Para otro tema puedes escribirle a Leo al ${ownerPhoneValue}.`}
             </PreviewBlock>
           )}
           {texts.address.trim() && (
