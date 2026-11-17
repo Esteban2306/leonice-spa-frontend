@@ -305,7 +305,20 @@ export function ProductsPreview({
 }) {
   const groups = useMemo(() => groupByCategory(products), [products]);
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [locked, setLocked] = useState(false);
   const active = groups.find((group) => group.key === activeKey) ?? null;
+
+  const choose = (key: string) => {
+    setActiveKey(key);
+    setLocked(true);
+  };
+  const preview = (key: string) => {
+    if (!locked) setActiveKey(key);
+  };
+  const reset = () => {
+    setActiveKey(null);
+    setLocked(false);
+  };
 
   if (groups.length === 0) {
     return (
@@ -364,7 +377,7 @@ export function ProductsPreview({
     <div className="flex flex-col gap-4">
       <button
         type="button"
-        onClick={() => setActiveKey(null)}
+        onClick={reset}
         className="group inline-flex w-fit cursor-pointer items-center gap-1 rounded-full py-1 pr-3 font-sans text-xs font-bold text-[#062112]/70 transition-colors hover:text-[#062112]"
       >
         <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
@@ -379,9 +392,9 @@ export function ProductsPreview({
             <motion.li key={group.key} variants={item}>
               <button
                 type="button"
-                onMouseEnter={() => setActiveKey(group.key)}
-                onFocus={() => setActiveKey(group.key)}
-                onClick={() => setActiveKey(group.key)}
+                onMouseEnter={() => preview(group.key)}
+                onFocus={() => preview(group.key)}
+                onClick={() => choose(group.key)}
                 aria-pressed={selected}
                 className={`relative flex cursor-pointer items-center gap-3 rounded-full px-4 py-2 text-left transition-colors duration-300 ${
                   selected ? "text-[#F2EBDB]" : "text-[#062112] hover:bg-[#062112]/5"
