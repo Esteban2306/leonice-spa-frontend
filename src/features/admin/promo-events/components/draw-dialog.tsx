@@ -24,7 +24,7 @@ export function DrawDialog({ event, onOpenChange, onDraw }: DrawDialogProps) {
       open={event !== null}
       onOpenChange={onOpenChange}
       title={event ? `Sortear en ${event.name}` : "Sortear"}
-      description={`El sistema elige al azar una boleta entre ${remaining} sin premio; cada clienta gana una sola vez. El resultado es definitivo y se le avisa a la ganadora por WhatsApp.`}
+      description={`El sistema elige al azar una boleta entre ${remaining} sin premio; cada clienta gana una sola vez. El resultado es definitivo y se le envía el aviso a la ganadora por WhatsApp.`}
       submitLabel="Hacer el sorteo"
       submittingLabel="Sorteando…"
       canSubmit={prize.trim().length >= 2}
@@ -34,7 +34,7 @@ export function DrawDialog({ event, onOpenChange, onDraw }: DrawDialogProps) {
         <input
           id="draw-prize"
           value={prize}
-          maxLength={140}
+          maxLength={120}
           placeholder="Ej. Kit de productos"
           onChange={(e) => setPrize(e.target.value)}
           className={INPUT_CLASS}

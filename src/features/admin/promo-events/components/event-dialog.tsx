@@ -20,8 +20,8 @@ import type {
 } from "@/src/features/admin/types/promo-events.types";
 
 const NAME_MAX = 80;
-const DESCRIPTION_MAX = 280;
-const PRIZES_MAX = 140;
+const DESCRIPTION_MAX = 240;
+const PRIZES_MAX = 120;
 
 interface EventDialogProps {
   open: boolean;
@@ -66,7 +66,7 @@ export function EventDialog({
         onSave({
           name: name.trim(),
           description: description.trim(),
-          ...(prizes.trim() ? { prizes: prizes.trim() } : {}),
+          ...(prizes.trim() || event ? { prizes: prizes.trim() } : {}),
           startsAt: startOfBogotaDay(from),
           endsAt: endOfBogotaDay(to),
           ticketsEnabled,

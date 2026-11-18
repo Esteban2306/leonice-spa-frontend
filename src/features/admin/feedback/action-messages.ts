@@ -320,7 +320,8 @@ export const ADMIN_ACTION_MESSAGES = {
     error: "No se pudo eliminar el evento",
   },
   drawPromoEvent: {
-    success: "Sorteo realizado. Le avisamos a la ganadora por WhatsApp.",
+    success:
+      "Sorteo realizado. El aviso a la ganadora quedó en camino por WhatsApp.",
     error: "No se pudo hacer el sorteo",
   },
   createPromotion: {
