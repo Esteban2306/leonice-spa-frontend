@@ -16,6 +16,7 @@ import {
   CLIENT_TAG_ORDER,
   toggleTagKey,
 } from "../../clients/lib/client-tags";
+import { audienceHints } from "../lib/audience-hints";
 
 interface AudienceBuilderProps {
   value: AudienceFilter;
@@ -84,6 +85,8 @@ export function AudienceBuilder({
     onChange({ ...value, ...patch });
   const selected = value.tags ?? [];
   const excluded = value.excludeTags ?? [];
+  const hints =
+    preview?.total === 0 && catalog.data ? audienceHints(value, counts) : [];
 
   return (
     <div className="flex flex-col gap-5">
@@ -115,7 +118,7 @@ export function AudienceBuilder({
 
       <fieldset className="flex flex-col gap-2">
         <legend className="font-sans text-xs font-semibold uppercase tracking-[0.12em] text-secondary/70">
-          Debe tener estas etiquetas
+          Debe tener todas estas etiquetas
         </legend>
         <div className="flex flex-wrap gap-2">
           {CLIENT_TAG_ORDER.map((key) => (
@@ -253,6 +256,13 @@ export function AudienceBuilder({
                 </p>
               </div>
             </div>
+            {hints.length > 0 && (
+              <ul className="flex flex-col gap-1 font-sans text-xs text-amber-900">
+                {hints.map((hint) => (
+                  <li key={hint}>{hint}</li>
+                ))}
+              </ul>
+            )}
             {preview && (
               <ul className="flex flex-col gap-1 font-sans text-xs text-secondary/75">
                 {preview.excluded.withoutWhatsapp > 0 && (
