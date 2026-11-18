@@ -137,7 +137,7 @@ export function CampaignComposerView(props: CampaignComposerViewProps) {
                   </span>
                   {!item.configured && (
                     <span className="w-fit rounded-full bg-amber-100 px-2.5 py-0.5 font-sans text-[11px] text-amber-900">
-                      Falta crearla en Conduit
+                      Falta crearla en eventos o promociones
                     </span>
                   )}
                 </button>
