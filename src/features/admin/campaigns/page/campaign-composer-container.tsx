@@ -11,6 +11,7 @@ import {
   useCampaignActions,
   useCampaignEstimate,
 } from "@/src/features/admin/hooks/use-campaigns";
+import { usePromoEvents } from "@/src/features/admin/hooks/use-promo-events";
 import { usePromotions } from "@/src/features/admin/hooks/use-promotions";
 import { useMinuteClock } from "@/src/lib/date/use-minute-clock";
 import type {
@@ -35,10 +36,12 @@ export function CampaignComposerContainer() {
   const actions = useCampaignActions();
   const templatesQuery = useBroadcastTemplates();
   const promotionsQuery = usePromotions({ isActive: true });
+  const eventsQuery = usePromoEvents();
 
   const [name, setName] = useState("");
   const [templateCode, setTemplateCode] = useState("");
   const [promotionId, setPromotionId] = useState("");
+  const [eventId, setEventId] = useState("");
   const [filter, setFilter] = useState<AudienceFilter>({
     tags: ["APTA_PROMOCION"],
   });
@@ -61,6 +64,14 @@ export function CampaignComposerContainer() {
     [promotionsQuery.data, nowMs],
   );
 
+  const events = useMemo(
+    () =>
+      (eventsQuery.data ?? []).filter(
+        (event) => event.isActive && new Date(event.endsAt).getTime() > nowMs,
+      ),
+    [eventsQuery.data, nowMs],
+  );
+
   const filterKey = JSON.stringify(filter);
   const debouncedFilter = useDebouncedValue(
     filter,
@@ -75,11 +86,13 @@ export function CampaignComposerContainer() {
   const ready =
     template !== undefined &&
     (!template.needsPromotion || promotionId !== "") &&
+    (!template.needsEvent || eventId !== "") &&
     (startMode === "now" || startAt !== undefined);
   const draft: CampaignDraft | null = ready
     ? {
         templateCode,
         ...(template?.needsPromotion ? { promotionId } : {}),
+        ...(template?.needsEvent ? { eventId } : {}),
         filter: debouncedFilter,
         pace,
         ...(startAt ? { startAt } : {}),
@@ -111,6 +124,8 @@ export function CampaignComposerContainer() {
         templateCode={templateCode}
         promotions={promotions}
         promotionId={promotionId}
+        events={events}
+        eventId={eventId}
         filter={filter}
         pace={pace}
         startMode={startMode}
@@ -129,8 +144,10 @@ export function CampaignComposerContainer() {
         onTemplateChange={(code) => {
           setTemplateCode(code);
           setPromotionId("");
+          setEventId("");
         }}
         onPromotionChange={setPromotionId}
+        onEventChange={setEventId}
         onFilterChange={setFilter}
         onPaceChange={setPace}
         onStartModeChange={setStartMode}

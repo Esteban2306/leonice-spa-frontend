@@ -42,6 +42,7 @@ export interface BroadcastTemplate {
   description: string;
   configured: boolean;
   needsPromotion: boolean;
+  needsEvent?: boolean;
   needsVisit: boolean;
   body: string;
 }
@@ -49,6 +50,7 @@ export interface BroadcastTemplate {
 export interface CampaignDraft {
   templateCode: string;
   promotionId?: string;
+  eventId?: string;
   filter: AudienceFilter;
   pace: PaceProfile;
   startAt?: string;

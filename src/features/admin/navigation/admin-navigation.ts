@@ -6,6 +6,7 @@ import {
   MessageCircle,
   MessageSquareQuote,
   Package,
+  PartyPopper,
   Scissors,
   Settings,
   UsersRound,
@@ -49,6 +50,12 @@ export const ADMIN_NAVIGATION: readonly AdminNavigationItem[] = [
     shortName: "Promos",
     href: "/admin/promotions",
     icon: BadgePercent,
+  },
+  {
+    name: "Eventos",
+    shortName: "Eventos",
+    href: "/admin/events",
+    icon: PartyPopper,
   },
   {
     name: "Campañas",

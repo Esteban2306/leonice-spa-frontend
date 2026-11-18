@@ -307,6 +307,22 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Capacidad activada.",
     error: "No se pudo activar la capacidad",
   },
+  createPromoEvent: {
+    success: "Evento creado. El asistente ya lo conoce mientras esté vigente.",
+    error: "No se pudo crear el evento",
+  },
+  updatePromoEvent: {
+    success: "Evento actualizado.",
+    error: "No se pudo actualizar el evento",
+  },
+  removePromoEvent: {
+    success: "Evento eliminado.",
+    error: "No se pudo eliminar el evento",
+  },
+  drawPromoEvent: {
+    success: "Sorteo realizado. Le avisamos a la ganadora por WhatsApp.",
+    error: "No se pudo hacer el sorteo",
+  },
   createPromotion: {
     success: "Promoción creada.",
     error: "No se pudo crear la promoción",

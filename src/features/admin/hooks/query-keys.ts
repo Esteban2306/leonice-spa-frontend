@@ -148,6 +148,13 @@ export const adminQueryKeys = {
       [...adminQueryKeys.promotions.details(), promotionId] as const,
   },
 
+  promoEvents: {
+    all: () => [...adminQueryKeys.all, "promo-events"] as const,
+    list: () => [...adminQueryKeys.promoEvents.all(), "list"] as const,
+    tickets: (eventId: string) =>
+      [...adminQueryKeys.promoEvents.all(), "tickets", eventId] as const,
+  },
+
   capacityPools: {
     all: () => [...adminQueryKeys.all, "capacity-pools"] as const,
     lists: () => [...adminQueryKeys.capacityPools.all(), "list"] as const,

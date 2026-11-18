@@ -12,6 +12,7 @@ import type {
   CampaignEstimate,
   PaceProfile,
 } from "@/src/features/admin/types/campaigns.types";
+import type { PromoEvent } from "@/src/features/admin/types/promo-events.types";
 import type { Promotion } from "@/src/features/admin/types/promotions.types";
 
 import { AudienceBuilder } from "../components/audience-builder";
@@ -28,6 +29,8 @@ export interface CampaignComposerViewProps {
   templateCode: string;
   promotions: readonly Promotion[];
   promotionId: string;
+  events: readonly PromoEvent[];
+  eventId: string;
   filter: AudienceFilter;
   pace: PaceProfile;
   startMode: "now" | "later";
@@ -41,6 +44,7 @@ export interface CampaignComposerViewProps {
   onNameChange: (value: string) => void;
   onTemplateChange: (code: string) => void;
   onPromotionChange: (id: string) => void;
+  onEventChange: (id: string) => void;
   onFilterChange: (filter: AudienceFilter) => void;
   onPaceChange: (pace: PaceProfile) => void;
   onStartModeChange: (mode: "now" | "later") => void;
@@ -171,6 +175,32 @@ export function CampaignComposerView(props: CampaignComposerViewProps) {
                   Aún no hay promociones activas.{" "}
                   <Link href="/admin/promotions" className="underline">
                     Crea una
+                  </Link>
+                  .
+                </p>
+              )}
+            </Field>
+          )}
+          {template?.needsEvent && (
+            <Field label="Evento que anuncia" htmlFor="campaign-event">
+              <select
+                id="campaign-event"
+                value={props.eventId}
+                onChange={(event) => props.onEventChange(event.target.value)}
+                className={INPUT_CLASS}
+              >
+                <option value="">Elige un evento vigente o programado</option>
+                {props.events.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              {props.events.length === 0 && (
+                <p className="mt-1 font-sans text-xs text-secondary/70">
+                  Aún no hay eventos activos.{" "}
+                  <Link href="/admin/events" className="underline">
+                    Crea uno
                   </Link>
                   .
                 </p>
