@@ -243,7 +243,7 @@ export function AudienceBuilder({
             <div className="flex items-center gap-3">
               <span className="grid size-11 place-items-center rounded-full bg-quaternary/40 text-secondary">
                 {isLoading ? (
-                  <BrandLoader variant="inline" decorative className="size-5" />
+                  <BrandLoader variant="inline" decorative className="size-5 text-secondary" />
                 ) : (
                   <Users className="size-5" />
                 )}

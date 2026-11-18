@@ -28,16 +28,19 @@ const LAYOUTS = {
     wrapper:
       "flex min-h-dvh flex-col items-center justify-center gap-7 bg-background px-6 text-center",
     mark: "w-36",
+    halo: "leonice-loader__halo",
     caption: "text-sm",
   },
   section: {
     wrapper: "flex flex-col items-center justify-center gap-4 py-10 text-center",
     mark: "w-20",
+    halo: "leonice-loader__halo",
     caption: "text-xs",
   },
   compact: {
     wrapper: "flex items-center gap-3 py-2",
     mark: "w-9",
+    halo: "leonice-loader__halo leonice-loader__halo--tight",
     caption: "text-xs",
   },
 } as const;
@@ -79,7 +82,15 @@ function BrandStar({
   );
 }
 
-function BrandMark({ tone, size }: { tone: BrandLoaderTone; size: string }) {
+function BrandMark({
+  tone,
+  size,
+  halo,
+}: {
+  tone: BrandLoaderTone;
+  size: string;
+  halo: string;
+}) {
   const uid = useId().replace(/:/g, "");
   const sheen = `leonice-sheen-${uid}`;
   const clip = `leonice-clip-${uid}`;
@@ -88,7 +99,7 @@ function BrandMark({ tone, size }: { tone: BrandLoaderTone; size: string }) {
 
   return (
     <span className="relative inline-grid place-items-center" data-tone={tone}>
-      <span aria-hidden="true" className="leonice-loader__halo" />
+      <span aria-hidden="true" className={halo} />
       <svg
         viewBox={LEONICE_MARK_VIEWBOX}
         aria-hidden="true"
@@ -179,7 +190,7 @@ export function BrandLoader({
       aria-live="polite"
       className={cn("leonice-loader", layout.wrapper, className)}
     >
-      <BrandMark tone={tone} size={layout.mark} />
+      <BrandMark tone={tone} size={layout.mark} halo={layout.halo} />
       <p
         className={cn(
           "font-sans tracking-wide",

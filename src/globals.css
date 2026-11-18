@@ -166,6 +166,10 @@
     will-change: opacity, transform;
   }
 
+  .leonice-loader__halo--tight {
+    inset: -18% -10%;
+  }
+
   [data-tone="dark"] > .leonice-loader__halo {
     background: radial-gradient(
       closest-side,
