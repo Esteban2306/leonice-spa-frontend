@@ -44,6 +44,7 @@ import {
   formatDateTime,
   formatWhatsappPhone,
 } from "../lib/whatsapp-format";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const VIEWS = [
   { id: "mensajes", label: "Mensajes" },
@@ -121,7 +122,7 @@ function Attempts({ messageId }: { messageId: string }) {
   if (detail.isError) return <ErrorPanel error={detail.error} compact />;
   if (detail.isLoading)
     return (
-      <p className="font-sans text-xs text-secondary/70">Cargando intentos…</p>
+      <BrandLoader variant="compact" label="Cargando intentos…" />
     );
   const logs: AttemptLog[] = detail.data?.attemptLogs ?? [];
   if (logs.length === 0)

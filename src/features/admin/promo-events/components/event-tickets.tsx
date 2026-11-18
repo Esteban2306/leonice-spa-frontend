@@ -3,6 +3,7 @@
 import { Trophy } from "lucide-react";
 
 import { useEventTickets } from "@/src/features/admin/hooks/use-promo-events";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const DATE_FORMAT = new Intl.DateTimeFormat("es-CO", {
   timeZone: "America/Bogota",
@@ -15,7 +16,7 @@ export function EventTickets({ eventId }: { eventId: string }) {
 
   if (query.isLoading) {
     return (
-      <p className="font-sans text-sm text-secondary/70">Cargando boletas…</p>
+      <BrandLoader variant="compact" label="Cargando boletas…" />
     );
   }
   if (query.isError) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Users } from "lucide-react";
+import { Users } from "lucide-react";
 
 import { INPUT_CLASS } from "@/src/features/admin/components/reservation-actions/form-controls";
 import { useAdminCategories } from "@/src/features/admin/hooks/use-categories";
@@ -17,6 +17,7 @@ import {
   toggleTagKey,
 } from "../../clients/lib/client-tags";
 import { audienceHints } from "../lib/audience-hints";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface AudienceBuilderProps {
   value: AudienceFilter;
@@ -242,7 +243,7 @@ export function AudienceBuilder({
             <div className="flex items-center gap-3">
               <span className="grid size-11 place-items-center rounded-full bg-quaternary/40 text-secondary">
                 {isLoading ? (
-                  <Loader2 className="size-5 animate-spin" />
+                  <BrandLoader variant="inline" decorative className="size-5" />
                 ) : (
                   <Users className="size-5" />
                 )}

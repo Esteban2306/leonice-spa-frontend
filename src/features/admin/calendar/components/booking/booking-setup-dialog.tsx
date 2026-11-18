@@ -19,6 +19,7 @@ import {
   treatmentDuration,
 } from "../../lib/booking";
 import type { BookingClient, BookingService } from "../../types/calendar.types";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 type BookingKind = "single" | "combo";
 
@@ -171,9 +172,7 @@ export function BookingSetupDialog({
       >
         <div className="flex max-h-56 flex-col gap-1.5 overflow-y-auto pr-1">
           {isLoadingCatalog && (
-            <p className="font-sans text-xs text-secondary/70">
-              Cargando servicios…
-            </p>
+            <BrandLoader variant="compact" label="Cargando servicios…" />
           )}
           {!isLoadingCatalog && visibleTreatments.length === 0 && (
             <p className="font-sans text-xs text-secondary/70">

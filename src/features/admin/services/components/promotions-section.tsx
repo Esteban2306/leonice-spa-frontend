@@ -9,6 +9,7 @@ import {
   type PromotionState,
 } from "../lib/catalog";
 import { CatalogChip, type ChipTone } from "./catalog-chip";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const STATE_TONE: Record<PromotionState, ChipTone> = {
   CURRENT: "green",
@@ -46,9 +47,7 @@ export function PromotionsSection({
   return (
     <div className="flex flex-col gap-3">
       {isLoading && promotions.length === 0 && (
-        <p className="font-sans text-sm text-secondary/70">
-          Cargando promociones…
-        </p>
+        <BrandLoader variant="compact" label="Cargando promociones…" />
       )}
 
       {!isLoading && promotions.length === 0 && (

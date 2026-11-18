@@ -5,6 +5,7 @@ import { formatCopFromThousands } from "@/src/lib/money/cop";
 import { DepositProofViewer } from "@/src/features/admin/components/reservation-actions/deposit-proof-viewer";
 import type { ClientCredit, DepositRecordView } from "@/src/features/admin/types/deposits.types";
 import type { DepositStatus } from "@/src/features/admin/types/enums";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface PaymentsTabProps {
   clientName: string;
@@ -46,7 +47,7 @@ export function PaymentsTab({ clientName, deposits, credits, isLoading }: Paymen
 
       <section className="flex flex-col gap-3 rounded-[2rem] border border-tertiary/25 bg-[#FCF6EB] p-5">
         <h2 className="font-heading text-xl text-secondary">Depósitos</h2>
-        {isLoading && <p className="font-sans text-sm text-secondary/70">Cargando pagos…</p>}
+        {isLoading && <BrandLoader variant="compact" label="Cargando pagos…" />}
         {!isLoading && deposits.length === 0 && (
           <p className="font-sans text-sm text-secondary/70">Aún no hay depósitos registrados.</p>
         )}

@@ -1,12 +1,13 @@
 "use client";
 
 import { useId, useState, type DragEvent } from "react";
-import { Clapperboard, LoaderCircle, Trash2, Upload } from "lucide-react";
+import { Clapperboard, Trash2, Upload } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { toastError } from "@/src/features/admin/feedback/admin-toast";
 
 import { ACCEPTED_VIDEO_TYPES, validateVideoFile } from "../lib/treatment-video";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface TreatmentVideoSlotProps {
   treatmentName: string;
@@ -84,7 +85,7 @@ export function TreatmentVideoSlot({
         {isUploading && (
           <span className="absolute inset-0 grid place-items-center bg-secondary/70 text-primary backdrop-blur-[1px]">
             <span className="flex flex-col items-center gap-2 font-sans text-sm">
-              <LoaderCircle aria-hidden="true" className="size-6 animate-spin" />
+              <BrandLoader variant="inline" tone="dark" decorative className="size-7" />
               Subiendo video…
             </span>
           </span>

@@ -28,6 +28,7 @@ import {
   type WeeklyDraft,
 } from "../../lib/weekly-schedule";
 import type { ScheduleDialogMode } from "./schedule-exception-dialog";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 export type CalendarScheduleDialog = ScheduleDialogMode | "weekly";
 
@@ -273,9 +274,7 @@ export function WeeklyScheduleDialog({
         </div>
 
         {baseQuery.isLoading && (
-          <p className="px-6 pb-6 font-sans text-sm text-secondary/70">
-            Cargando horario…
-          </p>
+          <BrandLoader label="Cargando horario…" className="px-6" />
         )}
         {baseQuery.isError && (
           <div

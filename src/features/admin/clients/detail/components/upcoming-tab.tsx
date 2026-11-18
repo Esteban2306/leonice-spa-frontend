@@ -3,6 +3,7 @@ import { CalendarPlus } from "lucide-react";
 import type { ReservationPanelHandlers } from "@/src/features/admin/dashboard/reservations-panel/panelHandlers";
 import { ReservationPanelCard } from "@/src/features/admin/dashboard/reservations-panel/reservationPanelCard";
 import type { DashboardReservation } from "@/src/features/admin/types/dashboard.types";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface UpcomingTabProps extends ReservationPanelHandlers {
   reservations: readonly DashboardReservation[];
@@ -12,7 +13,7 @@ interface UpcomingTabProps extends ReservationPanelHandlers {
 
 export function UpcomingTab({ reservations, isLoading, onNewReservation, ...handlers }: UpcomingTabProps) {
   if (isLoading && reservations.length === 0) {
-    return <p className="py-10 text-center font-sans text-sm text-secondary/70">Cargando citas…</p>;
+    return <BrandLoader label="Cargando citas…" />;
   }
 
   if (reservations.length === 0) {

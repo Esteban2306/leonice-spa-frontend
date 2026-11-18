@@ -16,6 +16,7 @@ import {
   CampaignDetailView,
   type RecipientFilter,
 } from "./campaign-detail-view";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const PAGE_SIZE = 25;
 
@@ -62,11 +63,7 @@ export function CampaignDetailContainer({
   }
   if (!campaign) {
     return (
-      <div
-        role="status"
-        aria-label="Cargando campaña"
-        className="m-8 h-48 animate-pulse rounded-[2rem] bg-secondary/8"
-      />
+      <BrandLoader label="Cargando campaña…" className="m-8" />
     );
   }
 

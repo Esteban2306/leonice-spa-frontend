@@ -12,6 +12,7 @@ import { AdminMobileDock } from "@/src/features/admin/components/admin-mobile-do
 import { DailyReportGate } from "@/src/features/admin/daily-report/daily-report-gate";
 import { AdminSignalsWatcher } from "@/src/features/admin/feedback/admin-signals-watcher";
 import { useSession } from "@/src/features/auth/hooks/use-auth";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 export default function ProtectedLayout({
   children,
@@ -37,10 +38,8 @@ export default function ProtectedLayout({
 
   if (!devAuthBypass && session.isPending) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-background">
-        <p className="font-sans text-sm text-foreground/70">
-          Verificando sesión...
-        </p>
+      <main>
+        <BrandLoader variant="screen" label="Verificando sesión…" />
       </main>
     );
   }

@@ -2,7 +2,7 @@
 
 import { useId, useState, type DragEvent } from "react";
 import Image from "next/image";
-import { ImagePlus, LoaderCircle, Trash2 } from "lucide-react";
+import { ImagePlus, Trash2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { toastError } from "@/src/features/admin/feedback/admin-toast";
@@ -13,6 +13,7 @@ import {
   validateImageFile,
 } from "../../products/lib/product-catalog";
 import { TESTIMONIAL_PHOTO } from "../lib/testimonial-form";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface PhotoFieldProps {
   label: string;
@@ -122,9 +123,11 @@ export function PhotoField({
           </span>
           {isBusy && (
             <span className="absolute inset-0 grid place-items-center bg-secondary/55 text-primary backdrop-blur-[1px]">
-              <LoaderCircle
-                aria-label="Subiendo foto"
-                className="size-6 animate-spin"
+              <BrandLoader
+                variant="inline"
+                tone="dark"
+                label="Subiendo foto"
+                className="size-7"
               />
             </span>
           )}

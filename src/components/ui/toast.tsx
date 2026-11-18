@@ -11,8 +11,8 @@ import {
   InfoIcon,
   TriangleAlertIcon,
   OctagonXIcon,
-  Loader2Icon,
 } from "lucide-react";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const toast = ToastPrimitive.createToastManager();
 
@@ -157,7 +157,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
   }
 
   if (type === "loading") {
-    icon = <Loader2Icon className="animate-spin" aria-hidden="true" />;
+    icon = <BrandLoader variant="inline" decorative />;
   }
 
   if (!icon) {

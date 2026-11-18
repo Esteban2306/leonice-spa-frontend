@@ -27,6 +27,7 @@ import type { ReservationStatus } from "@/src/features/admin/types/enums";
 import type { HistoryStatusFilter } from "../lib/client-crm";
 import { isClientTab, type ClientTab } from "../detail/components/client-tabs";
 import { ClientDetailView } from "./client-detail-view";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const LIVE_STATUSES: readonly ReservationStatus[] = [
   "PENDIENTE_VALORACION",
@@ -147,8 +148,8 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
 
   if (clientQuery.isLoading) {
     return (
-      <main className="grid min-h-full place-items-center bg-primary p-10 font-sans text-secondary/80" role="status">
-        Cargando ficha del cliente…
+      <main className="grid min-h-full place-items-center bg-primary p-10">
+        <BrandLoader label="Cargando ficha del cliente…" />
       </main>
     );
   }

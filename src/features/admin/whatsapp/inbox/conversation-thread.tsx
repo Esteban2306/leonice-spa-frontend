@@ -38,6 +38,7 @@ import {
   isHiddenNumber,
 } from "../lib/whatsapp-format";
 import { PauseMenu } from "./pause-menu";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 const MAX_TEXT = 4000;
 
@@ -283,14 +284,19 @@ export function ConversationThread({
               disabled={isLoadingOlder}
               className="h-9 cursor-pointer rounded-full border border-secondary/15 bg-white px-4 font-sans text-xs text-secondary/80 hover:bg-quaternary/25 disabled:opacity-50"
             >
-              {isLoadingOlder ? "Cargando…" : "Ver mensajes anteriores"}
+              {isLoadingOlder ? (
+                <span className="inline-flex items-center gap-2">
+                  <BrandLoader variant="inline" decorative />
+                  Cargando…
+                </span>
+              ) : (
+                "Ver mensajes anteriores"
+              )}
             </button>
           </div>
         )}
         {isLoading && (
-          <p className="py-10 text-center font-sans text-sm text-secondary/70">
-            Cargando la conversación…
-          </p>
+          <BrandLoader label="Cargando la conversación…" />
         )}
         {Boolean(error) && !isLoading && (
           <ErrorPanel error={error} onRetry={onRetry} compact />

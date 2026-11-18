@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 export const RESERVATIONS_PANEL_ID = "reservations-panel";
 
@@ -132,12 +133,7 @@ export function ReservationsPanel({
         }`}
       >
         {isInitialLoad && (
-          <p
-            role="status"
-            className="py-10 text-center font-sans text-secondary/70"
-          >
-            Cargando reservas…
-          </p>
+          <BrandLoader label="Cargando reservas…" />
         )}
 
         {showError && (

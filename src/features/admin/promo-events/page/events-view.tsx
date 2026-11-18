@@ -18,6 +18,7 @@ import {
   formatEventRange,
   type EventState,
 } from "../lib/events-page";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface EventsViewProps {
   events: readonly PromoEvent[];
@@ -198,9 +199,7 @@ export function EventsView(props: EventsViewProps) {
         )}
 
         {props.isLoading && (
-          <p className="font-sans text-sm text-secondary/70">
-            Cargando eventos…
-          </p>
+          <BrandLoader label="Cargando eventos…" />
         )}
 
         {!props.isLoading && !props.isError && props.events.length === 0 && (

@@ -16,6 +16,7 @@ import type {
   PendingHairProfile,
   SetHairProfileRequest,
 } from "@/src/features/admin/types/clients.types";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 export const HAIR_PROFILES_NOTICE_ID = "perfiles-por-renovar";
 
@@ -176,9 +177,14 @@ export function HairProfilesNotice({
               onClick={onLoadMore}
               className="mt-2 h-10 w-full cursor-pointer rounded-full font-sans text-sm text-secondary/75 transition-colors hover:bg-secondary/5 disabled:opacity-50"
             >
-              {isFetching
-                ? "Cargando…"
-                : `Ver más (${total - profiles.length} restantes)`}
+              {isFetching ? (
+                <span className="inline-flex items-center gap-2">
+                  <BrandLoader variant="inline" decorative />
+                  Cargando…
+                </span>
+              ) : (
+                `Ver más (${total - profiles.length} restantes)`
+              )}
             </button>
           )}
         </div>

@@ -4,6 +4,7 @@ import type {
   ScheduleDay,
   ScheduleException,
 } from "@/src/features/admin/types/schedule.types";
+import { BrandLoader } from "@/src/components/brand/brand-loader";
 
 interface DayScheduleSectionProps {
   schedule: ScheduleDay | null;
@@ -29,9 +30,11 @@ export function DayScheduleSection({
 }: DayScheduleSectionProps) {
   if (isLoading || !schedule) {
     return (
-      <p className="px-1 font-sans text-xs text-secondary/70">
-        {isLoading ? "Cargando horario del día…" : null}
-      </p>
+      isLoading ? (
+        <BrandLoader variant="compact" label="Cargando horario del día…" className="px-1" />
+      ) : (
+        <p className="px-1" />
+      )
     );
   }
 
