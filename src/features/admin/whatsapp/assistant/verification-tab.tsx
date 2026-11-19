@@ -26,12 +26,7 @@ import {
   checklistView,
   reasonsText,
 } from "../lib/verification-labels";
-
-const ROLE_LABELS: Record<ConduitAiModel["role"], string> = {
-  CONVERSATION: "Conversación",
-  IMAGE_ANALYSIS: "Imágenes",
-  FALLBACK: "Respaldo",
-};
+import { AI_MODEL_ROLE_LABELS } from "../lib/ai-model-labels";
 
 const CHECK_ICONS = {
   ok: <Check className="size-4 text-green-700" aria-hidden />,
@@ -209,7 +204,8 @@ export function VerificationTab({
                       </span>
                     </p>
                     <p className="font-sans text-xs text-secondary/70 tabular-nums">
-                      {ROLE_LABELS[model.role]} · Prioridad {model.priority}
+                      {AI_MODEL_ROLE_LABELS[model.role]} · Prioridad{" "}
+                      {model.priority}
                       {model.apiKeyLast4
                         ? ` · Clave ••••${model.apiKeyLast4}`
                         : ""}

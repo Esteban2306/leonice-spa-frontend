@@ -49,6 +49,20 @@ describe("toConduitAiModel", () => {
     ).not.toContain(ANTHROPIC_KEY);
   });
 
+  it("un modelo de audios se queda como audios, no como conversación", () => {
+    expect(
+      toConduitAiModel({
+        ...ROW,
+        provider: "GROQ",
+        model: "whisper-large-v3-turbo",
+        role: "TRANSCRIPTION",
+      })?.role,
+    ).toBe("TRANSCRIPTION");
+    expect(toConduitAiModel({ ...ROW, role: "CLASSIFIER" })?.role).toBe(
+      "CLASSIFIER",
+    );
+  });
+
   it("normaliza valores desconocidos sin lanzar", () => {
     expect(
       toConduitAiModel({ id: "m1", role: "OTRO", tier: "OTRO", priority: "x" }),

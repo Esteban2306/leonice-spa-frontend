@@ -16,6 +16,7 @@ import type {
 
 import { SECONDARY_BUTTON, SectionCard } from "../components/section-card";
 import { StatusPill } from "../components/status-pill";
+import { AI_MODEL_ROLE_LABELS } from "../lib/ai-model-labels";
 
 const PROVIDERS = [
   "ANTHROPIC",
@@ -27,10 +28,10 @@ const PROVIDERS = [
   "MISTRAL",
   "CUSTOM",
 ] as const;
-const ROLE_LABELS: Record<ConduitAiModel["role"], string> = {
-  CONVERSATION: "Conversación",
-  IMAGE_ANALYSIS: "Imágenes",
-  FALLBACK: "Respaldo",
+const AUDIO_PROVIDERS = ["GROQ", "OPENAI", "CUSTOM"] as const;
+const AUDIO_MODEL = "whisper-large-v3-turbo";
+const MODEL_HINTS: Partial<Record<ConduitAiModel["role"], string>> = {
+  TRANSCRIPTION: `Para Groq: ${AUDIO_MODEL}. Las notas de voz de más de 2 minutos no se transcriben.`,
 };
 const EMPTY: CreateAiModelRequest = {
   provider: "ANTHROPIC",
@@ -54,6 +55,34 @@ export function ModelsTab({
   const activeConversation = models.some(
     (m) => m.role === "CONVERSATION" && m.isActive,
   );
+  const activeAudio = models.some(
+    (m) => m.role === "TRANSCRIPTION" && m.isActive,
+  );
+  const isAudio = draft.role === "TRANSCRIPTION";
+  const providers = isAudio ? AUDIO_PROVIDERS : PROVIDERS;
+  const changeRole = (role: CreateAiModelRequest["role"]) => {
+    if (role === draft.role) return;
+    setDraft(
+      role === "TRANSCRIPTION"
+        ? {
+            ...draft,
+            role,
+            provider: "GROQ",
+            model: AUDIO_MODEL,
+            tier: "FREE",
+            priority: 1,
+          }
+        : {
+            ...draft,
+            role,
+            ...(draft.role === "TRANSCRIPTION" && {
+              provider: EMPTY.provider,
+              model: "",
+              tier: EMPTY.tier,
+            }),
+          },
+    );
+  };
   const canAdd =
     draft.model.trim().length > 1 &&
     draft.apiKey.trim().length > 8 &&
@@ -84,6 +113,13 @@ export function ModelsTab({
           persona les responderá.
         </p>
       )}
+      {activeConversation && !activeAudio && (
+        <p className="rounded-2xl border border-tertiary/30 bg-white/70 px-4 py-3 font-sans text-sm text-secondary">
+          Sin un modelo de audios, el asistente no escucha las notas de voz y le
+          pide a la clienta que escriba su mensaje. Agrégalo con el uso
+          «Audios».
+        </p>
+      )}
       <ul className="flex flex-col gap-2">
         {[...models]
           .sort((a, b) => a.priority - b.priority)
@@ -100,8 +136,8 @@ export function ModelsTab({
                   </span>
                 </p>
                 <p className="font-sans text-xs text-secondary/70 tabular-nums">
-                  {ROLE_LABELS[model.role]} · Prioridad {model.priority} ·{" "}
-                  {model.tier === "FREE" ? "Gratis" : "Pago"}
+                  {AI_MODEL_ROLE_LABELS[model.role]} · Prioridad{" "}
+                  {model.priority} · {model.tier === "FREE" ? "Gratis" : "Pago"}
                   {model.apiKeyLast4 ? ` · Clave ••••${model.apiKeyLast4}` : ""}
                   {model.dailyTokenLimit
                     ? ` · ${model.tokensUsedToday.toLocaleString("es-CO")} / ${model.dailyTokenLimit.toLocaleString("es-CO")} tokens hoy`
@@ -161,7 +197,7 @@ export function ModelsTab({
               onChange={(e) => setDraft({ ...draft, provider: e.target.value })}
               className={INPUT_CLASS}
             >
-              {PROVIDERS.map((p) => (
+              {providers.map((p) => (
                 <option key={p} value={p}>
                   {p}
                 </option>
@@ -173,23 +209,24 @@ export function ModelsTab({
               id="m-role"
               value={draft.role}
               onChange={(e) =>
-                setDraft({
-                  ...draft,
-                  role: e.target.value as CreateAiModelRequest["role"],
-                })
+                changeRole(e.target.value as CreateAiModelRequest["role"])
               }
               className={INPUT_CLASS}
             >
               <option value="CONVERSATION">Conversación</option>
               <option value="IMAGE_ANALYSIS">Imágenes</option>
               <option value="FALLBACK">Respaldo</option>
+              <option value="TRANSCRIPTION">Audios</option>
             </select>
           </Field>
         </div>
         <Field
           label="Modelo"
           htmlFor="m-model"
-          hint="Nombre exacto, por ejemplo claude-haiku-5-5."
+          hint={
+            MODEL_HINTS[draft.role] ??
+            "Nombre exacto, por ejemplo claude-haiku-5-5."
+          }
         >
           <input
             id="m-model"
