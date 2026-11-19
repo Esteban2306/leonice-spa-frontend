@@ -45,11 +45,21 @@ export interface ConduitServiceHealth {
   };
 }
 
+export const AI_MODEL_ROLES = [
+  "CONVERSATION",
+  "IMAGE_ANALYSIS",
+  "FALLBACK",
+  "CLASSIFIER",
+  "TRANSCRIPTION",
+] as const;
+
+export type AiModelRole = (typeof AI_MODEL_ROLES)[number];
+
 export interface ConduitAiModel {
   id: string;
   provider: string;
   model: string;
-  role: "CONVERSATION" | "IMAGE_ANALYSIS" | "FALLBACK";
+  role: AiModelRole;
   tier: "FREE" | "PAID";
   priority: number;
   dailyTokenLimit: number | null;

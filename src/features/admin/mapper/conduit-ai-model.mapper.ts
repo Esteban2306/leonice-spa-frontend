@@ -1,4 +1,8 @@
-import type { ConduitAiModel } from "../types/conduit.types";
+import {
+  AI_MODEL_ROLES,
+  type AiModelRole,
+  type ConduitAiModel,
+} from "../types/conduit.types";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -6,19 +10,20 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const text = (value: unknown): string | null =>
   typeof value === "string" ? value : null;
 
+const isRole = (value: unknown): value is AiModelRole =>
+  AI_MODEL_ROLES.includes(value as AiModelRole);
+
 const count = (value: unknown): number | null =>
   typeof value === "number" ? value : null;
 
 export function toConduitAiModel(raw: unknown): ConduitAiModel | null {
   if (!isRecord(raw) || typeof raw.id !== "string") return null;
-  const role = raw.role;
   const tier = raw.tier;
   return {
     id: raw.id,
     provider: text(raw.provider) ?? "",
     model: text(raw.model) ?? "",
-    role:
-      role === "IMAGE_ANALYSIS" || role === "FALLBACK" ? role : "CONVERSATION",
+    role: isRole(raw.role) ? raw.role : "CONVERSATION",
     tier: tier === "PAID" ? "PAID" : "FREE",
     priority: count(raw.priority) ?? 0,
     dailyTokenLimit: count(raw.dailyTokenLimit),
