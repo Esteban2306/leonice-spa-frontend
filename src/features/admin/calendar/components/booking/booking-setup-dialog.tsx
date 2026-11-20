@@ -166,7 +166,7 @@ export function BookingSetupDialog({
         label={kind === "combo" ? "Servicio de esta categoría" : "Servicio"}
         hint={
           kind === "combo"
-            ? "En un combo se agenda un servicio por categoría, uno detrás de otro el mismo día."
+            ? "En un combo se agenda un servicio por categoría y todos se hacen al mismo tiempo."
             : undefined
         }
       >

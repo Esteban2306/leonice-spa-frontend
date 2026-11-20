@@ -38,7 +38,10 @@ export function toBookingService(
 }
 
 export function totalDuration(services: readonly BookingService[]): number {
-  return services.reduce((sum, service) => sum + service.durationMinutes, 0);
+  return services.reduce(
+    (longest, service) => Math.max(longest, service.durationMinutes),
+    0,
+  );
 }
 
 export function indexAvailability(
@@ -49,4 +52,17 @@ export function indexAvailability(
 
 export function describeServices(services: readonly BookingService[]): string {
   return services.map((service) => service.name).join(" + ");
+}
+
+export const MAX_AGREED_PRICE = 10_000_000;
+
+export function toAgreedPrices(
+  prices: Readonly<Record<string, string>>,
+): Array<{ treatmentId: string; price: number }> {
+  return Object.entries(prices).flatMap(([treatmentId, raw]) => {
+    const digits = raw.replace(/\D/g, "");
+    if (digits === "") return [];
+    const price = Number(digits);
+    return price <= MAX_AGREED_PRICE ? [{ treatmentId, price }] : [];
+  });
 }

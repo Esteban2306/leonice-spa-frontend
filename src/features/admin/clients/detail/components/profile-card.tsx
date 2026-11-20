@@ -59,10 +59,10 @@ export function ProfileCard({ client, todayKey, onUpdate, onCopy }: ProfileCardP
         <ReadonlyField label="Teléfono" value={client.phone} onCopy={() => onCopy(client.phone, "Teléfono")} />
         <InlineEditField
           id="client-birth"
-          label={`Nacimiento · ${ageOn(client.birthDate, todayKey)} años`}
+          label={client.birthDate ? `Nacimiento · ${ageOn(client.birthDate, todayKey)} años` : "Nacimiento · pendiente"}
           type="date"
-          value={client.birthDate}
-          displayValue={BIRTH_FORMATTER.format(new Date(`${client.birthDate}T00:00:00Z`))}
+          value={client.birthDate ?? ""}
+          displayValue={client.birthDate ? BIRTH_FORMATTER.format(new Date(`${client.birthDate}T00:00:00Z`)) : "Sin registrar"}
           validate={(value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && value <= todayKey}
           onSave={(birthDate) => onUpdate({ birthDate })}
         />

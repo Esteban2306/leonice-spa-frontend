@@ -23,6 +23,7 @@ import type {
   DeadLetter,
   DeliveryEvent,
   EscalationContact,
+  MutedContact,
   FindConversationsParams,
   FindMessagesParams,
   OutboundMessage,
@@ -108,6 +109,18 @@ export const conduitApi = {
     httpClient.request<BotTool>(`${BASE}/bot/tools/${toolId}`, "PATCH", {
       isActive,
     }),
+  mutedContacts: () => get<MutedContact[]>("/muted-contacts"),
+  muteContact: (address: string, reason?: string) =>
+    httpClient.request<MutedContact>(
+      `${BASE}/muted-contacts/${encodeURIComponent(address)}`,
+      "PUT",
+      reason ? { reason } : {},
+    ),
+  unmuteContact: (address: string) =>
+    httpClient.request<unknown>(
+      `${BASE}/muted-contacts/${encodeURIComponent(address)}`,
+      "DELETE",
+    ),
   escalationContacts: () =>
     get<EscalationContact[]>("/bot/escalation-contacts"),
   addEscalationContact: (data: Omit<EscalationContact, "id">) =>

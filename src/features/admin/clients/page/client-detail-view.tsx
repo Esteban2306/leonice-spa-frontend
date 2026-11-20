@@ -22,6 +22,7 @@ import { HistoryTab } from "../detail/components/history-tab";
 import { NotesTab } from "../detail/components/notes-tab";
 import { PaymentsTab } from "../detail/components/payments-tab";
 import { ProfileCard } from "../detail/components/profile-card";
+import { DepositExemptCard } from "../detail/components/deposit-exempt-card";
 import { UpcomingTab } from "../detail/components/upcoming-tab";
 
 export interface ClientDetailViewProps {
@@ -83,6 +84,13 @@ export function ClientDetailView(props: ClientDetailViewProps) {
               todayKey={todayKey}
               onUpdate={props.onUpdate}
               onCopy={props.onCopy}
+            />
+            <DepositExemptCard
+              depositExempt={client.depositExempt ?? false}
+              isSaving={clientActions.isSaving}
+              onChange={(exempt) =>
+                void clientActions.setDepositExempt(client.id, exempt)
+              }
             />
             <HairProfileCard
               profile={client.hairProfile}

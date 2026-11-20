@@ -47,6 +47,7 @@ export interface CreateReservationRequest {
   treatments: string[];
   scheduledStart: string;
   channel?: ReservationChannel;
+  agreedPrices?: Array<{ treatmentId: string; price: number }>;
 }
 
 export interface ConfirmValoracionRequest {

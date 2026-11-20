@@ -7,12 +7,15 @@ import { ADMIN_ACTION_MESSAGES } from "../feedback/action-messages";
 import { toastError, toastSuccess } from "../feedback/admin-toast";
 import {
   useCreateScheduleException,
+  useDeleteDayOverride,
   useDeleteScheduleException,
+  useSetDayOverride,
   useUpdateBaseSchedule,
 } from "./use-schedule";
 
 import type {
   ScheduleChangeResult,
+  SetDayOverrideRequest,
   UpdateBaseScheduleRequest,
 } from "../types/schedule.types";
 
@@ -29,6 +32,8 @@ export interface ScheduleActions {
   openExtraHours: (input: ScheduleExceptionInput) => Promise<boolean>;
   removeException: (exceptionId: string) => Promise<boolean>;
   updateBaseSchedule: (data: UpdateBaseScheduleRequest) => Promise<boolean>;
+  setDayOverride: (data: SetDayOverrideRequest) => Promise<boolean>;
+  removeDayOverride: (date: string) => Promise<boolean>;
   isSaving: boolean;
 }
 
@@ -80,7 +85,9 @@ async function runScheduleAction(
     | "blockSchedule"
     | "openSchedule"
     | "removeScheduleException"
-    | "updateBaseSchedule",
+    | "updateBaseSchedule"
+    | "setDayOverride"
+    | "removeDayOverride",
   execute: () => Promise<
     Pick<ScheduleChangeResult, "depositDeadlinesExtended">
   >,
@@ -102,6 +109,10 @@ export function useScheduleActions(): ScheduleActions {
   const create = useCreateScheduleException();
   const remove = useDeleteScheduleException();
   const updateBase = useUpdateBaseSchedule();
+  const setOverride = useSetDayOverride();
+  const removeOverride = useDeleteDayOverride();
+  const { mutateAsync: setOverrideAsync } = setOverride;
+  const { mutateAsync: removeOverrideAsync } = removeOverride;
   const { mutateAsync: createAsync } = create;
   const { mutateAsync: removeAsync } = remove;
   const { mutateAsync: updateBaseAsync } = updateBase;
@@ -122,12 +133,27 @@ export function useScheduleActions(): ScheduleActions {
         ),
       updateBaseSchedule: (data: UpdateBaseScheduleRequest) =>
         runScheduleAction("updateBaseSchedule", () => updateBaseAsync(data)),
+      setDayOverride: (data: SetDayOverrideRequest) =>
+        runScheduleAction("setDayOverride", () => setOverrideAsync(data)),
+      removeDayOverride: (date: string) =>
+        runScheduleAction("removeDayOverride", () => removeOverrideAsync(date)),
     }),
-    [createAsync, removeAsync, updateBaseAsync],
+    [
+      createAsync,
+      removeAsync,
+      updateBaseAsync,
+      setOverrideAsync,
+      removeOverrideAsync,
+    ],
   );
 
   return {
     ...actions,
-    isSaving: create.isPending || remove.isPending || updateBase.isPending,
+    isSaving:
+      create.isPending ||
+      remove.isPending ||
+      updateBase.isPending ||
+      setOverride.isPending ||
+      removeOverride.isPending,
   };
 }

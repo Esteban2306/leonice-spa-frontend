@@ -48,6 +48,14 @@ export const clientsApi = {
     );
   },
 
+  setDepositExempt(clientId: string, depositExempt: boolean) {
+    return httpClient.request<ClientView>(
+      `/clients/${clientId}/deposit-exempt`,
+      "PUT",
+      { depositExempt },
+    );
+  },
+
   setHairProfile(clientId: string, data: SetHairProfileRequest) {
     return httpClient.request<HairProfileView>(
       `/clients/${clientId}/hair-profile`,

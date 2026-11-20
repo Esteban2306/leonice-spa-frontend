@@ -60,6 +60,7 @@ export function CalendarToolbar({
   onBlockHours,
   onOpenExtraHours,
   onEditWeeklySchedule,
+  onEditDayHours,
 }: CalendarToolbarProps) {
   const activeFilters = availableFilters.filter((filter) =>
     activeFilterIds.includes(filter.id),
@@ -87,6 +88,7 @@ export function CalendarToolbar({
       onBlockHours={onBlockHours}
       onOpenExtraHours={onOpenExtraHours}
       onEditWeeklySchedule={onEditWeeklySchedule}
+      onEditDayHours={onEditDayHours}
     />
   );
 

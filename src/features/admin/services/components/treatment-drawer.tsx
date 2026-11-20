@@ -34,6 +34,7 @@ import { CatalogSwitch } from "./catalog-switch";
 import { HairPricingEditor } from "./hair-pricing-editor";
 import { PromotionsSection } from "./promotions-section";
 import { TreatmentFields } from "./treatment-fields";
+import { TreatmentContentEditor } from "./treatment-content-editor";
 import { TreatmentVideoSlot } from "./treatment-video-slot";
 
 export type DrawerFocus = "details" | "hair";
@@ -234,6 +235,14 @@ function DrawerBody({
             errors={errors}
             categories={categories}
             onChange={setDraft}
+          />
+        </Section>
+
+        <Section id="drawer-content" title="Ficha del servicio">
+          <TreatmentContentEditor
+            treatment={treatment}
+            isSaving={isSaving}
+            onSave={(content) => onSave(treatment.id, content)}
           />
         </Section>
 

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+
+import { CatalogSwitch } from "@/src/features/admin/services/components/catalog-switch";
 import Link from "@/src/features/admin/components/admin-link";
 import { Store } from "lucide-react";
 
@@ -91,12 +93,42 @@ function toPesosInput(thousands: number | null): string {
   return thousands === null ? "" : formatPesosInput(String(thousands * 1000));
 }
 
+function AutoMessageSwitch({
+  label,
+  description,
+  checked,
+  onChange,
+}: {
+  label: string;
+  description: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-0.5">
+        <span className="font-sans text-sm text-secondary">{label}</span>
+        <span className="font-sans text-xs text-secondary/70">
+          {description}
+        </span>
+      </div>
+      <CatalogSwitch checked={checked} label={label} onChange={onChange} />
+    </div>
+  );
+}
+
 function BusinessForm({ settings }: { settings: BusinessSettings }) {
   const actions = useConduitActions();
   const schedule = useBaseSchedule();
   const [deposit, setDeposit] = useState(toPesosInput(settings.depositAmount));
   const [ownerPhone, setOwnerPhone] = useState(
     settings.ownerContactPhone ?? "",
+  );
+  const [depositReminder, setDepositReminder] = useState(
+    settings.depositReminderEnabled ?? true,
+  );
+  const [leadFollowUp, setLeadFollowUp] = useState(
+    settings.leadFollowUpEnabled ?? false,
   );
   const ownerPhoneValue = ownerPhone.trim() || null;
   const ownerPhoneInvalid =
@@ -121,6 +153,8 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
   const payload: UpdateBusinessSettingsRequest = {
     depositAmount: depositThousands,
     ownerContactPhone: ownerPhoneValue,
+    depositReminderEnabled: depositReminder,
+    leadFollowUpEnabled: leadFollowUp,
     ...Object.fromEntries(
       FIELDS.map(({ key }) => [key, texts[key].trim() || null]),
     ),
@@ -128,6 +162,8 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
   const dirty =
     payload.depositAmount !== settings.depositAmount ||
     ownerPhoneValue !== (settings.ownerContactPhone ?? null) ||
+    depositReminder !== (settings.depositReminderEnabled ?? true) ||
+    leadFollowUp !== (settings.leadFollowUpEnabled ?? false) ||
     FIELDS.some(
       ({ key }) => (payload[key] ?? null) !== (settings[key] ?? null),
     );
@@ -211,6 +247,23 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
             className={`${INPUT_CLASS} max-w-xs tabular-nums`}
           />
         </Field>
+        <fieldset className="flex flex-col gap-3 rounded-2xl border border-secondary/10 bg-white/50 p-4">
+          <legend className="px-1 font-sans text-sm font-medium text-secondary">
+            Mensajes automáticos a clientas
+          </legend>
+          <AutoMessageSwitch
+            label="Recordar el anticipo"
+            description="30 minutos antes de que venza el plazo, si todavía no envió el comprobante. Una sola vez por cita."
+            checked={depositReminder}
+            onChange={setDepositReminder}
+          />
+          <AutoMessageSwitch
+            label="Escribirle a quien dejó sus datos y no agendó"
+            description="Un solo mensaje al día siguiente, a las 10:30 a. m. Nunca a números silenciados."
+            checked={leadFollowUp}
+            onChange={setLeadFollowUp}
+          />
+        </fieldset>
         <button
           type="button"
           className={`${PRIMARY_BUTTON} w-fit`}

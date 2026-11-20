@@ -98,6 +98,7 @@ export interface ClientListItem {
   phone: string;
   createdAt: string;
   reservationCount: number;
+  missingBirthDate?: boolean;
   lastReservation: { scheduledStart: string; status: ReservationStatus } | null;
   hairProfileStatus: HairProfileStatus;
   tags: ClientTag[];
@@ -118,9 +119,10 @@ export interface ClientView {
   name: string;
   phone: string;
   whatsappJid: string | null;
-  birthDate: string;
+  birthDate: string | null;
   allergies: string | null;
   isPregnant: boolean;
+  depositExempt?: boolean;
   hairProfile: HairProfileView;
   createdAt: string;
   updatedAt: string;

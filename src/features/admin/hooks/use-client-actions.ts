@@ -5,6 +5,7 @@ import {
   useConfirmHairProfile,
   useCreateClient,
   useRecordConsent,
+  useSetDepositExempt,
   useSetHairProfile,
   useUpdateClient,
 } from "./use-clients";
@@ -25,6 +26,10 @@ export interface ClientActions {
     data: SetHairProfileRequest,
   ) => Promise<boolean>;
   confirmHairProfile: (clientId: string) => Promise<boolean>;
+  setDepositExempt: (
+    clientId: string,
+    depositExempt: boolean,
+  ) => Promise<boolean>;
   recordHealthConsent: (clientId: string) => Promise<boolean>;
   isSaving: boolean;
 }
@@ -35,12 +40,14 @@ export function useClientActions(): ClientActions {
   const setHair = useSetHairProfile();
   const confirmHair = useConfirmHairProfile();
   const consent = useRecordConsent();
+  const depositExempt = useSetDepositExempt();
 
   const { mutateAsync: createAsync } = create;
   const { mutateAsync: updateAsync } = update;
   const { mutateAsync: setHairAsync } = setHair;
   const { mutateAsync: confirmHairAsync } = confirmHair;
   const { mutateAsync: consentAsync } = consent;
+  const { mutateAsync: depositExemptAsync } = depositExempt;
 
   const actions = useMemo(
     () => ({
@@ -62,6 +69,12 @@ export function useClientActions(): ClientActions {
       confirmHairProfile: async (clientId: string) =>
         (await runAdminAction("confirmHairProfile", () => confirmHairAsync(clientId)))
           .ok,
+      setDepositExempt: async (clientId: string, exempt: boolean) =>
+        (
+          await runAdminAction("setDepositExempt", () =>
+            depositExemptAsync({ clientId, depositExempt: exempt }),
+          )
+        ).ok,
       recordHealthConsent: async (clientId: string) =>
         (
           await runAdminAction("recordConsent", () =>
@@ -75,7 +88,14 @@ export function useClientActions(): ClientActions {
           )
         ).ok,
     }),
-    [createAsync, updateAsync, setHairAsync, confirmHairAsync, consentAsync],
+    [
+      createAsync,
+      updateAsync,
+      setHairAsync,
+      confirmHairAsync,
+      consentAsync,
+      depositExemptAsync,
+    ],
   );
 
   return {
@@ -85,6 +105,7 @@ export function useClientActions(): ClientActions {
       update.isPending ||
       setHair.isPending ||
       confirmHair.isPending ||
-      consent.isPending,
+      consent.isPending ||
+      depositExempt.isPending,
   };
 }

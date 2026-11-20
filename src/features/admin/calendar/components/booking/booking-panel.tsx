@@ -98,6 +98,7 @@ export function BookingPanel({
           <section className="flex flex-col gap-2">
             <p className={SECTION_LABEL}>Cliente</p>
             <BookingClientForm
+              services={booking.services}
               presetClient={booking.client}
               search={clientSearch}
               isSubmitting={isSubmitting}

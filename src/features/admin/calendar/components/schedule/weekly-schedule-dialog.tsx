@@ -30,7 +30,8 @@ import {
 import type { ScheduleDialogMode } from "./schedule-exception-dialog";
 import { BrandLoader } from "@/src/components/brand/brand-loader";
 
-export type CalendarScheduleDialog = ScheduleDialogMode | "weekly";
+export type CalendarScheduleDialog =
+  ScheduleDialogMode | "weekly" | "day-hours";
 
 interface WeeklyScheduleDialogProps {
   actions: ScheduleActions;

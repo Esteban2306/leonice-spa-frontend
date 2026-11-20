@@ -18,6 +18,7 @@ import { ErrorPanel } from "../components/error-panel";
 import { EmptyState } from "../components/section-card";
 import { ConversationList, type InboxTab } from "../inbox/conversation-list";
 import { ConversationThread } from "../inbox/conversation-thread";
+import { MutedContactsDialog } from "../inbox/muted-contacts-dialog";
 import { needsAttention, sortForInbox } from "../lib/whatsapp-format";
 
 const PENDING_PARAMS = { limit: 100 } as const;
@@ -31,6 +32,7 @@ export function InboxSection() {
   const selectedId = searchParams.get("chat");
   const [tab, setTab] = useState<InboxTab>("pending");
   const [search, setSearch] = useState("");
+  const [mutedOpen, setMutedOpen] = useState(false);
   const digits = search.replace(/\D/g, "");
   const debouncedDigits = useDebouncedValue(digits, 350, digits);
 
@@ -120,6 +122,7 @@ export function InboxSection() {
             onTabChange={setTab}
             onSearchChange={setSearch}
             onSelect={select}
+            onManageMuted={() => setMutedOpen(true)}
           />
         )}
       </div>
@@ -155,6 +158,11 @@ export function InboxSection() {
           </div>
         )}
       </div>
+      <MutedContactsDialog
+        open={mutedOpen}
+        onOpenChange={setMutedOpen}
+        actions={actions}
+      />
     </div>
   );
 }

@@ -12,6 +12,7 @@ export interface CreateBookingInput {
   treatmentIds: string[];
   scheduledStart: string;
   client: { phone: string; name?: string; birthDate?: string };
+  agreedPrices?: Array<{ treatmentId: string; price: number }>;
 }
 
 export interface RescheduleBookingInput {
@@ -43,6 +44,9 @@ export function useBookingActions(): BookingActions {
               treatments: input.treatmentIds,
               scheduledStart: input.scheduledStart,
               channel: "WEB",
+              ...(input.agreedPrices?.length && {
+                agreedPrices: input.agreedPrices,
+              }),
             }) as Promise<CreatedReservations>,
           (created) => created.summary,
         );

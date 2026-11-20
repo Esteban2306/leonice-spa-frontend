@@ -21,8 +21,33 @@ export interface ScheduleException {
   createdAt: string;
 }
 
+export interface DayOverride {
+  date: string;
+  isClosed: boolean;
+  windows: Array<{ startTime: string; endTime: string }>;
+  startTimes: string[];
+  reason: string | null;
+}
+
+export interface SetDayOverrideRequest {
+  from: string;
+  to: string;
+  windows: Array<{ startTime: string; endTime: string }>;
+  startTimes?: string[];
+  reason?: string;
+}
+
+export interface SetDayOverrideResult {
+  overrides: DayOverride[];
+  depositDeadlinesExtended: Array<{
+    reservationId: string;
+    depositExpiresAt: string;
+  }>;
+}
+
 export interface ScheduleDay {
   date: string;
+  override?: DayOverride | null;
   isClosed: boolean;
   windows: ScheduleWindow[];
   categories: Array<{

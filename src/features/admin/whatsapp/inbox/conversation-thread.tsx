@@ -10,6 +10,8 @@ import {
 import Link from "@/src/features/admin/components/admin-link";
 import {
   ArrowLeft,
+  Bell,
+  BellOff,
   CheckCheck,
   CircleSlash,
   ImageIcon,
@@ -20,6 +22,10 @@ import {
 
 import { cn } from "@/lib/utils";
 import { ActionDialog } from "@/src/features/admin/components/reservation-actions/action-dialog";
+import {
+  Field,
+  INPUT_CLASS,
+} from "@/src/features/admin/components/reservation-actions/form-controls";
 import type { ConduitActions } from "@/src/features/admin/hooks/use-conduit-actions";
 import type {
   ConversationMessage,
@@ -134,6 +140,8 @@ export function ConversationThread({
   const [text, setText] = useState("");
   const [pending, setPending] = useState<PendingReply[]>([]);
   const [confirmResume, setConfirmResume] = useState(false);
+  const [confirmMute, setConfirmMute] = useState(false);
+  const [muteReason, setMuteReason] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const lastIdRef = useRef<string | null>(null);
   const keyRef = useRef(0);
@@ -203,8 +211,13 @@ export function ConversationThread({
               {formatWhatsappPhone(conversation.phoneNumber)}
             </p>
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+              {conversation.muted && (
+                <StatusPill tone="gray">
+                  Silenciado: el asistente nunca responde
+                </StatusPill>
+              )}
               {handoff && <StatusPill tone="red">Pidió una persona</StatusPill>}
-              {conversation.botPaused ? (
+              {conversation.muted ? null : conversation.botPaused ? (
                 <StatusPill tone="amber">
                   Asistente en pausa
                   {conversation.botPausedUntil
@@ -258,6 +271,28 @@ export function ConversationThread({
               }
             />
           )}
+          {conversation.muted ? (
+            <button
+              type="button"
+              disabled={actions.busy.has(`mute:${conversation.phoneNumber}`)}
+              onClick={() =>
+                void actions.unmuteContact(conversation.phoneNumber)
+              }
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-full px-3 font-sans text-xs text-primary/85 hover:bg-primary/10 disabled:opacity-50 sm:h-10 sm:px-4 sm:text-sm"
+            >
+              <Bell className="size-4" strokeWidth={1.8} />
+              Volver a responder
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setConfirmMute(true)}
+              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-full px-3 font-sans text-xs text-primary/85 hover:bg-primary/10 sm:h-10 sm:px-4 sm:text-sm"
+            >
+              <BellOff className="size-4" strokeWidth={1.8} />
+              No responder nunca
+            </button>
+          )}
           {conversation.status !== "COMPLETED" && (
             <button
               type="button"
@@ -295,9 +330,7 @@ export function ConversationThread({
             </button>
           </div>
         )}
-        {isLoading && (
-          <BrandLoader label="Cargando la conversación…" />
-        )}
+        {isLoading && <BrandLoader label="Cargando la conversación…" />}
         {Boolean(error) && !isLoading && (
           <ErrorPanel error={error} onRetry={onRetry} compact />
         )}
@@ -397,6 +430,36 @@ export function ConversationThread({
         submittingLabel="Reanudando…"
         onSubmit={() => actions.resume(conversation.id)}
       />
+
+      <ActionDialog
+        open={confirmMute}
+        onOpenChange={(open) => {
+          setConfirmMute(open);
+          if (!open) setMuteReason("");
+        }}
+        title="¿No responderle nunca a este número?"
+        description="Úsalo para bots de otras empresas. Sus mensajes se seguirán guardando aquí, pero el asistente nunca les responderá. Puedes deshacerlo cuando quieras."
+        submitLabel="No responder nunca"
+        submittingLabel="Guardando…"
+        onSubmit={() =>
+          actions.muteContact(
+            conversation.phoneNumber,
+            muteReason.trim() || undefined,
+          )
+        }
+      >
+        <Field label="Motivo (opcional)" htmlFor="mute-reason">
+          <input
+            id="mute-reason"
+            type="text"
+            maxLength={200}
+            placeholder="Bot de otra empresa"
+            value={muteReason}
+            onChange={(e) => setMuteReason(e.target.value)}
+            className={INPUT_CLASS}
+          />
+        </Field>
+      </ActionDialog>
     </section>
   );
 }

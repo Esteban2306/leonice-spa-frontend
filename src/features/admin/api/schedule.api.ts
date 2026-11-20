@@ -5,6 +5,8 @@ import type {
   ScheduleChangeResult,
   ScheduleDay,
   ScheduleException,
+  SetDayOverrideRequest,
+  SetDayOverrideResult,
   UpdateBaseScheduleRequest,
   UpdateBaseScheduleResult,
 } from "../types/schedule.types";
@@ -52,6 +54,21 @@ export const scheduleApi = {
       "/admin/schedule/exceptions",
       "POST",
       data,
+    );
+  },
+
+  setDayOverride(data: SetDayOverrideRequest) {
+    return httpClient.request<SetDayOverrideResult>(
+      "/admin/schedule/overrides",
+      "PUT",
+      data,
+    );
+  },
+
+  deleteDayOverride(date: string) {
+    return httpClient.request<SetDayOverrideResult>(
+      `/admin/schedule/overrides/${date}`,
+      "DELETE",
     );
   },
 

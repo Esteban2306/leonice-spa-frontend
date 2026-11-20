@@ -53,6 +53,10 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Perfil del cliente actualizado.",
     error: "No se pudo guardar el perfil",
   },
+  setDepositExempt: {
+    success: "Listo. Se guardó si esta clienta paga anticipo.",
+    error: "No se pudo cambiar el anticipo de esta clienta",
+  },
   setHairProfile: {
     success: "Perfil capilar actualizado. Queda vigente por 4 meses.",
     error: "No se pudo guardar el perfil capilar",
@@ -64,6 +68,14 @@ export const ADMIN_ACTION_MESSAGES = {
   recordConsent: {
     success: "Consentimiento registrado.",
     error: "No se pudo registrar el consentimiento",
+  },
+  setDayOverride: {
+    success: "Horario de la fecha guardado. Ya se ofrece así para reservas.",
+    error: "No se pudo guardar el horario de la fecha",
+  },
+  removeDayOverride: {
+    success: "Esa fecha vuelve al horario semanal.",
+    error: "No se pudo quitar el horario de la fecha",
   },
   blockSchedule: {
     success: "Horario bloqueado. Ya no se ofrecerá para reservas.",
@@ -170,6 +182,14 @@ export const ADMIN_ACTION_MESSAGES = {
   conduitToolOff: {
     success: "Herramienta desactivada.",
     error: "No se pudo desactivar la herramienta",
+  },
+  conduitMuteContact: {
+    success: "Listo: el asistente nunca le responderá a ese número.",
+    error: "No se pudo silenciar el número",
+  },
+  conduitUnmuteContact: {
+    success: "El asistente vuelve a responderle a ese número.",
+    error: "No se pudo quitar el silencio",
   },
   conduitAddEscalation: {
     success: "Contacto agregado. Recibirá los avisos del asistente.",

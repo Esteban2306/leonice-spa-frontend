@@ -46,6 +46,25 @@ export interface Treatment {
   effectiveBasePriceMax?: number | null;
   videoUrl?: string | null;
   posterUrl?: string | null;
+  tagline?: string | null;
+  summary?: string | null;
+  idealFor?: string[];
+  benefits?: string[];
+  results?: string | null;
+  aftercare?: string[];
+  considerations?: string[];
+  recommendedFrequency?: string | null;
+}
+
+export interface TreatmentContent {
+  tagline: string | null;
+  summary: string | null;
+  idealFor: string[];
+  benefits: string[];
+  results: string | null;
+  aftercare: string[];
+  considerations: string[];
+  recommendedFrequency: string | null;
 }
 
 export interface HairLengthPricingRow {
@@ -95,6 +114,14 @@ export interface UpdateTreatmentRequest {
   baseDurationMinMinutes?: number;
   baseDurationMaxMinutes?: number;
   isActive?: boolean;
+  tagline?: string | null;
+  summary?: string | null;
+  idealFor?: string[];
+  benefits?: string[];
+  results?: string | null;
+  aftercare?: string[];
+  considerations?: string[];
+  recommendedFrequency?: string | null;
 }
 
 export interface SetHairLengthPricingRequest {

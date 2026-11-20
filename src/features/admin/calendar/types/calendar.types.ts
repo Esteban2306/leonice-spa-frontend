@@ -66,6 +66,7 @@ export interface BookingClient {
   id: string | null;
   name: string;
   phone: string;
+  missingBirthDate?: boolean;
 }
 
 export interface BookingReservation {
@@ -88,4 +89,5 @@ export interface ScheduleActionHandlers {
   onBlockHours: () => void;
   onOpenExtraHours: () => void;
   onEditWeeklySchedule: () => void;
+  onEditDayHours: () => void;
 }

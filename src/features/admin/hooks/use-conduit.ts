@@ -113,6 +113,15 @@ export function useConduitTools() {
   });
 }
 
+export function useMutedContacts(enabled = true) {
+  return useQuery({
+    queryKey: adminQueryKeys.conduit.muted(),
+    queryFn: () => conduitApi.mutedContacts(),
+    enabled,
+    ...STATIC,
+  });
+}
+
 export function useEscalationContacts() {
   return useQuery({
     queryKey: adminQueryKeys.conduit.escalation(),
