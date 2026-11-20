@@ -16,7 +16,7 @@ interface EditProfileDialogProps {
 
 export function EditProfileDialog({ open, client, todayKey, onOpenChange, onSave }: EditProfileDialogProps) {
   const [name, setName] = useState(client.name);
-  const [birthDate, setBirthDate] = useState(client.birthDate);
+  const [birthDate, setBirthDate] = useState(client.birthDate ?? "");
 
   const trimmed = name.trim();
   const canSubmit = trimmed.length >= 2 && trimmed.length <= 100 && birthDate !== "" && birthDate <= todayKey;
@@ -27,7 +27,7 @@ export function EditProfileDialog({ open, client, todayKey, onOpenChange, onSave
       onOpenChange={(next) => {
         if (next) {
           setName(client.name);
-          setBirthDate(client.birthDate);
+          setBirthDate(client.birthDate ?? "");
         }
         onOpenChange(next);
       }}

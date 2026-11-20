@@ -118,7 +118,7 @@ export interface ClientView {
   name: string;
   phone: string;
   whatsappJid: string | null;
-  birthDate: string;
+  birthDate: string | null;
   allergies: string | null;
   isPregnant: boolean;
   depositExempt?: boolean;

@@ -38,8 +38,10 @@ export function ClientHeader({
   onEditProfile,
   onNewReservation,
 }: ClientHeaderProps) {
-  const age = ageOn(client.birthDate, todayKey);
-  const birthdayIn = daysUntilBirthday(client.birthDate, todayKey);
+  const birthDate = client.birthDate;
+  const age = birthDate ? ageOn(birthDate, todayKey) : null;
+  const birthdayIn = birthDate ? daysUntilBirthday(birthDate, todayKey) : null;
+  const birthdaySoon = birthDate ? isBirthdaySoon(birthDate, todayKey) : false;
   const whatsapp = `https://wa.me/${client.phone.replace(/\D/g, "")}`;
 
   return (
@@ -76,13 +78,15 @@ export function ClientHeader({
                   Crédito {formatCopFromThousands(creditThousands)}
                 </span>
               )}
-              <span className={`${CHIP} ${isBirthdaySoon(client.birthDate, todayKey) ? "bg-tertiary text-secondary" : "bg-primary/10 text-primary/80"}`}>
+              <span className={`${CHIP} ${birthdaySoon ? "bg-tertiary text-secondary" : "bg-primary/10 text-primary/80"}`}>
                 <Cake className="size-3" />
-                {birthdayIn === 0
-                  ? `¡Cumple hoy! · ${age} años`
-                  : isBirthdaySoon(client.birthDate, todayKey)
-                    ? `Cumple en ${birthdayIn} días · ${age} años`
-                    : `${age} años`}
+                {age === null
+                  ? "Sin fecha de nacimiento"
+                  : birthdayIn === 0
+                    ? `¡Cumple hoy! · ${age} años`
+                    : birthdaySoon
+                      ? `Cumple en ${birthdayIn} días · ${age} años`
+                      : `${age} años`}
               </span>
               {client.allergies && (
                 <span className={`${CHIP} bg-red-100 text-red-800`}>
