@@ -9,7 +9,9 @@ import {
 } from "@/src/features/admin/components/reservation-actions/form-controls";
 import type { ClientListItem } from "@/src/features/admin/types/clients.types";
 
-import type { BookingClient } from "../../types/calendar.types";
+import { formatPesosInput } from "@/src/features/admin/services/lib/catalog";
+
+import type { BookingClient, BookingService } from "../../types/calendar.types";
 
 export interface BookingClientSearch {
   query: string;
@@ -22,9 +24,11 @@ export interface NewClientValues {
   phone: string;
   name: string;
   birthDate: string;
+  prices: Record<string, string>;
 }
 
 interface BookingClientFormProps {
+  services: readonly BookingService[];
   presetClient: BookingClient | null;
   search: BookingClientSearch;
   isSubmitting: boolean;
@@ -34,6 +38,7 @@ interface BookingClientFormProps {
 const MIN_PHONE_DIGITS = 10;
 
 export function BookingClientForm({
+  services,
   presetClient,
   search,
   isSubmitting,
@@ -44,6 +49,7 @@ export function BookingClientForm({
     phone: "",
     name: "",
     birthDate: "",
+    prices: {},
   });
 
   const phoneDigits = values.phone.replace(/\D/g, "").length;
@@ -173,6 +179,41 @@ export function BookingClientForm({
           </Field>
         </>
       )}
+
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-1 font-sans text-xs uppercase tracking-[0.16em] text-secondary/70">
+          Precio de la cita (opcional)
+        </legend>
+        <p className="font-sans text-xs text-secondary/70">
+          Si ya acordaste el precio real, escríbelo. Vacío, se usa el precio del
+          catálogo.
+        </p>
+        {services.map((service) => (
+          <Field
+            key={service.treatmentId}
+            label={service.name}
+            htmlFor={`booking-price-${service.treatmentId}`}
+          >
+            <input
+              id={`booking-price-${service.treatmentId}`}
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="Precio del catálogo"
+              value={values.prices[service.treatmentId] ?? ""}
+              onChange={(event) =>
+                setValues({
+                  ...values,
+                  prices: {
+                    ...values.prices,
+                    [service.treatmentId]: formatPesosInput(event.target.value),
+                  },
+                })
+              }
+              className={INPUT_CLASS}
+            />
+          </Field>
+        ))}
+      </fieldset>
 
       <button
         type="submit"

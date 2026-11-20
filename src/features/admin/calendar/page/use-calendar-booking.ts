@@ -14,7 +14,7 @@ import type { AvailabilityDay } from "@/src/features/admin/types/reservations.ty
 
 import type { BookingClientSearch } from "../components/booking/booking-client-form";
 import type { NewClientValues } from "../components/booking/booking-client-form";
-import { indexAvailability } from "../lib/booking";
+import { indexAvailability, toAgreedPrices } from "../lib/booking";
 import { fromDateKey } from "../lib/calendar-dates";
 import type {
   BookingClient,
@@ -180,6 +180,7 @@ export function useCalendarBooking({
     const created = await bookingActions.create({
       treatmentIds: booking.services.map((s) => s.treatmentId),
       scheduledStart: slotIso,
+      agreedPrices: toAgreedPrices(values.prices),
       client: client
         ? { phone: client.phone }
         : {
