@@ -358,6 +358,7 @@ export interface BusinessSettings {
   cancellationPolicy: string | null;
   address: string | null;
   additionalInfo: string | null;
+  assessmentOffer: string | null;
   ownerContactPhone: string | null;
   updatedAt: string | null;
 }
