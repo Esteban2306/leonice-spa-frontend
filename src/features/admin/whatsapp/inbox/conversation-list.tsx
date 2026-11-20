@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import { BellOff, Search, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { ConversationSummary } from "@/src/features/admin/types/conduit.types";
@@ -30,6 +30,7 @@ interface ConversationListProps {
   onTabChange: (tab: InboxTab) => void;
   onSearchChange: (search: string) => void;
   onSelect: (id: string) => void;
+  onManageMuted: () => void;
 }
 
 export function ConversationList({
@@ -43,6 +44,7 @@ export function ConversationList({
   onTabChange,
   onSearchChange,
   onSelect,
+  onManageMuted,
 }: ConversationListProps) {
   return (
     <section
@@ -103,6 +105,14 @@ export function ConversationList({
             </button>
           )}
         </div>
+        <button
+          type="button"
+          onClick={onManageMuted}
+          className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-full px-2 py-1 font-sans text-xs text-secondary/75 underline decoration-tertiary underline-offset-4 hover:text-secondary"
+        >
+          <BellOff className="size-3.5" />
+          Números a los que el asistente no responde
+        </button>
       </div>
 
       <ul
@@ -168,24 +178,35 @@ export function ConversationList({
                     {last.content}
                   </span>
                 )}
-                {(conversation.awaitingReply || conversation.botPaused) && (
+                {conversation.muted && (
                   <span className="flex flex-wrap gap-1.5">
-                    {handoff && (
-                      <StatusPill tone="red">Pidió una persona</StatusPill>
-                    )}
-                    {conversation.awaitingReply && !handoff && (
-                      <StatusPill tone="amber">Esperando respuesta</StatusPill>
-                    )}
-                    {conversation.botPaused && conversation.botPausedUntil && (
-                      <span title={conversation.botPauseReason ?? undefined}>
-                        <StatusPill tone="gray">
-                          Asistente en pausa hasta{" "}
-                          {formatTime(conversation.botPausedUntil)}
-                        </StatusPill>
-                      </span>
-                    )}
+                    <StatusPill tone="gray">Silenciado</StatusPill>
                   </span>
                 )}
+                {!conversation.muted &&
+                  (conversation.awaitingReply || conversation.botPaused) && (
+                    <span className="flex flex-wrap gap-1.5">
+                      {handoff && (
+                        <StatusPill tone="red">Pidió una persona</StatusPill>
+                      )}
+                      {conversation.awaitingReply && !handoff && (
+                        <StatusPill tone="amber">
+                          Esperando respuesta
+                        </StatusPill>
+                      )}
+                      {conversation.botPaused &&
+                        conversation.botPausedUntil && (
+                          <span
+                            title={conversation.botPauseReason ?? undefined}
+                          >
+                            <StatusPill tone="gray">
+                              Asistente en pausa hasta{" "}
+                              {formatTime(conversation.botPausedUntil)}
+                            </StatusPill>
+                          </span>
+                        )}
+                    </span>
+                  )}
               </button>
             </li>
           );

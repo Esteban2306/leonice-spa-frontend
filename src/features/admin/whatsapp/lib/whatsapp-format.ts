@@ -161,6 +161,7 @@ export function isClosed(conversation: ConversationSummary): boolean {
 export function needsAttention(conversation: ConversationSummary): boolean {
   return (
     !isClosed(conversation) &&
+    !conversation.muted &&
     (conversation.awaitingReply || conversation.botPaused)
   );
 }

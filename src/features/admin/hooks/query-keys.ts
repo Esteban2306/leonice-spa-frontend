@@ -231,6 +231,7 @@ export const adminQueryKeys = {
     hairPhoto: () => [...adminQueryKeys.conduit.all(), "hair-photo"] as const,
     tools: () => [...adminQueryKeys.conduit.all(), "tools"] as const,
     escalation: () => [...adminQueryKeys.conduit.all(), "escalation"] as const,
+    muted: () => [...adminQueryKeys.conduit.all(), "muted"] as const,
     conversations: () =>
       [...adminQueryKeys.conduit.all(), "conversations"] as const,
     conversationList: (params: unknown) =>

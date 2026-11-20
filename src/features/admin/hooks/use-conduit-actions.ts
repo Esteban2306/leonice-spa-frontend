@@ -185,6 +185,20 @@ export function useConduitActions() {
           () => conduitApi.setToolActive(id, isActive),
           refresh(K.tools()),
         ),
+      muteContact: (address: string, reason?: string) =>
+        run(
+          `mute:${address}`,
+          "conduitMuteContact",
+          () => conduitApi.muteContact(address, reason),
+          refresh(K.muted(), K.conversations()),
+        ),
+      unmuteContact: (address: string) =>
+        run(
+          `mute:${address}`,
+          "conduitUnmuteContact",
+          () => conduitApi.unmuteContact(address),
+          refresh(K.muted(), K.conversations()),
+        ),
       addEscalationContact: (data: Omit<EscalationContact, "id">) =>
         run(
           "escalation:add",

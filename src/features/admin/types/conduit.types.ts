@@ -153,6 +153,7 @@ export interface ConversationSummary {
   botPausedUntil: string | null;
   botPauseReason: string | null;
   awaitingReply: boolean;
+  muted?: boolean;
   lastMessage: {
     direction: "INBOUND" | "OUTBOUND";
     content: string;
@@ -246,6 +247,12 @@ export interface BotTool {
   requiresImageAttachment: boolean;
   injectPhoneParamName: string | null;
   pausesBotMinutes: number | null;
+}
+
+export interface MutedContact {
+  address: string;
+  reason: string | null;
+  createdAt: string;
 }
 
 export interface EscalationContact {

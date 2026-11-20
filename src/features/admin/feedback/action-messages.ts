@@ -171,6 +171,14 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Herramienta desactivada.",
     error: "No se pudo desactivar la herramienta",
   },
+  conduitMuteContact: {
+    success: "Listo: el asistente nunca le responderá a ese número.",
+    error: "No se pudo silenciar el número",
+  },
+  conduitUnmuteContact: {
+    success: "El asistente vuelve a responderle a ese número.",
+    error: "No se pudo quitar el silencio",
+  },
   conduitAddEscalation: {
     success: "Contacto agregado. Recibirá los avisos del asistente.",
     error: "No se pudo agregar el contacto",

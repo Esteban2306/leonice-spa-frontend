@@ -93,6 +93,11 @@ describe("bandeja", () => {
         conversation("abandoned", { status: "ABANDONED", botPaused: true }),
       ),
     ).toBe(false);
+    expect(
+      needsAttention(
+        conversation("muted", { awaitingReply: true, muted: true }),
+      ),
+    ).toBe(false);
   });
 
   it("calcula la pausa hasta mañana a las 8:00 a. m. de Bogotá", () => {
