@@ -108,6 +108,22 @@ export function useUpdateClient() {
   });
 }
 
+export function useSetDepositExempt() {
+  const invalidate = useInvalidateClient();
+
+  return useMutation({
+    mutationKey: ["admin", "clients", "deposit-exempt"],
+    mutationFn: ({
+      clientId,
+      depositExempt,
+    }: {
+      clientId: string;
+      depositExempt: boolean;
+    }) => clientsApi.setDepositExempt(clientId, depositExempt),
+    onSuccess: (_data, variables) => invalidate(variables.clientId),
+  });
+}
+
 export function useSetHairProfile() {
   const invalidate = useInvalidateClient();
   const queryClient = useQueryClient();

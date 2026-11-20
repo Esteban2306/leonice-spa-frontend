@@ -121,6 +121,7 @@ export interface ClientView {
   birthDate: string;
   allergies: string | null;
   isPregnant: boolean;
+  depositExempt?: boolean;
   hairProfile: HairProfileView;
   createdAt: string;
   updatedAt: string;

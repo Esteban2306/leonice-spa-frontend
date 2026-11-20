@@ -53,6 +53,10 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Perfil del cliente actualizado.",
     error: "No se pudo guardar el perfil",
   },
+  setDepositExempt: {
+    success: "Listo. Se guardó si esta clienta paga anticipo.",
+    error: "No se pudo cambiar el anticipo de esta clienta",
+  },
   setHairProfile: {
     success: "Perfil capilar actualizado. Queda vigente por 4 meses.",
     error: "No se pudo guardar el perfil capilar",
