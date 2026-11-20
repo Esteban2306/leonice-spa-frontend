@@ -38,7 +38,10 @@ export function toBookingService(
 }
 
 export function totalDuration(services: readonly BookingService[]): number {
-  return services.reduce((sum, service) => sum + service.durationMinutes, 0);
+  return services.reduce(
+    (longest, service) => Math.max(longest, service.durationMinutes),
+    0,
+  );
 }
 
 export function indexAvailability(
