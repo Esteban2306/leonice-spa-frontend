@@ -66,6 +66,7 @@ export interface BookingClient {
   id: string | null;
   name: string;
   phone: string;
+  missingBirthDate?: boolean;
 }
 
 export interface BookingReservation {

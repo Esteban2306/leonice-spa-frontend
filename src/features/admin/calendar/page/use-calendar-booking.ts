@@ -83,6 +83,7 @@ export function useCalendarBooking({
         id: presetClientQuery.data.id,
         name: presetClientQuery.data.name,
         phone: presetClientQuery.data.phone,
+        missingBirthDate: presetClientQuery.data.birthDate === null,
       }
     : null;
 
@@ -182,7 +183,11 @@ export function useCalendarBooking({
       scheduledStart: slotIso,
       agreedPrices: toAgreedPrices(values.prices),
       client: client
-        ? { phone: client.phone }
+        ? {
+            phone: client.phone,
+            ...(client.missingBirthDate &&
+              values.birthDate && { birthDate: values.birthDate }),
+          }
         : {
             phone: values.phone,
             name: values.name.trim(),

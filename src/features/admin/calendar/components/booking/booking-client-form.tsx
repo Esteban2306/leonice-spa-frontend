@@ -53,8 +53,21 @@ export function BookingClientForm({
   });
 
   const phoneDigits = values.phone.replace(/\D/g, "").length;
+  const birthDateField = (
+    <Field label="Fecha de nacimiento" htmlFor="booking-birth">
+      <input
+        id="booking-birth"
+        type="date"
+        value={values.birthDate}
+        onChange={(event) =>
+          setValues({ ...values, birthDate: event.target.value })
+        }
+        className={INPUT_CLASS}
+      />
+    </Field>
+  );
   const canSubmit = picked
-    ? true
+    ? !picked.missingBirthDate || values.birthDate !== ""
     : phoneDigits >= MIN_PHONE_DIGITS &&
       values.name.trim().length >= 2 &&
       values.birthDate !== "";
@@ -127,6 +140,7 @@ export function BookingClientForm({
                       id: client.id,
                       name: client.name,
                       phone: client.phone,
+                      missingBirthDate: client.missingBirthDate ?? false,
                     })
                   }
                   className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-left font-sans text-sm text-secondary hover:bg-quaternary/25"
@@ -166,17 +180,17 @@ export function BookingClientForm({
               className={INPUT_CLASS}
             />
           </Field>
-          <Field label="Fecha de nacimiento" htmlFor="booking-birth">
-            <input
-              id="booking-birth"
-              type="date"
-              value={values.birthDate}
-              onChange={(event) =>
-                setValues({ ...values, birthDate: event.target.value })
-              }
-              className={INPUT_CLASS}
-            />
-          </Field>
+          {birthDateField}
+        </>
+      )}
+
+      {picked?.missingBirthDate && (
+        <>
+          <p className="font-sans text-xs text-secondary/70">
+            Este cliente se registró sin fecha de nacimiento: escríbela para
+            agendar.
+          </p>
+          {birthDateField}
         </>
       )}
 

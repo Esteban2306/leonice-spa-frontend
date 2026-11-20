@@ -98,6 +98,7 @@ export interface ClientListItem {
   phone: string;
   createdAt: string;
   reservationCount: number;
+  missingBirthDate?: boolean;
   lastReservation: { scheduledStart: string; status: ReservationStatus } | null;
   hairProfileStatus: HairProfileStatus;
   tags: ClientTag[];
