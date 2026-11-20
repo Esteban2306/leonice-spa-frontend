@@ -47,6 +47,7 @@ export const HAIR_MODE_OPTIONS: ReadonlyArray<{
 const VERDICT_TEXT: Record<string, string> = {
   VALID: "Foto del cabello",
   NEEDS_REVIEW: "Parece del cabello",
+  INVALID: "No es del cabello",
   NOT_APPLICABLE: "No es del cabello",
   UNREADABLE: "No se ve bien",
   ERROR: "No se pudo revisar",
