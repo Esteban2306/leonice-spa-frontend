@@ -34,7 +34,8 @@ type TextKey =
   | "depositPolicy"
   | "cancellationPolicy"
   | "address"
-  | "additionalInfo";
+  | "additionalInfo"
+  | "assessmentOffer";
 
 const FIELDS: ReadonlyArray<{
   key: TextKey;
@@ -75,6 +76,13 @@ const FIELDS: ReadonlyArray<{
     max: 2000,
     hint: "Parqueadero, recomendaciones antes de la cita…",
   },
+  {
+    key: "assessmentOffer",
+    label: "Valoración capilar",
+    max: 500,
+    hint: "Opcional. Si lo dejas vacío, el asistente no habla del costo de la valoración ni dice que algo es gratis. Lo que escribas lo dirá tal cual (por ejemplo: «La valoración capilar no tiene costo»).",
+    rows: 2,
+  },
 ];
 
 const OWNER_PHONE_PATTERN = /^\+?[0-9][0-9 ]{6,28}$/;
@@ -99,6 +107,7 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
     cancellationPolicy: settings.cancellationPolicy ?? "",
     address: settings.address ?? "",
     additionalInfo: settings.additionalInfo ?? "",
+    assessmentOffer: settings.assessmentOffer ?? "",
   });
 
   const depositDigits = deposit.replace(/\D/g, "");
@@ -260,6 +269,11 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
           {texts.additionalInfo.trim() && (
             <PreviewBlock title="Otros datos">
               {texts.additionalInfo.trim()}
+            </PreviewBlock>
+          )}
+          {texts.assessmentOffer.trim() && (
+            <PreviewBlock title="Valoración capilar">
+              {texts.assessmentOffer.trim()}
             </PreviewBlock>
           )}
         </div>
