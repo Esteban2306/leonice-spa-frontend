@@ -367,6 +367,8 @@ export interface BusinessSettings {
   additionalInfo: string | null;
   assessmentOffer: string | null;
   ownerContactPhone: string | null;
+  depositReminderEnabled?: boolean;
+  leadFollowUpEnabled?: boolean;
   updatedAt: string | null;
 }
 
