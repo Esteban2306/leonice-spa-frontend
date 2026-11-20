@@ -139,6 +139,14 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Modelo de IA reactivado.",
     error: "No se pudo reactivar el modelo de IA",
   },
+  hairPhotoSetup: {
+    success: "Listo. Las fotos del cabello ya se revisan con tu clave.",
+    error: "No se pudieron activar las fotos del cabello",
+  },
+  hairPhotoMode: {
+    success: "Listo. El cambio aplica desde la próxima foto.",
+    error: "No se pudo cambiar el modo de las fotos del cabello",
+  },
   verificationMode: {
     success: "Listo. El cambio aplica desde la próxima imagen.",
     error: "No se pudo cambiar el modo de verificación",

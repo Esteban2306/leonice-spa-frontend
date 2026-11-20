@@ -52,3 +52,21 @@ export interface VerificationStatus {
   ready: boolean;
   partial: boolean;
 }
+
+export interface RecentHairPhoto {
+  id: string;
+  createdAt: string | null;
+  verdict: string;
+  mode: string;
+  description: string | null;
+}
+
+export interface HairPhotoStatus {
+  imageAnalysisEnabled: boolean;
+  specialist: VerificationSpecialist | null;
+  mode: VerificationMode | null;
+  models: ConduitAiModel[];
+  modelReady: boolean;
+  recent: RecentHairPhoto[];
+  partial: boolean;
+}

@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 
 import { businessSettingsApi, conduitApi } from "../api/conduit.api";
-import { verificationApi } from "../api/verification.api";
+import { hairPhotoApi, verificationApi } from "../api/verification.api";
 import { adminQueryKeys } from "./query-keys";
 
 import type {
@@ -227,6 +227,17 @@ export function useVerificationStatus() {
   return useQuery({
     queryKey: adminQueryKeys.conduit.verification(),
     queryFn: ({ signal }) => verificationApi.status({ signal }),
+    staleTime: 15_000,
+    refetchOnWindowFocus: true,
+    retry: false,
+  });
+}
+
+export function useHairPhotoStatus(enabled: boolean) {
+  return useQuery({
+    queryKey: adminQueryKeys.conduit.hairPhoto(),
+    queryFn: ({ signal }) => hairPhotoApi.status({ signal }),
+    enabled,
     staleTime: 15_000,
     refetchOnWindowFocus: true,
     retry: false,

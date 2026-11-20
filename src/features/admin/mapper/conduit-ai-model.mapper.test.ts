@@ -106,6 +106,8 @@ describe("el frontend nunca maneja una apiKey recibida", () => {
       "features/admin/whatsapp/assistant/verification-tab.tsx",
       "features/admin/api/verification.api.ts",
       "features/admin/hooks/use-verification-actions.ts",
+      "features/admin/whatsapp/assistant/hair-photo-tab.tsx",
+      "features/admin/hooks/use-hair-photo-actions.ts",
     ]);
     const users = files
       .filter((f) => /\bapiKey\b/.test(f.text.replace(/apiKeyLast4/g, "")))
