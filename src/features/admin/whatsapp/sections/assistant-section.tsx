@@ -9,12 +9,15 @@ import {
   useConduitModels,
   useConduitPromptSettings,
   useConduitTools,
+  useHairPhotoStatus,
   useVerificationStatus,
 } from "@/src/features/admin/hooks/use-conduit";
+import { useHairPhotoActions } from "@/src/features/admin/hooks/use-hair-photo-actions";
 import { useConduitActions } from "@/src/features/admin/hooks/use-conduit-actions";
 import { useVerificationActions } from "@/src/features/admin/hooks/use-verification-actions";
 
 import { GeneralTab } from "../assistant/general-tab";
+import { HairPhotoTab } from "../assistant/hair-photo-tab";
 import { ModelsTab } from "../assistant/models-tab";
 import { PersonalityTab } from "../assistant/personality-tab";
 import { PromptsTab } from "../assistant/prompts-tab";
@@ -30,6 +33,7 @@ const TABS = [
   { id: "modelos", label: "Modelos de IA" },
   { id: "herramientas", label: "Herramientas" },
   { id: "comprobantes", label: "Comprobantes" },
+  { id: "fotos", label: "Fotos del cabello" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
@@ -70,6 +74,8 @@ export function AssistantSection() {
   const models = useConduitModels();
   const tools = useConduitTools();
   const verification = useVerificationStatus();
+  const hairPhotoActions = useHairPhotoActions();
+  const hairPhoto = useHairPhotoStatus(tab === "fotos");
 
   const select = (id: TabId) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -144,6 +150,11 @@ export function AssistantSection() {
           {(data) => (
             <VerificationTab status={data} actions={verificationActions} />
           )}
+        </Loaded>
+      )}
+      {tab === "fotos" && (
+        <Loaded query={hairPhoto}>
+          {(data) => <HairPhotoTab status={data} actions={hairPhotoActions} />}
         </Loaded>
       )}
     </div>

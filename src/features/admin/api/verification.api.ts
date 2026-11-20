@@ -2,6 +2,7 @@ import { httpClient } from "@/src/lib/api/client";
 import type { QueryOptions } from "@/src/lib/api/http.types";
 
 import type {
+  HairPhotoStatus,
   VerificationDecision,
   VerificationMode,
   VerificationStatus,
@@ -31,4 +32,30 @@ export const verificationApi = {
       decision,
       ...(note ? { note } : {}),
     }),
+};
+
+const HAIR = `${BASE}/hair-photo`;
+
+export const hairPhotoApi = {
+  status: (options?: QueryOptions) =>
+    httpClient.request<HairPhotoStatus>(HAIR, "GET", undefined, {
+      signal: options?.signal,
+    }),
+
+  setup: (apiKey: string, mode: VerificationMode) =>
+    httpClient.request<HairPhotoStatus>(`${HAIR}/setup`, "POST", {
+      apiKey,
+      mode,
+    }),
+
+  setMode: (mode: VerificationMode) =>
+    httpClient.request<unknown>(`${HAIR}/binding`, "PUT", { mode }),
+
+  rotateKey: (modelId: string, apiKey: string) =>
+    httpClient.request<unknown>(`${HAIR}/models/${modelId}/key`, "PATCH", {
+      apiKey,
+    }),
+
+  reactivateModel: (modelId: string) =>
+    httpClient.request<unknown>(`${HAIR}/models/${modelId}/reactivate`, "POST"),
 };
