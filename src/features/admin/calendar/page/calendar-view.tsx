@@ -7,6 +7,7 @@ import { CalendarSurface } from "../components/calendar-surface";
 import { DayDetailPanel } from "../components/day-panel/day-detail-panel";
 import { CalendarGrid } from "../components/grid/calendar-grid";
 import { ScheduleExceptionDialog } from "../components/schedule/schedule-exception-dialog";
+import { DayHoursDialog } from "../components/schedule/day-hours-dialog";
 import {
   WeeklyScheduleDialog,
   type CalendarScheduleDialog,
@@ -135,6 +136,7 @@ export function CalendarView({
             onBlockHours={() => onScheduleDialogChange("block-hours")}
             onOpenExtraHours={() => onScheduleDialogChange("open-hours")}
             onEditWeeklySchedule={() => onScheduleDialogChange("weekly")}
+            onEditDayHours={() => onScheduleDialogChange("day-hours")}
           />
         }
       >
@@ -183,6 +185,7 @@ export function CalendarView({
           actions={reservationActions}
           onSelectReservation={onSelectReservation}
           onRemoveException={scheduleActions.removeException}
+          onRemoveDayOverride={scheduleActions.removeDayOverride}
           onViewClient={onViewClient}
           onReschedule={onReschedule}
         />
@@ -206,15 +209,26 @@ export function CalendarView({
         />
       )}
 
-      {scheduleDialog && scheduleDialog !== "weekly" && (
-        <ScheduleExceptionDialog
-          mode={scheduleDialog}
+      {scheduleDialog === "day-hours" && (
+        <DayHoursDialog
           date={selectedDate}
-          categories={categories}
+          current={scheduleDay?.override ?? null}
           actions={scheduleActions}
           onClose={() => onScheduleDialogChange(null)}
         />
       )}
+
+      {scheduleDialog &&
+        scheduleDialog !== "weekly" &&
+        scheduleDialog !== "day-hours" && (
+          <ScheduleExceptionDialog
+            mode={scheduleDialog}
+            date={selectedDate}
+            categories={categories}
+            actions={scheduleActions}
+            onClose={() => onScheduleDialogChange(null)}
+          />
+        )}
     </div>
   );
 }

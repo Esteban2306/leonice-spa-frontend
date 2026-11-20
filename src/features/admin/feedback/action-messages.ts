@@ -65,6 +65,14 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Consentimiento registrado.",
     error: "No se pudo registrar el consentimiento",
   },
+  setDayOverride: {
+    success: "Horario de la fecha guardado. Ya se ofrece así para reservas.",
+    error: "No se pudo guardar el horario de la fecha",
+  },
+  removeDayOverride: {
+    success: "Esa fecha vuelve al horario semanal.",
+    error: "No se pudo quitar el horario de la fecha",
+  },
   blockSchedule: {
     success: "Horario bloqueado. Ya no se ofrecerá para reservas.",
     error: "No se pudo bloquear el horario",

@@ -1,4 +1,4 @@
-import { CalendarOff, Clock, Trash2 } from "lucide-react";
+import { CalendarCog, CalendarOff, Clock, Trash2 } from "lucide-react";
 
 import type {
   ScheduleDay,
@@ -11,6 +11,19 @@ interface DayScheduleSectionProps {
   isLoading: boolean;
   isSaving: boolean;
   onRemoveException: (exceptionId: string) => void;
+  onRemoveDayOverride: (date: string) => void;
+}
+
+function describeOverride(override: NonNullable<ScheduleDay["override"]>) {
+  if (override.isClosed) return "Horario especial: cerrado";
+  const windows = override.windows
+    .map((w) => `${w.startTime}–${w.endTime}`)
+    .join(" · ");
+  const starts =
+    override.startTimes.length > 0
+      ? ` · Citas solo a las ${override.startTimes.join(", ")}`
+      : "";
+  return `Horario especial: ${windows}${starts}`;
 }
 
 function describeException(exception: ScheduleException): string {
@@ -27,14 +40,17 @@ export function DayScheduleSection({
   isLoading,
   isSaving,
   onRemoveException,
+  onRemoveDayOverride,
 }: DayScheduleSectionProps) {
   if (isLoading || !schedule) {
-    return (
-      isLoading ? (
-        <BrandLoader variant="compact" label="Cargando horario del día…" className="px-1" />
-      ) : (
-        <p className="px-1" />
-      )
+    return isLoading ? (
+      <BrandLoader
+        variant="compact"
+        label="Cargando horario del día…"
+        className="px-1"
+      />
+    ) : (
+      <p className="px-1" />
     );
   }
 
@@ -63,6 +79,31 @@ export function DayScheduleSection({
           </>
         )}
       </div>
+
+      {schedule.override && (
+        <div className="flex items-start justify-between gap-2 rounded-xl bg-tertiary/15 px-3 py-2">
+          <span className="flex gap-2 font-sans text-xs text-secondary">
+            <CalendarCog className="mt-0.5 size-3.5 shrink-0 text-secondary/70" />
+            <span>
+              {describeOverride(schedule.override)}
+              {schedule.override.reason && (
+                <span className="block text-secondary/70">
+                  {schedule.override.reason}
+                </span>
+              )}
+            </span>
+          </span>
+          <button
+            type="button"
+            disabled={isSaving}
+            onClick={() => onRemoveDayOverride(schedule.date)}
+            aria-label="Quitar el horario especial de esta fecha"
+            className="grid size-7 shrink-0 cursor-pointer place-items-center rounded-full text-red-700 transition-colors hover:bg-red-50 disabled:opacity-50"
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        </div>
+      )}
 
       {schedule.exceptions.map((exception) => (
         <div

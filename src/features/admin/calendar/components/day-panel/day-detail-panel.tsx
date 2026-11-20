@@ -18,6 +18,7 @@ interface DayDetailPanelProps extends DayPanelHandlers {
   isSavingSchedule: boolean;
   onSelectReservation: (reservationId: string | null) => void;
   onRemoveException: (exceptionId: string) => Promise<boolean>;
+  onRemoveDayOverride: (date: string) => Promise<boolean>;
 }
 
 export function DayDetailPanel({
@@ -29,6 +30,7 @@ export function DayDetailPanel({
   isSavingSchedule,
   onSelectReservation,
   onRemoveException,
+  onRemoveDayOverride,
   ...handlers
 }: DayDetailPanelProps) {
   const groups = groupReservations(reservations);
@@ -43,6 +45,7 @@ export function DayDetailPanel({
           isLoading={isScheduleLoading}
           isSaving={isSavingSchedule}
           onRemoveException={(id) => void onRemoveException(id)}
+          onRemoveDayOverride={(day) => void onRemoveDayOverride(day)}
         />
 
         {groups.length === 0 ? (

@@ -11,6 +11,7 @@ import { invalidateReservationDomain } from "./invalidate-reservation-domain";
 
 import type {
   CreateScheduleExceptionRequest,
+  SetDayOverrideRequest,
   UpdateBaseScheduleRequest,
 } from "../types/schedule.types";
 
@@ -76,6 +77,35 @@ export function useUpdateBaseSchedule() {
     mutationKey: ["admin", "schedule", "update-base"],
     mutationFn: (data: UpdateBaseScheduleRequest) =>
       scheduleApi.updateBase(data),
+    onSuccess: () =>
+      Promise.all([
+        invalidateScheduleDomain(queryClient),
+        invalidateReservationDomain(queryClient),
+      ]),
+  });
+}
+
+export function useSetDayOverride() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "schedule", "set-day-override"],
+    mutationFn: (data: SetDayOverrideRequest) =>
+      scheduleApi.setDayOverride(data),
+    onSuccess: () =>
+      Promise.all([
+        invalidateScheduleDomain(queryClient),
+        invalidateReservationDomain(queryClient),
+      ]),
+  });
+}
+
+export function useDeleteDayOverride() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["admin", "schedule", "delete-day-override"],
+    mutationFn: (date: string) => scheduleApi.deleteDayOverride(date),
     onSuccess: () =>
       Promise.all([
         invalidateScheduleDomain(queryClient),
