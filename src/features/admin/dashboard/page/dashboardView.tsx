@@ -11,6 +11,7 @@ import type {
 
 import { DashboardHeader } from "../components/dashboardHeader";
 import { HairProfilesNotice } from "../components/hairProfilesNotice";
+import { OrdersToVerifyNotice } from "../components/ordersToVerifyNotice";
 import { DashboardMetrics } from "../components/dashboardMetrics";
 import type { ReservationPanelHandlers } from "../reservations-panel/panelHandlers";
 import { ReservationsPanel } from "../reservations-panel/reservationsPanel";
@@ -67,6 +68,8 @@ export function DashboardView({
           onCreateReservation={onCreateReservation}
           onOpenDailyReport={onOpenDailyReport}
         />
+
+        <OrdersToVerifyNotice />
 
         <HairProfilesNotice {...hairProfiles} />
 

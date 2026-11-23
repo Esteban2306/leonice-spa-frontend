@@ -361,6 +361,7 @@ export interface BusinessSettings {
   id: string;
   depositAmount: number | null;
   depositInstructions: string | null;
+  productPaymentInstructions?: string | null;
   depositPolicy: string | null;
   cancellationPolicy: string | null;
   address: string | null;

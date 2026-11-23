@@ -9,6 +9,7 @@ import {
   PartyPopper,
   Scissors,
   Settings,
+  ShoppingBag,
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
@@ -62,6 +63,12 @@ export const ADMIN_NAVIGATION: readonly AdminNavigationItem[] = [
     shortName: "Campañas",
     href: "/admin/campaigns",
     icon: Megaphone,
+  },
+  {
+    name: "Pedidos",
+    shortName: "Pedidos",
+    href: "/admin/orders",
+    icon: ShoppingBag,
   },
   {
     name: "Productos",

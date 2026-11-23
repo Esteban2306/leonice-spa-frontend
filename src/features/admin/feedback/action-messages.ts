@@ -360,6 +360,26 @@ export const ADMIN_ACTION_MESSAGES = {
     success: "Promoción actualizada.",
     error: "No se pudo actualizar la promoción",
   },
+  verifyProductPayment: {
+    success: "Pago verificado. Le avisamos a la clienta por WhatsApp.",
+    error: "No se pudo verificar el pago",
+  },
+  rejectProductPayment: {
+    success: "Pago rechazado. Le avisamos a la clienta con el motivo.",
+    error: "No se pudo rechazar el pago",
+  },
+  deliverProductOrder: {
+    success: "Pedido marcado como entregado.",
+    error: "No se pudo marcar el pedido como entregado",
+  },
+  cancelProductOrder: {
+    success: "Pedido cancelado.",
+    error: "No se pudo cancelar el pedido",
+  },
+  setProductOrderTotal: {
+    success: "Total del pedido actualizado.",
+    error: "No se pudo actualizar el total",
+  },
   deactivatePromotion: {
     success: "Promoción desactivada.",
     error: "No se pudo desactivar la promoción",
