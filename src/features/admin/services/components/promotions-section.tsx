@@ -8,6 +8,8 @@ import {
   promotionState,
   type PromotionState,
 } from "../lib/catalog";
+import { promotionTargetLabel } from "@/src/features/admin/promotions/lib/promotions-page";
+
 import { CatalogChip, type ChipTone } from "./catalog-chip";
 import { BrandLoader } from "@/src/components/brand/brand-loader";
 
@@ -75,10 +77,7 @@ export function PromotionsSection({
                       promotion.startsAt,
                       promotion.endsAt,
                     )}{" "}
-                    ·{" "}
-                    {promotion.treatment
-                      ? promotion.treatment.name
-                      : `Toda ${promotion.category?.name ?? "la categoría"}`}
+                    · {promotionTargetLabel(promotion)}
                   </p>
                 </div>
                 <CatalogChip tone={STATE_TONE[state]}>

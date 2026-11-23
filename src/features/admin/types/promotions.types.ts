@@ -1,6 +1,12 @@
 export type PromotionValidity = "CURRENT" | "UPCOMING" | "EXPIRED";
 
-export type PromotionTarget = "TREATMENT" | "CATEGORY";
+export type PromotionTarget =
+  | "TREATMENT"
+  | "CATEGORY"
+  | "PRODUCT"
+  | "PRODUCT_CATEGORY";
+
+export type PromotionDomain = "SERVICES" | "PRODUCTS";
 
 export interface Promotion {
   id: string;
@@ -10,10 +16,19 @@ export interface Promotion {
   endsAt: string;
   treatmentId: string | null;
   categoryId: string | null;
+  productId: string | null;
+  productCategoryId: string | null;
   isActive: boolean;
   createdAt: string;
   treatment: { id: string; name: string } | null;
   category: { id: string; name: string } | null;
+  product?: {
+    id: string;
+    name: string;
+    kind: "SINGLE" | "COMBO";
+    productCategoryId: string;
+  } | null;
+  productCategory?: { id: string; name: string } | null;
 }
 
 export interface FindPromotionsParams {
@@ -25,6 +40,9 @@ export interface FindPromotionsParams {
   validity?: PromotionValidity;
   appliesTo?: PromotionTarget;
   withinCategoryId?: string;
+  productId?: string;
+  productCategoryId?: string;
+  domain?: PromotionDomain;
 }
 
 export interface CreatePromotionRequest {
@@ -34,6 +52,8 @@ export interface CreatePromotionRequest {
   endsAt: string;
   treatmentId?: string;
   categoryId?: string;
+  productId?: string;
+  productCategoryId?: string;
 }
 
 export interface UpdatePromotionRequest {
@@ -43,5 +63,7 @@ export interface UpdatePromotionRequest {
   endsAt?: string;
   treatmentId?: string;
   categoryId?: string;
+  productId?: string;
+  productCategoryId?: string;
   isActive?: boolean;
 }

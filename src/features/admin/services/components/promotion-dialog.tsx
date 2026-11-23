@@ -27,6 +27,13 @@ export interface PromotionTargetOptions {
 export interface PromotionTargetChoices {
   categories: ReadonlyArray<{ id: string; name: string }>;
   treatments: ReadonlyArray<{ id: string; name: string; categoryId: string }>;
+  productCategories?: ReadonlyArray<{ id: string; name: string }>;
+  products?: ReadonlyArray<{
+    id: string;
+    name: string;
+    kind: "SINGLE" | "COMBO";
+    productCategoryId: string;
+  }>;
 }
 
 interface PromotionDialogProps {
@@ -40,6 +47,39 @@ interface PromotionDialogProps {
 }
 
 type Scope = "TREATMENT" | "CATEGORY";
+type Domain = "SERVICES" | "PRODUCTS";
+
+function initialDomain(promotion: Promotion | null): Domain {
+  return promotion?.productId || promotion?.productCategoryId
+    ? "PRODUCTS"
+    : "SERVICES";
+}
+
+function initialServiceCategory(
+  promotion: Promotion | null,
+  choices: PromotionTargetChoices | undefined,
+): string {
+  if (!promotion) return "";
+  if (promotion.categoryId) return promotion.categoryId;
+  return (
+    choices?.treatments.find((item) => item.id === promotion.treatmentId)
+      ?.categoryId ?? ""
+  );
+}
+
+function initialProductCategory(
+  promotion: Promotion | null,
+  choices: PromotionTargetChoices | undefined,
+): string {
+  if (!promotion) return "";
+  if (promotion.productCategoryId) return promotion.productCategoryId;
+  return (
+    promotion.product?.productCategoryId ??
+    choices?.products?.find((item) => item.id === promotion.productId)
+      ?.productCategoryId ??
+    ""
+  );
+}
 
 export function PromotionDialog({
   open,
@@ -70,14 +110,34 @@ export function PromotionDialog({
         : "CATEGORY",
   );
 
-  const [pickedCategoryId, setPickedCategoryId] = useState("");
-  const [pickedTreatmentId, setPickedTreatmentId] = useState("");
+  const [domain, setDomain] = useState<Domain>(initialDomain(promotion));
+  const [pickedCategoryId, setPickedCategoryId] = useState(
+    initialServiceCategory(promotion, choices),
+  );
+  const [pickedTreatmentId, setPickedTreatmentId] = useState(
+    promotion?.treatmentId ?? "",
+  );
+  const [pickedProductCategoryId, setPickedProductCategoryId] = useState(
+    initialProductCategory(promotion, choices),
+  );
+  const [pickedProductId, setPickedProductId] = useState(
+    promotion?.productId ?? "",
+  );
   const picksTarget = fixedTarget === null && choices !== undefined;
+  const offersProducts =
+    picksTarget && (choices?.productCategories?.length ?? 0) > 0;
+  const forProducts = offersProducts && domain === "PRODUCTS";
   const pickedCategory = choices?.categories.find(
     (item) => item.id === pickedCategoryId,
   );
   const pickedTreatment = choices?.treatments.find(
     (item) => item.id === pickedTreatmentId,
+  );
+  const pickedProductCategory = choices?.productCategories?.find(
+    (item) => item.id === pickedProductCategoryId,
+  );
+  const pickedProduct = choices?.products?.find(
+    (item) => item.id === pickedProductId,
   );
   const target: PromotionTargetOptions | null = picksTarget
     ? pickedCategory
@@ -93,15 +153,19 @@ export function PromotionDialog({
     choices?.treatments.filter(
       (item) => item.categoryId === pickedCategoryId,
     ) ?? [];
+  const categoryProducts =
+    choices?.products?.filter(
+      (item) => item.productCategoryId === pickedProductCategoryId,
+    ) ?? [];
+  const hasTarget = forProducts
+    ? pickedProductCategory !== undefined
+    : target !== null;
 
   const percentage = Number(discount.replace(",", "."));
   const isValidDiscount = percentage > 0 && percentage <= 100;
   const isValidRange = from !== "" && to !== "" && from <= to;
   const canSubmit =
-    target !== null &&
-    name.trim().length >= 2 &&
-    isValidDiscount &&
-    isValidRange;
+    hasTarget && name.trim().length >= 2 && isValidDiscount && isValidRange;
 
   return (
     <ActionDialog
@@ -113,21 +177,99 @@ export function PromotionDialog({
       submittingLabel="Guardando…"
       canSubmit={canSubmit}
       onSubmit={() => {
-        if (!target) return Promise.resolve(false);
-        const useTreatment =
-          (picksTarget || scope === "TREATMENT") && target.treatment;
-        return onSave({
+        const common = {
           name: name.trim(),
           discountPercentage: percentage,
           startsAt: startOfBogotaDay(from),
           endsAt: endOfBogotaDay(to),
+        };
+        if (forProducts) {
+          if (!pickedProductCategory) return Promise.resolve(false);
+          return onSave({
+            ...common,
+            ...(pickedProduct
+              ? { productId: pickedProduct.id }
+              : { productCategoryId: pickedProductCategory.id }),
+          });
+        }
+        if (!target) return Promise.resolve(false);
+        const useTreatment =
+          (picksTarget || scope === "TREATMENT") && target.treatment;
+        return onSave({
+          ...common,
           ...(useTreatment
             ? { treatmentId: target.treatment?.id }
             : { categoryId: target.category.id }),
         });
       }}
     >
-      {picksTarget && (
+      {offersProducts && (
+        <Field label="Promoción para">
+          <ChoicePills<Domain>
+            ariaLabel="Tipo de promoción"
+            value={domain}
+            onChange={setDomain}
+            options={[
+              { value: "SERVICES", label: "Servicios" },
+              { value: "PRODUCTS", label: "Productos y kits" },
+            ]}
+          />
+        </Field>
+      )}
+      {forProducts && (
+        <>
+          <Field
+            label="Categoría de productos"
+            htmlFor="promotion-product-category"
+          >
+            <select
+              id="promotion-product-category"
+              value={pickedProductCategoryId}
+              onChange={(event) => {
+                setPickedProductCategoryId(event.target.value);
+                setPickedProductId("");
+              }}
+              className={INPUT_CLASS}
+            >
+              <option value="">Elige una categoría</option>
+              {choices?.productCategories?.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Aplica a" htmlFor="promotion-product">
+            <select
+              id="promotion-product"
+              value={pickedProductId}
+              disabled={pickedProductCategoryId === ""}
+              onChange={(event) => setPickedProductId(event.target.value)}
+              className={INPUT_CLASS}
+            >
+              <option value="">
+                {pickedProductCategory
+                  ? `Todos los productos de ${pickedProductCategory.name}`
+                  : "Primero elige la categoría"}
+              </option>
+              {categoryProducts.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.kind === "COMBO"
+                    ? `${product.name} · kit`
+                    : product.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          {pickedProduct?.kind === "COMBO" && (
+            <p className="font-sans text-xs text-secondary/70">
+              En un kit el descuento se aplica sobre el precio del kit, y el
+              asistente recalcula cuánto ahorra frente a comprar cada producto.
+            </p>
+          )}
+        </>
+      )}
+      {picksTarget && !forProducts && (
         <>
           <Field label="Categoría" htmlFor="promotion-category">
             <select

@@ -4,7 +4,9 @@ import { PromotionsSection } from "@/src/features/admin/services/components/prom
 import type { Promotion } from "@/src/features/admin/types/promotions.types";
 
 import {
+  PROMOTION_DOMAIN_FILTERS,
   PROMOTION_FILTERS,
+  type PromotionDomainFilter,
   type PromotionFilter,
 } from "../lib/promotions-page";
 
@@ -12,6 +14,8 @@ interface PromotionsViewProps {
   promotions: readonly Promotion[];
   counts: Record<PromotionFilter, number>;
   filter: PromotionFilter;
+  domain: PromotionDomainFilter;
+  onDomainChange: (domain: PromotionDomainFilter) => void;
   isLoading: boolean;
   isError: boolean;
   nowMs: number;
@@ -42,9 +46,10 @@ export function PromotionsView(props: PromotionsViewProps) {
           <div>
             <h1 className="font-heading text-4xl sm:text-5xl">Promociones</h1>
             <p className="mt-2 max-w-xl font-sans text-sm text-primary/70">
-              Descuentos por servicio o por categoría. El asistente de WhatsApp
-              y las reservas nuevas aplican la promoción vigente al instante; la
-              web puede tardar unos minutos en mostrarla.
+              Descuentos por tiempo limitado para servicios, productos y kits.
+              El asistente de WhatsApp los ofrece al instante. La web muestra
+              los de servicios en unos minutos; la tienda web todavía no muestra
+              los de productos.
             </p>
           </div>
           <button
@@ -64,6 +69,31 @@ export function PromotionsView(props: PromotionsViewProps) {
             <Stat value={props.counts.EXPIRED} label="Vencidas" />
           </div>
         )}
+
+        <div
+          role="group"
+          aria-label="Tipo de promoción"
+          className="flex flex-wrap gap-2"
+        >
+          {PROMOTION_DOMAIN_FILTERS.map((option) => {
+            const selected = props.domain === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => props.onDomainChange(option.value)}
+                className={`inline-flex h-9 cursor-pointer items-center rounded-full border px-4 font-sans text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary ${
+                  selected
+                    ? "border-tertiary bg-tertiary text-secondary"
+                    : "border-tertiary/40 text-secondary hover:bg-quaternary/25"
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
 
         <div
           role="tablist"

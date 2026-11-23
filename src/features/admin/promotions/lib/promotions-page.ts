@@ -47,3 +47,44 @@ export function filterPromotions(
     (a, b) => new Date(b.startsAt).getTime() - new Date(a.startsAt).getTime(),
   );
 }
+
+export type PromotionDomainFilter = "ALL" | "SERVICES" | "PRODUCTS";
+
+export const PROMOTION_DOMAIN_FILTERS: ReadonlyArray<{
+  value: PromotionDomainFilter;
+  label: string;
+}> = [
+  { value: "ALL", label: "Todo" },
+  { value: "SERVICES", label: "Servicios" },
+  { value: "PRODUCTS", label: "Productos y kits" },
+];
+
+export function promotionDomain(
+  promotion: Pick<Promotion, "productId" | "productCategoryId">,
+): Exclude<PromotionDomainFilter, "ALL"> {
+  return promotion.productId || promotion.productCategoryId
+    ? "PRODUCTS"
+    : "SERVICES";
+}
+
+export function filterPromotionsByDomain(
+  promotions: readonly Promotion[],
+  domain: PromotionDomainFilter,
+): Promotion[] {
+  return domain === "ALL"
+    ? [...promotions]
+    : promotions.filter((promotion) => promotionDomain(promotion) === domain);
+}
+
+export function promotionTargetLabel(promotion: Promotion): string {
+  if (promotion.product) {
+    return promotion.product.kind === "COMBO"
+      ? `Kit ${promotion.product.name}`
+      : promotion.product.name;
+  }
+  if (promotion.productCategory) {
+    return `Todos los productos de ${promotion.productCategory.name}`;
+  }
+  if (promotion.treatment) return promotion.treatment.name;
+  return `Toda ${promotion.category?.name ?? "la categoría"}`;
+}
