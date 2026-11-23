@@ -47,8 +47,9 @@ export function PromotionsView(props: PromotionsViewProps) {
             <h1 className="font-heading text-4xl sm:text-5xl">Promociones</h1>
             <p className="mt-2 max-w-xl font-sans text-sm text-primary/70">
               Descuentos por tiempo limitado para servicios, productos y kits.
-              El asistente de WhatsApp los ofrece y aplica la promoción vigente
-              al instante; la web puede tardar unos minutos en mostrarla.
+              El asistente de WhatsApp los ofrece al instante. La web muestra
+              los de servicios en unos minutos; la tienda web todavía no muestra
+              los de productos.
             </p>
           </div>
           <button
