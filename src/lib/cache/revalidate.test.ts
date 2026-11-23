@@ -37,6 +37,14 @@ describe("modo de caché", () => {
     expect(resolveCacheMode("Economy")).toBe("economy");
   });
 
+  it("en desarrollo local, sin variable, no usa caché", () => {
+    expect(resolveCacheMode(undefined, "development")).toBe("instant");
+    expect(resolveCacheMode("", "development")).toBe("instant");
+    expect(resolveCacheMode("economy", "development")).toBe("economy");
+    expect(resolveCacheMode(undefined, "production")).toBe("economy");
+    expect(resolveCacheMode("instant")).toBe("instant");
+  });
+
   it("ante un valor desconocido cae en economy, el modo seguro", () => {
     expect(resolveCacheMode("rapido")).toBe("economy");
   });

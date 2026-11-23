@@ -18,6 +18,7 @@ import { scrollToSection } from "@/src/features/landing/motion/scroll-to-section
 import { PRODUCTS_PAGE, TREATMENTS_PAGE } from "@/src/features/landing/lib/catalog-links";
 import { useSurfaceGlow } from "@/src/features/landing/motion/use-surface-glow";
 import { SectionAtmosphere } from "@/src/features/landing/components/section-atmosphere";
+import { MAX_DELIVERY_WIDTH, cloudinaryVideo, videoPoster } from "@/src/lib/images/cloudinary-loader";
 
 interface HeroMediaProps {
   videoSrc?: string | null;
@@ -30,12 +31,13 @@ function HeroMedia({ videoSrc, poster }: HeroMediaProps) {
       {videoSrc ? (
         <video
           className="h-full w-full object-cover"
-          src={videoSrc}
-          poster={poster ?? undefined}
+          src={cloudinaryVideo(videoSrc, MAX_DELIVERY_WIDTH)}
+          poster={videoPoster(videoSrc, poster ?? null, MAX_DELIVERY_WIDTH)}
           autoPlay
           muted
           loop
           playsInline
+          preload="metadata"
         />
       ) : (
         <div data-hero-bg className="hero-fade absolute inset-0 origin-top" />

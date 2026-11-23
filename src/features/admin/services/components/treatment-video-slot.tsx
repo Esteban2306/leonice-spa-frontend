@@ -8,6 +8,7 @@ import { toastError } from "@/src/features/admin/feedback/admin-toast";
 
 import { ACCEPTED_VIDEO_TYPES, validateVideoFile } from "../lib/treatment-video";
 import { BrandLoader } from "@/src/components/brand/brand-loader";
+import { MAX_DELIVERY_WIDTH, cloudinaryVideo, videoPoster } from "@/src/lib/images/cloudinary-loader";
 
 interface TreatmentVideoSlotProps {
   treatmentName: string;
@@ -52,8 +53,8 @@ export function TreatmentVideoSlot({
         {videoUrl ? (
           <video
             key={videoUrl}
-            src={videoUrl}
-            poster={posterUrl ?? undefined}
+            src={cloudinaryVideo(videoUrl, MAX_DELIVERY_WIDTH)}
+            poster={videoPoster(videoUrl, posterUrl, MAX_DELIVERY_WIDTH)}
             controls
             playsInline
             preload="metadata"
