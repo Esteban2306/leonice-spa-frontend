@@ -23,7 +23,7 @@ export interface ProductOrder {
   request: string | null;
   notes: string | null;
   total: number | null;
-  priceHeldUntil: string;
+  priceHeldUntil: string | null;
   proofImageUrl: string | null;
   proofAmount: number | null;
   proofReceivedAt: string | null;

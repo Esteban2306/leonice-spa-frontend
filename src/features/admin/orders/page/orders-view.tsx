@@ -85,9 +85,11 @@ function OrderCard({
           <p className="font-sans text-2xl font-bold text-secondary tabular-nums">
             {formatPesos(order.total)}
           </p>
-          <p className="font-sans text-xs text-secondary/60">
-            Precio reservado hasta {dateTime(order.priceHeldUntil)}
-          </p>
+          {order.priceHeldUntil && (
+            <p className="font-sans text-xs text-secondary/60">
+              Promoción hasta {dateTime(order.priceHeldUntil)}
+            </p>
+          )}
         </div>
       </header>
 
@@ -283,8 +285,8 @@ export function OrdersView(props: OrdersViewProps) {
           <h1 className="font-heading text-4xl sm:text-5xl">Pedidos</h1>
           <p className="mt-2 max-w-xl font-sans text-sm text-primary/70">
             Lo que las clientas piden por WhatsApp. Cuando llega un comprobante
-            te avisamos; al verificarlo, la clienta recibe la confirmación
-            automática y no tienes que escribirle.
+            te avisamos; si lo rechazas, la clienta recibe el motivo
+            automáticamente. Al verificarlo, el pedido pasa a por entregar.
           </p>
         </header>
 

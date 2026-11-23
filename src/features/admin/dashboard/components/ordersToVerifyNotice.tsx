@@ -23,7 +23,7 @@ export function OrdersToVerifyNotice() {
           : `${toDeliver} ${toDeliver === 1 ? "pedido pagado" : "pedidos pagados"} por entregar`}
       </span>
       <span className="text-secondary/70">
-        Verifícalos en un clic: la clienta recibe la confirmación sola.
+        Verifícalos en un clic desde Pedidos.
       </span>
     </AdminLink>
   );

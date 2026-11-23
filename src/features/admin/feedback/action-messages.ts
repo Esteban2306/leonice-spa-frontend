@@ -361,7 +361,7 @@ export const ADMIN_ACTION_MESSAGES = {
     error: "No se pudo actualizar la promoción",
   },
   verifyProductPayment: {
-    success: "Pago verificado. Le avisamos a la clienta por WhatsApp.",
+    success: "Pago verificado. El pedido quedó listo para entregar.",
     error: "No se pudo verificar el pago",
   },
   rejectProductPayment: {
