@@ -44,7 +44,11 @@ import { ServicesView } from "./services-view";
 
 const TEXT_DEBOUNCE_MS = 350;
 const ALL_STATUSES = { status: "ALL" } as const;
-const CURRENT_PROMOTIONS = { validity: "CURRENT", isActive: true } as const;
+const CURRENT_PROMOTIONS = {
+  validity: "CURRENT",
+  isActive: true,
+  domain: "SERVICES",
+} as const;
 
 interface DialogState<T> {
   open: boolean;
