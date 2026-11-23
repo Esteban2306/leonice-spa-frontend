@@ -35,4 +35,10 @@ describe("cloudinaryDelivery", () => {
   it("el loader de Next usa el ancho que recibe", () => {
     expect(imageLoader({ src: `${BASE}/v1/a.jpg`, width: 828 })).toContain("w_828");
   });
+
+  it("las imágenes propias del sitio llevan el ancho sin cambiar el archivo", () => {
+    expect(imageLoader({ src: "/_next/static/media/logo.png", width: 256 })).toBe(
+      "/_next/static/media/logo.png?w=256",
+    );
+  });
 });

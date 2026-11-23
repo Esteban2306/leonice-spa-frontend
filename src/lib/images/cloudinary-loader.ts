@@ -18,5 +18,8 @@ export function cloudinaryDelivery(src: string, width: number): string {
 }
 
 export default function imageLoader({ src, width }: ImageLoaderProps): string {
+  if (src.startsWith("/") && !src.startsWith("//")) {
+    return `${src}${src.includes("?") ? "&" : "?"}w=${width}`;
+  }
   return cloudinaryDelivery(src, width);
 }
