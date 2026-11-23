@@ -262,7 +262,7 @@ export function WeeklyScheduleDialog({
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="gap-0 rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB] p-0 sm:max-w-2xl">
+      <DialogContent className="max-h-[85dvh] gap-0 overflow-y-auto overscroll-contain rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB] p-0 sm:max-w-2xl">
         <div className="flex flex-col gap-2 p-6 pb-3">
           <DialogTitle className="font-heading text-2xl text-secondary">
             Horario semanal
