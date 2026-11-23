@@ -62,11 +62,17 @@ describe("entrega de imágenes y videos con tope de 1280 px", () => {
     expect(cloudinaryVideo(VIDEO, 1920)).toContain("w_1280/");
   });
 
-  it("sin portada propia, usa el primer cuadro del video como imagen", () => {
-    expect(videoPoster(VIDEO, null, 1280)).toBe(
-      "https://res.cloudinary.com/exyhq5ry/video/upload/so_0,f_auto,q_auto,c_limit,w_1280/v17/leonice-spa/treatments/video-1.jpg",
+  it("la portada es el final del video, aunque venga otra portada guardada", () => {
+    const lastFrame =
+      "https://res.cloudinary.com/exyhq5ry/video/upload/so_99p,f_auto,q_auto,c_limit,w_1280/v17/leonice-spa/treatments/video-1.jpg";
+    expect(videoPoster(VIDEO, null, 1280)).toBe(lastFrame);
+    expect(videoPoster(VIDEO, `${BASE}/v1/p.jpg`, 1280)).toBe(lastFrame);
+  });
+
+  it("si el video no es de Cloudinary, usa la portada guardada", () => {
+    expect(videoPoster("blob:http://localhost/1", `${BASE}/v1/p.jpg`, 720)).toBe(
+      `${BASE}/f_auto,q_auto,c_limit,w_720/v1/p.jpg`,
     );
-    expect(videoPoster(VIDEO, `${BASE}/v1/p.jpg`, 720)).toBe(`${BASE}/f_auto,q_auto,c_limit,w_720/v1/p.jpg`);
   });
 
   it("en celular pide 720 px y en pantallas grandes 1280", () => {

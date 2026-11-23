@@ -8,6 +8,7 @@ const VERSION_SEGMENT = /^v\d+$/;
 export const MAX_DELIVERY_WIDTH = 1280;
 export const MOBILE_VIDEO_WIDTH = 720;
 export const MOBILE_BREAKPOINT = 768;
+const LAST_FRAME_OFFSET = "99p";
 
 function withTransformation(src: string, upload: string, transformation: string): string | null {
   if (!src.startsWith(CLOUDINARY_PREFIX)) return null;
@@ -35,7 +36,7 @@ export function cloudinaryVideo(src: string, width: number): string {
 }
 
 export function cloudinaryVideoPoster(src: string, width: number): string | null {
-  const poster = withTransformation(src, VIDEO_UPLOAD, `so_0,f_auto,q_auto,c_limit,w_${deliveryWidth(width)}`);
+  const poster = withTransformation(src, VIDEO_UPLOAD, `so_${LAST_FRAME_OFFSET},f_auto,q_auto,c_limit,w_${deliveryWidth(width)}`);
   return poster ? poster.replace(/\.[a-z0-9]+(\?.*)?$/i, ".jpg") : null;
 }
 
@@ -44,8 +45,9 @@ export function videoWidthFor(viewportWidth: number): number {
 }
 
 export function videoPoster(videoUrl: string, posterUrl: string | null, width: number): string | undefined {
-  if (posterUrl) return cloudinaryDelivery(posterUrl, width);
-  return cloudinaryVideoPoster(videoUrl, width) ?? undefined;
+  const lastFrame = cloudinaryVideoPoster(videoUrl, width);
+  if (lastFrame) return lastFrame;
+  return posterUrl ? cloudinaryDelivery(posterUrl, width) : undefined;
 }
 
 export default function imageLoader({ src, width }: ImageLoaderProps): string {
