@@ -33,6 +33,7 @@ import { formatDateTime } from "../lib/whatsapp-format";
 
 type TextKey =
   | "depositInstructions"
+  | "productPaymentInstructions"
   | "depositPolicy"
   | "cancellationPolicy"
   | "address"
@@ -52,6 +53,13 @@ const FIELDS: ReadonlyArray<{
     max: 1500,
     hint: "Cuentas, Nequi, llave… El asistente lo comparte tal cual.",
     rows: 4,
+  },
+  {
+    key: "productPaymentInstructions",
+    label: "Cómo pagar un pedido de productos",
+    max: 1500,
+    hint: "La cuenta que el asistente da con cada pedido. Vacío: usa la del anticipo.",
+    rows: 3,
   },
   {
     key: "depositPolicy",
@@ -135,6 +143,7 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
     ownerPhoneValue !== null && !OWNER_PHONE_PATTERN.test(ownerPhoneValue);
   const [texts, setTexts] = useState<Record<TextKey, string>>({
     depositInstructions: settings.depositInstructions ?? "",
+    productPaymentInstructions: settings.productPaymentInstructions ?? "",
     depositPolicy: settings.depositPolicy ?? "",
     cancellationPolicy: settings.cancellationPolicy ?? "",
     address: settings.address ?? "",

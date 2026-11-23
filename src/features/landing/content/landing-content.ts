@@ -32,7 +32,11 @@ export interface LandingTreatment {
   durationMinutes: number;
   priceFromThousands: number;
   priceToThousands: number;
-  promotion: { name: string; discountPercentage: number; priceFromThousands: number } | null;
+  promotion: {
+    name: string;
+    discountPercentage: number;
+    priceFromThousands: number;
+  } | null;
   requiresAssessment: boolean;
   copy: TreatmentCopy;
   image: string | null;
@@ -182,27 +186,36 @@ export const whyContent = {
 
 export const treatmentsContent = {
   title: "Procedimientos con propósito, no de catálogo",
-  featuredNames: ["Alisado", "Terapia de hidratación", "Terapia anticaída", "Terapia antiácida"],
+  featuredNames: [
+    "Alisado",
+    "Terapia de hidratación",
+    "Terapia anticaída",
+    "Terapia antiácida",
+  ],
   fallbackCategory: "Spa Capilar",
   hiddenCategories: ["Fase de Prueba QA"],
   copyByName: {
     "Terapia de hidratación": {
-      summary: "Restaura fibra capilar seca o dañada con activos de alta penetración.",
+      summary:
+        "Restaura fibra capilar seca o dañada con activos de alta penetración.",
       detail:
         "Pensada para cabello áspero, opaco o quebradizo. En el diagnóstico te contamos cuántas sesiones necesita tu fibra.",
     },
     Alisado: {
-      summary: "Disciplina el cabello y reduce el frizz sin comprometer su salud.",
+      summary:
+        "Disciplina el cabello y reduce el frizz sin comprometer su salud.",
       detail:
         "Antes de empezar evaluamos tu cabello para elegir la técnica y el tiempo que tu fibra puede recibir.",
     },
     "Terapia anticaída": {
-      summary: "Estimula el cuero cabelludo y fortalece el folículo desde la raíz.",
+      summary:
+        "Estimula el cuero cabelludo y fortalece el folículo desde la raíz.",
       detail:
         "Empieza con una mirada al cuero cabelludo; el plan se ajusta a lo que encontramos en cada visita.",
     },
     "Terapia antiácida": {
-      summary: "Estimula el cuero cabelludo y fortalece el folículo desde la raíz.",
+      summary:
+        "Estimula el cuero cabelludo y fortalece el folículo desde la raíz.",
       detail:
         "Empieza con una mirada al cuero cabelludo; el plan se ajusta a lo que encontramos en cada visita.",
     },
@@ -210,11 +223,14 @@ export const treatmentsContent = {
   copyByCategory: {
     "Spa Capilar": {
       summary: "Un ritual capilar diseñado a partir de tu diagnóstico.",
-      detail: "Te explicamos qué hace cada paso y cómo cuidar el resultado en casa.",
+      detail:
+        "Te explicamos qué hace cada paso y cómo cuidar el resultado en casa.",
     },
     "Spa Coreano": {
-      summary: "Limpieza profunda y masaje del cuero cabelludo al estilo coreano.",
-      detail: "Un momento para soltar la tensión mientras tu cuero cabelludo respira.",
+      summary:
+        "Limpieza profunda y masaje del cuero cabelludo al estilo coreano.",
+      detail:
+        "Un momento para soltar la tensión mientras tu cuero cabelludo respira.",
     },
   } as Record<string, TreatmentCopy>,
   defaultCopy: {
@@ -286,7 +302,8 @@ export const promiseContent = {
     {
       id: "origen",
       title: "Productos premium de origen colombiano",
-      description: "Trabajamos con productos naturales y certificados de origen colombiano.",
+      description:
+        "Trabajamos con productos naturales y certificados de origen colombiano.",
       image: null,
       imageHint: "Mascarilla MAIS sobre piedra",
       icon: "sparkles",
@@ -325,7 +342,7 @@ export const metricsContent = {
   items: [
     {
       id: "anos",
-      value: 12,
+      value: 5,
       label: "Años de experiencia",
       detail: "Años perfeccionando rituales capilares en un espacio íntimo.",
       sample: true,

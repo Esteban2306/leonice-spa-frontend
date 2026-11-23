@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import { needsAttention, sortForInbox } from "../lib/whatsapp-format";
 
 const PENDING_PARAMS = { limit: 100 } as const;
 const PAGE = 50;
+const subscribeNoop = () => () => undefined;
 
 export function InboxSection() {
   const router = useRouter();
@@ -36,7 +37,13 @@ export function InboxSection() {
   const digits = search.replace(/\D/g, "");
   const debouncedDigits = useDebouncedValue(digits, 350, digits);
 
+  const hydrated = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
   const pendingQuery = useConversations(PENDING_PARAMS);
+  const pendingData = hydrated ? pendingQuery.data : undefined;
   const listParams = useMemo(
     () => ({
       limit: PAGE,
@@ -48,12 +55,13 @@ export function InboxSection() {
   const listQuery = useConversations(listParams, {
     enabled: tab !== "pending",
   });
+  const listData = hydrated ? listQuery.data : undefined;
   const overview = useConduitOverview();
   const actions = useConduitActions();
 
   const pendingConversations = useMemo(
-    () => sortForInbox((pendingQuery.data?.data ?? []).filter(needsAttention)),
-    [pendingQuery.data],
+    () => sortForInbox((pendingData?.data ?? []).filter(needsAttention)),
+    [pendingData],
   );
   const visible = useMemo(() => {
     if (tab === "pending") {
@@ -63,11 +71,11 @@ export function InboxSection() {
           )
         : pendingConversations;
     }
-    return sortForInbox(listQuery.data?.data ?? []);
-  }, [tab, debouncedDigits, pendingConversations, listQuery.data]);
+    return sortForInbox(listData?.data ?? []);
+  }, [tab, debouncedDigits, pendingConversations, listData]);
 
   const selected =
-    [...(pendingQuery.data?.data ?? []), ...(listQuery.data?.data ?? [])].find(
+    [...(pendingData?.data ?? []), ...(listData?.data ?? [])].find(
       (c) => c.id === selectedId,
     ) ?? null;
 
@@ -105,7 +113,7 @@ export function InboxSection() {
           selected ? "hidden lg:flex lg:flex-col" : "flex flex-col",
         )}
       >
-        {activeQuery.isError ? (
+        {hydrated && activeQuery.isError ? (
           <ErrorPanel
             error={activeQuery.error}
             onRetry={() => void activeQuery.refetch()}
@@ -116,7 +124,7 @@ export function InboxSection() {
             search={search}
             conversations={visible}
             selectedId={selected?.id ?? null}
-            isLoading={activeQuery.isLoading}
+            isLoading={!hydrated || activeQuery.isLoading}
             nowMs={nowMs}
             pendingCount={pendingConversations.length}
             onTabChange={setTab}

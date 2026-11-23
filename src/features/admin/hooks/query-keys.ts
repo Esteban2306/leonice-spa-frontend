@@ -138,6 +138,12 @@ export const adminQueryKeys = {
       [...adminQueryKeys.products.all(), "related", productId] as const,
   },
 
+  productOrders: {
+    all: () => [...adminQueryKeys.all, "product-orders"] as const,
+    list: (params?: unknown) =>
+      [...adminQueryKeys.productOrders.all(), "list", params] as const,
+    summary: () => [...adminQueryKeys.productOrders.all(), "summary"] as const,
+  },
   promotions: {
     all: () => [...adminQueryKeys.all, "promotions"] as const,
     lists: () => [...adminQueryKeys.promotions.all(), "list"] as const,

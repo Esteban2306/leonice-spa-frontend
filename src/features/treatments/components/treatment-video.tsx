@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Maximize2, Pause, Play, Video, Volume2, VolumeX } from "lucide-react";
 
+import { useLazyVideo } from "@/src/lib/images/use-lazy-video";
+
 type VideoMode = "cover" | "card";
 
 interface TreatmentVideoProps {
@@ -80,10 +82,11 @@ function VideoPlayer({
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
+  const delivery = useLazyVideo(videoRef, videoUrl, posterUrl);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || mode !== "cover" || prefersReducedMotion()) return;
+    if (!video || !delivery.src || mode !== "cover" || prefersReducedMotion()) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.intersectionRatio >= VISIBLE_RATIO && !userPaused) void video.play().catch(() => {});
@@ -93,14 +96,14 @@ function VideoPlayer({
     );
     observer.observe(video);
     return () => observer.disconnect();
-  }, [mode, userPaused]);
+  }, [mode, userPaused, delivery.src]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || mode !== "card" || playing === undefined) return;
+    if (!video || !delivery.src || mode !== "card" || playing === undefined) return;
     if (playing && !prefersReducedMotion()) void video.play().catch(() => {});
     else video.pause();
-  }, [mode, playing]);
+  }, [mode, playing, delivery.src]);
 
   const toggle = () => {
     const video = videoRef.current;
@@ -130,12 +133,12 @@ function VideoPlayer({
     <div ref={frameRef} className={`treatment-video group/video overflow-hidden bg-[#0B2C1A] ${positioned(className)}`}>
       <video
         ref={videoRef}
-        src={videoUrl}
-        poster={posterUrl ?? undefined}
+        src={delivery.src}
+        poster={delivery.poster}
         muted
         loop
         playsInline
-        preload={mode === "card" && posterUrl ? "none" : "metadata"}
+        preload={mode === "card" ? "none" : "metadata"}
         aria-label={`Video del procedimiento: ${title}`}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
