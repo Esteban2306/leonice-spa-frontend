@@ -67,12 +67,15 @@ export function ActionDialog({
 
       <DialogContent
         className={cn(
-          "gap-0 rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB] p-0 sm:max-w-md",
+          "flex max-h-[90dvh] flex-col gap-0 sm:max-h-[80dvh] overflow-hidden rounded-[2rem] border border-tertiary/30 bg-[#FCF6EB] p-0 sm:max-w-md",
           contentClassName,
         )}
       >
-        <form onSubmit={(event) => void handleSubmit(event)} className="flex flex-col">
-          <div className="flex flex-col gap-2 p-6 pb-4">
+        <form
+          onSubmit={(event) => void handleSubmit(event)}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="flex shrink-0 flex-col gap-2 p-6 pb-4">
             <DialogTitle className="font-heading text-2xl text-secondary">
               {title}
             </DialogTitle>
@@ -83,9 +86,13 @@ export function ActionDialog({
             )}
           </div>
 
-          {children && <div className="flex flex-col gap-4 px-6 pb-2">{children}</div>}
+          {children && (
+            <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-6 pb-2">
+              {children}
+            </div>
+          )}
 
-          <div className="mt-4 flex flex-col-reverse gap-2 border-t border-tertiary/25 p-4 sm:flex-row sm:justify-end">
+          <div className="mt-4 flex shrink-0 flex-col-reverse gap-2 border-t border-tertiary/25 p-4 sm:flex-row sm:justify-end">
             <button
               type="button"
               disabled={isSubmitting}

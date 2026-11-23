@@ -43,7 +43,7 @@ export function TreatmentCard({
       >
         <span
           className={`relative block overflow-hidden ${
-            wide ? "aspect-[4/3] desk:aspect-auto desk:w-[55%]" : "aspect-[4/3]"
+            wide ? "aspect-[4/5] desk:aspect-auto desk:w-[42%]" : "aspect-[4/5]"
           }`}
         >
           <TreatmentVideo
@@ -66,7 +66,7 @@ export function TreatmentCard({
           )}
         </span>
 
-        <span className={`flex flex-1 flex-col gap-4 p-6 sm:p-7 ${wide ? "desk:min-h-[26rem] desk:justify-center desk:p-12" : ""}`}>
+        <span className={`flex flex-1 flex-col gap-4 p-6 sm:p-7 ${wide ? "desk:min-h-[36rem] desk:justify-center desk:p-12" : ""}`}>
           <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-sans text-xs font-bold text-[#7a5a2c]">
             {duration && (
               <span className="inline-flex items-center gap-1.5">

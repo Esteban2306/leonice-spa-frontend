@@ -80,6 +80,7 @@ export function TemplateEditorDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={template ? "Editar plantilla" : "Nueva plantilla"}
+      contentClassName="sm:max-w-2xl"
       description="Texto plano de WhatsApp. Usa *negrita*, _cursiva_ y variables como {{nombre}}."
       submitLabel="Guardar plantilla"
       submittingLabel="Guardando…"

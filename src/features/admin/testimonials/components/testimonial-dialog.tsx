@@ -135,7 +135,7 @@ export function TestimonialDialog({
       submitLabel={isCreate ? "Crear testimonio" : "Guardar cambios"}
       submittingLabel={isCreate ? "Creando…" : "Guardando…"}
       canSubmit={canSubmit}
-      contentClassName="sm:max-w-2xl max-h-[92svh] overflow-y-auto"
+      contentClassName="sm:max-w-2xl"
       onSubmit={submit}
     >
       <div className="grid gap-4 sm:grid-cols-2">
