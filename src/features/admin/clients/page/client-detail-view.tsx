@@ -21,6 +21,7 @@ import { HealthCard } from "../detail/components/health-card";
 import { HistoryTab } from "../detail/components/history-tab";
 import { NotesTab } from "../detail/components/notes-tab";
 import { PaymentsTab } from "../detail/components/payments-tab";
+import { OrdersTab } from "../detail/components/orders-tab";
 import { ProfileCard } from "../detail/components/profile-card";
 import { DepositExemptCard } from "../detail/components/deposit-exempt-card";
 import { UpcomingTab } from "../detail/components/upcoming-tab";
@@ -147,6 +148,7 @@ export function ClientDetailView(props: ClientDetailViewProps) {
                 isLoading={props.isPaymentsLoading}
               />
             )}
+            {tab === "orders" && <OrdersTab clientId={client.id} />}
             {tab === "notes" && <NotesTab />}
           </div>
         </div>

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { KeyRound, RotateCcw } from "lucide-react";
+import Link from "@/src/features/admin/components/admin-link";
+import { KeyRound, MessageCircle, RotateCcw } from "lucide-react";
+
+import { chatHref } from "@/src/features/admin/orders/lib/orders-page";
 
 import { ActionDialog } from "@/src/features/admin/components/reservation-actions/action-dialog";
 import {
@@ -243,7 +246,7 @@ export function HairPhotoTab({
       {exists && (
         <SectionCard
           title="Últimas fotos revisadas"
-          description="Las diez más recientes, con lo que se vio en cada una."
+          description="Las diez más recientes: de quién es, lo que se vio y un acceso a su chat para responderle."
         >
           {status.recent.length === 0 ? (
             <p className="font-sans text-sm text-secondary/75">
@@ -258,15 +261,38 @@ export function HairPhotoTab({
                 >
                   <div className="min-w-0 flex-1">
                     <p className="font-sans text-sm font-semibold text-secondary">
-                      {VERDICT_TEXT[photo.verdict] ?? photo.verdict}
+                      {photo.clientName ?? "Clienta sin registrar"}
+                      <span className="font-normal text-secondary/70">
+                        {" · "}
+                        {photo.phone ?? "Número oculto por WhatsApp"}
+                      </span>
                     </p>
                     <p className="font-sans text-xs text-secondary/70">
-                      {photo.createdAt ? formatDateTime(photo.createdAt) : ""}
-                      {photo.description ? ` · ${photo.description}` : ""}
+                      {VERDICT_TEXT[photo.verdict] ?? photo.verdict}
+                      {photo.createdAt
+                        ? ` · ${formatDateTime(photo.createdAt)}`
+                        : ""}
                     </p>
+                    {photo.description && (
+                      <p className="mt-1 font-sans text-xs text-secondary/80">
+                        {photo.description}
+                      </p>
+                    )}
                   </div>
                   {photo.mode === "SHADOW" && (
                     <StatusPill tone="amber">Solo observada</StatusPill>
+                  )}
+                  {chatHref(photo.phone ?? null, photo.conversationId) && (
+                    <Link
+                      href={chatHref(
+                        photo.phone ?? null,
+                        photo.conversationId,
+                      )!}
+                      className="inline-flex h-9 items-center gap-2 rounded-full bg-secondary px-4 font-sans text-sm font-semibold text-primary transition-colors hover:bg-secondary/90"
+                    >
+                      <MessageCircle className="size-4" aria-hidden />
+                      Contestar
+                    </Link>
                   )}
                 </li>
               ))}

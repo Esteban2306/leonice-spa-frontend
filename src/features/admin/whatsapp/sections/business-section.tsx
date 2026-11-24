@@ -33,7 +33,7 @@ import { formatDateTime } from "../lib/whatsapp-format";
 
 type TextKey =
   | "depositInstructions"
-  | "productPaymentInstructions"
+  | "productDeliveryInfo"
   | "depositPolicy"
   | "cancellationPolicy"
   | "address"
@@ -49,17 +49,17 @@ const FIELDS: ReadonlyArray<{
 }> = [
   {
     key: "depositInstructions",
-    label: "Cómo pagar el anticipo",
+    label: "Métodos de pago",
     max: 1500,
-    hint: "Cuentas, Nequi, llave… El asistente lo comparte tal cual.",
+    hint: "Cuentas, Nequi, llaves… Sirven para todo: el anticipo de las citas, los servicios y los productos. El asistente lo comparte tal cual.",
     rows: 4,
   },
   {
-    key: "productPaymentInstructions",
-    label: "Cómo pagar un pedido de productos",
+    key: "productDeliveryInfo",
+    label: "Envío de productos a domicilio",
     max: 1500,
-    hint: "La cuenta que el asistente da con cada pedido. Vacío: usa la del anticipo.",
-    rows: 3,
+    hint: "Dónde y cómo envían, por ejemplo: «envíos en Granada; puedes pagar en efectivo al recibirlo». Vacío: los productos solo se recogen en el spa.",
+    rows: 2,
   },
   {
     key: "depositPolicy",
@@ -143,7 +143,7 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
     ownerPhoneValue !== null && !OWNER_PHONE_PATTERN.test(ownerPhoneValue);
   const [texts, setTexts] = useState<Record<TextKey, string>>({
     depositInstructions: settings.depositInstructions ?? "",
-    productPaymentInstructions: settings.productPaymentInstructions ?? "",
+    productDeliveryInfo: settings.productDeliveryInfo ?? "",
     depositPolicy: settings.depositPolicy ?? "",
     cancellationPolicy: settings.cancellationPolicy ?? "",
     address: settings.address ?? "",
@@ -293,6 +293,16 @@ function BusinessForm({ settings }: { settings: BusinessSettings }) {
         description="Vista previa con lo que tienes escrito ahora."
       >
         <div className="flex flex-col gap-4 rounded-[1.5rem] bg-primary/50 p-4">
+          <PreviewBlock title="Pedidos de productos">
+            {[
+              texts.productDeliveryInfo.trim()
+                ? `🛵 Te lo enviamos a tu casa (${texts.productDeliveryInfo.trim()}): pagas por transferencia o en efectivo al recibirlo.`
+                : null,
+              `🏠 Lo recoges en el spa${texts.address.trim() ? ` (${texts.address.trim()})` : ""}: pagas por transferencia o allá mismo.`,
+            ]
+              .filter(Boolean)
+              .join("\n")}
+          </PreviewBlock>
           <PreviewBlock title="Anticipo">
             {depositPesos !== null
               ? `${formatCopFromThousands(depositThousands ?? 0)} para confirmar la cita.`

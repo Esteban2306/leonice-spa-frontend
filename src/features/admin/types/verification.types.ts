@@ -59,6 +59,9 @@ export interface RecentHairPhoto {
   verdict: string;
   mode: string;
   description: string | null;
+  conversationId?: string | null;
+  phone?: string | null;
+  clientName?: string | null;
 }
 
 export interface HairPhotoStatus {

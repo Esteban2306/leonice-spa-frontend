@@ -31,8 +31,11 @@ export function InboxSection() {
   const searchParams = useSearchParams();
   const nowMs = useMinuteClock();
   const selectedId = searchParams.get("chat");
-  const [tab, setTab] = useState<InboxTab>("pending");
-  const [search, setSearch] = useState("");
+  const lookup = (searchParams.get("buscar") ?? "").replace(/\D/g, "");
+  const [tab, setTab] = useState<InboxTab>(
+    lookup || selectedId ? "all" : "pending",
+  );
+  const [search, setSearch] = useState(lookup);
   const [mutedOpen, setMutedOpen] = useState(false);
   const digits = search.replace(/\D/g, "");
   const debouncedDigits = useDebouncedValue(digits, 350, digits);

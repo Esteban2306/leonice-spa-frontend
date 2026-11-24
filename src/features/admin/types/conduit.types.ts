@@ -362,6 +362,7 @@ export interface BusinessSettings {
   depositAmount: number | null;
   depositInstructions: string | null;
   productPaymentInstructions?: string | null;
+  productDeliveryInfo?: string | null;
   depositPolicy: string | null;
   cancellationPolicy: string | null;
   address: string | null;

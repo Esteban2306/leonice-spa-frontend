@@ -19,8 +19,8 @@ export function OrdersToVerifyNotice() {
       <ShoppingBag className="size-5" strokeWidth={1.75} />
       <span className="font-semibold">
         {toVerify > 0
-          ? `${toVerify} ${toVerify === 1 ? "comprobante de pedido" : "comprobantes de pedidos"} por verificar`
-          : `${toDeliver} ${toDeliver === 1 ? "pedido pagado" : "pedidos pagados"} por entregar`}
+          ? `${toVerify} ${toVerify === 1 ? "pedido de productos" : "pedidos de productos"} por verificar`
+          : `${toDeliver} ${toDeliver === 1 ? "pedido" : "pedidos"} por entregar`}
       </span>
       <span className="text-secondary/70">
         Verifícalos en un clic desde Pedidos.

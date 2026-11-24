@@ -1,6 +1,9 @@
 export type ProductOrderStatus =
   "PENDIENTE_PAGO" | "PAGO_EN_REVISION" | "PAGADO" | "ENTREGADO" | "CANCELADO";
 
+export type ProductFulfillment = "DOMICILIO" | "RECOGER";
+export type ProductPaymentMethod = "TRANSFERENCIA" | "CONTRAENTREGA" | "EN_TIENDA";
+
 export interface ProductOrderItem {
   id: string;
   productName: string;
@@ -29,6 +32,9 @@ export interface ProductOrder {
   proofReceivedAt: string | null;
   amountMatches: boolean | null;
   rejectionReason: string | null;
+  fulfillment: ProductFulfillment | null;
+  paymentMethod: ProductPaymentMethod | null;
+  deliveryAddress: string | null;
   verifiedAt: string | null;
   deliveredAt: string | null;
   cancelledAt: string | null;
@@ -46,6 +52,8 @@ export interface PaginatedProductOrders {
 
 export interface FindProductOrdersParams {
   status?: ProductOrderStatus;
+  view?: "TO_VERIFY";
+  clientId?: string;
   page?: number;
   pageSize?: number;
 }
