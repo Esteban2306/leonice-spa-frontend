@@ -3,8 +3,13 @@ import { describe, expect, it } from "vitest";
 import type { ProductOrder } from "@/src/features/admin/types/product-orders.types";
 
 import {
+  canDeliver,
   canVerify,
+  chatHref,
   formatPesos,
+  paymentStatus,
+  tabParams,
+  verifyLabel,
   itemLine,
   paymentCheck,
   whatsappUrl,
@@ -27,6 +32,9 @@ const order = (overrides: Partial<ProductOrder> = {}): ProductOrder => ({
   proofReceivedAt: "2026-11-22T20:00:00.000Z",
   amountMatches: true,
   rejectionReason: null,
+  fulfillment: "RECOGER",
+  paymentMethod: "TRANSFERENCIA",
+  deliveryAddress: null,
   verifiedAt: null,
   deliveredAt: null,
   cancelledAt: null,
@@ -69,5 +77,42 @@ describe("pedidos en el panel", () => {
       }),
     ).toBe("2 × Ritual Jolly Kids (Ritual) · $196.000 · Kits con 20 %");
     expect(formatPesos(null)).toBe("Por confirmar");
+  });
+
+  it("por verificar junta los pedidos con y sin comprobante", () => {
+    expect(tabParams("TO_VERIFY")).toEqual({ view: "TO_VERIFY", pageSize: 50 });
+    expect(tabParams("PAGADO")).toEqual({ status: "PAGADO", pageSize: 50 });
+  });
+
+  it("el botón dice qué se le avisa a la clienta según cómo pidió el producto", () => {
+    expect(verifyLabel(order())).toBe("Verificar y avisar que puede recogerlo");
+    expect(verifyLabel(order({ fulfillment: "DOMICILIO" }))).toBe(
+      "Verificar y avisar que va en camino",
+    );
+  });
+
+  it("se puede verificar y entregar un pedido que paga al recibirlo, sin comprobante", () => {
+    const cash = order({
+      status: "PENDIENTE_PAGO",
+      paymentMethod: "CONTRAENTREGA",
+      fulfillment: "DOMICILIO",
+      proofImageUrl: null,
+    });
+    expect(canVerify(cash)).toBe(true);
+    expect(canDeliver(cash)).toBe(true);
+    expect(paymentStatus(cash)).toBeNull();
+    expect(paymentStatus(order({ status: "PENDIENTE_PAGO" }))).toBe(
+      "Aún no envía el comprobante",
+    );
+  });
+
+  it("el chat se abre dentro del panel", () => {
+    expect(chatHref("+573108525522")).toBe(
+      "/admin/whatsapp/inbox?buscar=573108525522",
+    );
+    expect(chatHref("+573108525522", "c1")).toBe(
+      "/admin/whatsapp/inbox?chat=c1&buscar=573108525522",
+    );
+    expect(chatHref(null)).toBeNull();
   });
 });

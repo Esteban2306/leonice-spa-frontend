@@ -1,29 +1,38 @@
-import { ExternalLink, MessageCircle } from "lucide-react";
+import Link from "@/src/features/admin/components/admin-link";
+import { ExternalLink, MapPin, MessageCircle, Wallet } from "lucide-react";
 import { useState } from "react";
 
 import type {
   ProductOrder,
-  ProductOrderStatus,
+  ProductOrdersSummary,
 } from "@/src/features/admin/types/product-orders.types";
 
 import {
+  canDeliver,
   canVerify,
+  chatHref,
   formatPesos,
+  FULFILLMENT_TEXT,
+  isOpen,
   itemLine,
   ORDER_TABS,
+  type OrderTab,
   PAYMENT_CHECK_LABEL,
+  PAYMENT_TEXT,
   paymentCheck,
-  whatsappUrl,
+  paymentStatus,
+  tabCount,
+  verifyLabel,
 } from "../lib/orders-page";
 
 interface OrdersViewProps {
-  status: ProductOrderStatus;
-  counts: Record<ProductOrderStatus, number> | null;
+  tab: OrderTab;
+  summary: ProductOrdersSummary | null;
   orders: readonly ProductOrder[];
   isLoading: boolean;
   isError: boolean;
   isPending: boolean;
-  onStatusChange: (status: ProductOrderStatus) => void;
+  onTabChange: (tab: OrderTab) => void;
   onVerify: (order: ProductOrder) => void;
   onReject: (order: ProductOrder, reason: string) => void;
   onDeliver: (order: ProductOrder) => void;
@@ -64,7 +73,8 @@ function OrderCard({
   const [reason, setReason] = useState("");
   const [total, setTotal] = useState("");
   const check = paymentCheck(order);
-  const chat = whatsappUrl(order.phone);
+  const chat = chatHref(order.phone);
+  const paid = paymentStatus(order);
 
   return (
     <article className="flex flex-col gap-4 rounded-[1.5rem] border border-tertiary/30 bg-[#FCF6EB] p-5">
@@ -98,6 +108,39 @@ function OrderCard({
           <li key={item.id}>{itemLine(item)}</li>
         ))}
       </ul>
+      <dl className="grid gap-2 rounded-2xl bg-white/70 p-3 font-sans text-sm text-secondary sm:grid-cols-2">
+        <div className="flex items-start gap-2">
+          <MapPin
+            className="mt-0.5 size-4 shrink-0 text-secondary/60"
+            aria-hidden
+          />
+          <div>
+            <dt className="text-xs text-secondary/60">Cómo lo recibe</dt>
+            <dd className="font-semibold">
+              {order.fulfillment
+                ? FULFILLMENT_TEXT[order.fulfillment]
+                : "Sin indicar"}
+            </dd>
+            {order.deliveryAddress && <dd>{order.deliveryAddress}</dd>}
+          </div>
+        </div>
+        <div className="flex items-start gap-2">
+          <Wallet
+            className="mt-0.5 size-4 shrink-0 text-secondary/60"
+            aria-hidden
+          />
+          <div>
+            <dt className="text-xs text-secondary/60">Cómo paga</dt>
+            <dd className="font-semibold">
+              {order.paymentMethod
+                ? PAYMENT_TEXT[order.paymentMethod]
+                : "Sin indicar"}
+            </dd>
+            {paid && <dd>{paid}</dd>}
+          </div>
+        </div>
+      </dl>
+
       {order.request && (
         <p className="font-sans text-sm text-secondary/75">
           En sus palabras: {order.request}
@@ -171,14 +214,14 @@ function OrderCard({
         )}
 
       <footer className="flex flex-wrap gap-2">
-        {canVerify(order) && order.status === "PAGO_EN_REVISION" && (
+        {canVerify(order) && (
           <button
             type="button"
             disabled={props.isPending}
             onClick={() => props.onVerify(order)}
-            className={`${BUTTON} bg-tertiary text-secondary hover:bg-quaternary`}
+            className={`${BUTTON} bg-secondary text-primary hover:bg-secondary/90`}
           >
-            Pago verificado
+            {verifyLabel(order)}
           </button>
         )}
         {order.status === "PAGO_EN_REVISION" && !rejecting && (
@@ -191,25 +234,32 @@ function OrderCard({
             Rechazar comprobante
           </button>
         )}
-        {order.status === "PAGADO" && (
+        {canDeliver(order) && (
           <button
             type="button"
             disabled={props.isPending}
-            onClick={() => props.onDeliver(order)}
+            onClick={() => {
+              if (
+                !isOpen(order) ||
+                window.confirm(
+                  `¿Marcar el pedido ${order.code} como entregado sin verificarlo antes?`,
+                )
+              ) {
+                props.onDeliver(order);
+              }
+            }}
             className={`${BUTTON} bg-tertiary text-secondary hover:bg-quaternary`}
           >
-            Marcar entregado
+            Entregado
           </button>
         )}
         {chat && (
-          <a
+          <Link
             href={chat}
-            target="_blank"
-            rel="noreferrer"
             className={`${BUTTON} border border-tertiary/40 text-secondary hover:bg-quaternary/25`}
           >
             <MessageCircle className="size-4" /> Abrir chat
-          </a>
+          </Link>
         )}
         {(order.status === "PENDIENTE_PAGO" ||
           order.status === "PAGO_EN_REVISION" ||
@@ -284,9 +334,10 @@ export function OrdersView(props: OrdersViewProps) {
         <header className="rounded-[2rem] bg-secondary p-6 text-primary sm:p-8">
           <h1 className="font-heading text-4xl sm:text-5xl">Pedidos</h1>
           <p className="mt-2 max-w-xl font-sans text-sm text-primary/70">
-            Lo que las clientas piden por WhatsApp. Cuando llega un comprobante
-            te avisamos; si lo rechazas, la clienta recibe el motivo
-            automáticamente. Al verificarlo, el pedido pasa a por entregar.
+            Lo que las clientas piden por WhatsApp, con cómo lo quieren recibir
+            y pagar. Al verificarlo, la clienta recibe el aviso de que puede
+            recogerlo o de que va en camino, y el pedido pasa a por entregar. Si
+            rechazas un comprobante, le llega el motivo.
           </p>
         </header>
 
@@ -296,14 +347,15 @@ export function OrdersView(props: OrdersViewProps) {
           className="flex flex-wrap gap-2"
         >
           {ORDER_TABS.map((tab) => {
-            const selected = props.status === tab.value;
+            const selected = props.tab === tab.value;
+            const count = tabCount(tab.value, props.summary);
             return (
               <button
                 key={tab.value}
                 type="button"
                 role="tab"
                 aria-selected={selected}
-                onClick={() => props.onStatusChange(tab.value)}
+                onClick={() => props.onTabChange(tab.value)}
                 className={`inline-flex h-9 cursor-pointer items-center gap-2 rounded-full border px-4 font-sans text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary ${
                   selected
                     ? "border-secondary bg-secondary text-primary"
@@ -311,10 +363,8 @@ export function OrdersView(props: OrdersViewProps) {
                 }`}
               >
                 {tab.label}
-                {props.counts && (
-                  <span className="tabular-nums opacity-70">
-                    {props.counts[tab.value]}
-                  </span>
+                {count !== null && (
+                  <span className="tabular-nums opacity-70">{count}</span>
                 )}
               </button>
             );
