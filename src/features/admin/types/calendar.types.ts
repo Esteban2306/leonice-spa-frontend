@@ -22,6 +22,7 @@ export interface CalendarApiDeposit {
 }
 
 export interface CalendarApiReservation {
+  dependent?: { name: string } | null;
   id: string;
   status: ReservationStatus;
   channel: ReservationChannel;

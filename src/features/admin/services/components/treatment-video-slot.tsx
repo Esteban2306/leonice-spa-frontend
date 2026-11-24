@@ -47,9 +47,11 @@ export function TreatmentVideoSlot({
     accept(event.dataTransfer.files[0]);
   };
 
+  // `relative` anchors the visually hidden file input here. Without it the input is positioned against
+  // the drawer, and focusing it when the picker opens scrolls the whole drawer out of place.
   return (
-    <div className="flex flex-col gap-3">
-      <div className="relative aspect-[4/5] w-full max-w-[18rem] overflow-hidden rounded-[1.25rem] border border-tertiary/30 bg-secondary">
+    <div className="relative flex flex-col gap-3">
+      <div className="relative aspect-[9/16] w-full max-w-[14rem] overflow-hidden rounded-[1.25rem] border border-tertiary/30 bg-secondary">
         {videoUrl ? (
           <video
             key={videoUrl}
@@ -130,7 +132,7 @@ export function TreatmentVideoSlot({
         )}
       </div>
       <p className="font-sans text-xs text-secondary/70">
-        Se muestra en la página pública del servicio. Un video vertical corto del procedimiento se ve mejor.
+        Se muestra en la página pública del servicio. Sube el video vertical tal como sale del celular (9:16, 1080×1920): se ve completo, sin bordes ni recortes.
       </p>
     </div>
   );

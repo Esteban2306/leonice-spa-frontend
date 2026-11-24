@@ -15,6 +15,8 @@ export interface CalendarReservation {
   dateKey: string;
   clientId: string;
   clientName: string;
+  /** Set when the appointment is for someone other than the contact (daughter, mother, friend...). */
+  dependentName: string | null;
   phone: string;
   treatmentId: string;
   treatmentName: string;

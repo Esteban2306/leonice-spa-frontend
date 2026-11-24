@@ -59,7 +59,12 @@ export function ReservationCard({
 
             {showClientName && (
               <span className="mt-3 block truncate font-sans text-base text-secondary">
-                {reservation.clientName}
+                {reservation.dependentName ?? reservation.clientName}
+                {reservation.dependentName && (
+                  <span className="ml-2 font-sans text-xs text-secondary/70">
+                    · contacto: {reservation.clientName}
+                  </span>
+                )}
               </span>
             )}
 

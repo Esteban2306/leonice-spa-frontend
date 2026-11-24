@@ -17,6 +17,7 @@ export function mapCalendarReservation(
     dateKey: getBogotaDayKey(startsAt),
     clientId: reservation.client.id,
     clientName: reservation.client.name,
+    dependentName: reservation.dependent?.name ?? null,
     phone: reservation.client.phone,
     treatmentId: reservation.treatment.id,
     treatmentName: reservation.treatment.name,

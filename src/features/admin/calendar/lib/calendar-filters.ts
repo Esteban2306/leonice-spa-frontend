@@ -92,6 +92,7 @@ function matchesSearch(reservation: CalendarReservation, query: string) {
 
   return (
     reservation.clientName.toLowerCase().includes(normalized) ||
+    (reservation.dependentName?.toLowerCase().includes(normalized) ?? false) ||
     reservation.treatmentName.toLowerCase().includes(normalized) ||
     (digits.length >= 3 &&
       reservation.phone.replace(/\D/g, "").includes(digits))

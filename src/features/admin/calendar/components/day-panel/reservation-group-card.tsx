@@ -37,7 +37,12 @@ export function ReservationGroupCard({
     >
       <header className="flex items-center justify-between px-2 pt-1">
         <span className="font-sans text-sm text-secondary">
-          {first.clientName}
+          {first.dependentName ?? first.clientName}
+          {first.dependentName && (
+            <span className="ml-2 text-xs text-secondary/70">
+              · contacto: {first.clientName}
+            </span>
+          )}
         </span>
         <span className="rounded-full bg-quaternary/40 px-3 py-1 font-sans text-[11px] text-secondary">
           Combo · {group.reservations.length} tratamientos
