@@ -9,6 +9,7 @@ const base: CalendarReservation = {
   dateKey: "2026-12-09",
   clientId: "c1",
   clientName: "Ana Pérez",
+  dependentName: null,
   phone: "+573001234567",
   treatmentId: "t1",
   treatmentName: "Alisado",
