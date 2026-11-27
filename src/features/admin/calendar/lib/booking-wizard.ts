@@ -2,7 +2,7 @@ import { BUSINESS_TIME_ZONE } from "@/src/lib/date/bogota";
 import type { AvailabilitySlot } from "@/src/features/admin/types/reservations.types";
 
 import type { BookingClient } from "../types/calendar.types";
-import { MAX_AGREED_PRICE } from "./booking";
+import { isAgreedPriceInRange } from "./booking";
 import { addDays, toDateKey } from "./calendar-dates";
 
 export const WIZARD_STEPS = [
@@ -153,10 +153,11 @@ function missingForClient(draft: WizardDraft): string | null {
   return null;
 }
 
-function hasPriceOverLimit(draft: WizardDraft): boolean {
-  return Object.values(draft.prices).some(
-    (raw) => Number(raw.replace(/\D/g, "")) > MAX_AGREED_PRICE,
-  );
+function hasPriceOutOfRange(draft: WizardDraft): boolean {
+  return Object.values(draft.prices).some((raw) => {
+    const digits = raw.replace(/\D/g, "");
+    return digits !== "" && !isAgreedPriceInRange(Number(digits));
+  });
 }
 
 /** Qué falta para dar por completo un paso; null cuando ya está listo. */
@@ -173,8 +174,8 @@ export function missingFor(step: WizardStep, draft: WizardDraft): string | null 
     case "hora":
       return draft.slotIso ? null : "Toca una hora.";
     case "revisar":
-      return hasPriceOverLimit(draft)
-        ? "El precio acordado es demasiado alto: revísalo."
+      return hasPriceOutOfRange(draft)
+        ? "El precio acordado debe estar entre $1.000 y $1.000.000."
         : null;
   }
 }

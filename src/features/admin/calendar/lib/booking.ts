@@ -66,7 +66,13 @@ export function describeServices(services: readonly BookingService[]): string {
   return services.map((service) => service.name).join(" + ");
 }
 
-export const MAX_AGREED_PRICE = 10_000_000;
+/** Mismo rango que valida la API para el precio de una reserva. */
+export const MIN_AGREED_PRICE = 1_000;
+export const MAX_AGREED_PRICE = 1_000_000;
+
+export function isAgreedPriceInRange(price: number): boolean {
+  return price >= MIN_AGREED_PRICE && price <= MAX_AGREED_PRICE;
+}
 
 export function toAgreedPrices(
   prices: Readonly<Record<string, string>>,
@@ -75,6 +81,6 @@ export function toAgreedPrices(
     const digits = raw.replace(/\D/g, "");
     if (digits === "") return [];
     const price = Number(digits);
-    return price <= MAX_AGREED_PRICE ? [{ treatmentId, price }] : [];
+    return isAgreedPriceInRange(price) ? [{ treatmentId, price }] : [];
   });
 }

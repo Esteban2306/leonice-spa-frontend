@@ -129,14 +129,17 @@ describe("qué falta en cada paso", () => {
     expect(draft.name).toBe("");
   });
 
-  it("avisa de un precio acordado demasiado alto", () => {
-    const draft = wizardReducer(complete, {
-      type: "setPrice",
-      treatmentId: "a",
-      value: "99.999.999",
-    });
-    expect(missingFor("revisar", draft)).not.toBeNull();
-  });
+  it.each(["0", "999", "99.999.999"])(
+    "avisa de un precio acordado fuera de rango: %s",
+    (value) => {
+      const draft = wizardReducer(complete, {
+        type: "setPrice",
+        treatmentId: "a",
+        value,
+      });
+      expect(missingFor("revisar", draft)).not.toBeNull();
+    },
+  );
 });
 
 describe("días y horas", () => {
