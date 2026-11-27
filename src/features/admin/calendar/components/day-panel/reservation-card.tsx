@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Ellipsis, MessageCircle } from "lucide-react";
+import { CalendarClock, Ellipsis, MessageCircle } from "lucide-react";
 
 import { AssessmentCallout } from "@/src/features/admin/components/hair-assessment/assessment-callout";
 import { HairAssessmentDialog } from "@/src/features/admin/components/hair-assessment/hair-assessment-dialog";
@@ -14,8 +14,10 @@ import { useClientActions } from "@/src/features/admin/hooks/use-client-actions"
 
 import {
   STAGE_ACTION_LABELS,
+  canReschedule,
   describeStage,
   needsAssessment,
+  receivedDeposit,
   type StageAction,
 } from "../../lib/reservation-stage";
 import type { CalendarReservation } from "../../types/calendar.types";
@@ -25,7 +27,7 @@ import {
   ReservationActionsSheet,
   type ReservationDialog,
 } from "./reservation-actions-sheet";
-import { StageSummary } from "./stage-summary";
+import { MoneySummary, StatusBadge } from "./stage-summary";
 
 interface ReservationCardProps extends DayPanelHandlers {
   reservation: CalendarReservation;
@@ -87,7 +89,8 @@ export function ReservationCard({
         isSelected ? "border-2 border-secondary" : "border-secondary/20"
       }`}
     >
-      <div>
+      <div className="flex flex-col gap-1">
+        <StatusBadge stage={stage} />
         <p className="whitespace-nowrap font-sans text-lg font-bold text-secondary">
           {reservation.start} – {reservation.end}
         </p>
@@ -106,7 +109,15 @@ export function ReservationCard({
         </p>
       </div>
 
-      <StageSummary stage={stage} />
+      <MoneySummary
+        price={reservation.price}
+        deposit={receivedDeposit(reservation)}
+      />
+
+      <div>
+        <p className="font-sans text-sm font-bold text-secondary">Qué sigue</p>
+        <p className="font-sans text-base text-secondary">{stage.next}</p>
+      </div>
 
       {warnsAssessment && (
         <AssessmentCallout
@@ -140,7 +151,18 @@ export function ReservationCard({
         </button>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-wrap gap-2 [&>*]:w-auto [&>*]:flex-1">
+        {canReschedule(reservation) && (
+          <button
+            type="button"
+            disabled={isBusy}
+            onClick={() => onReschedule(reservation.id)}
+            className={SECONDARY_ACTION}
+          >
+            <CalendarClock className="size-4" aria-hidden="true" />
+            Cambiar día u hora
+          </button>
+        )}
         <a
           href={`https://wa.me/${reservation.phone.replace(/\D/g, "")}`}
           target="_blank"

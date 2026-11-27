@@ -20,7 +20,11 @@ import {
 } from "@/src/components/ui/sheet";
 import { isCancellableStatus } from "@/src/features/admin/utils/reservation-status.utils";
 
-import { needsAssessment, type StageAction } from "../../lib/reservation-stage";
+import {
+  canReschedule,
+  needsAssessment,
+  type StageAction,
+} from "../../lib/reservation-stage";
 import type { CalendarReservation } from "../../types/calendar.types";
 import { SECONDARY_ACTION } from "./panel-buttons";
 import { ReservationDetails } from "./reservation-details";
@@ -162,7 +166,7 @@ export function ReservationActionsSheet({
               onClick={closeAnd(() => onDialog("reject"))}
             />
           )}
-          {isLive && (
+          {canReschedule(reservation) && (
             <Row
               icon={CalendarClock}
               label="Cambiar día u hora"

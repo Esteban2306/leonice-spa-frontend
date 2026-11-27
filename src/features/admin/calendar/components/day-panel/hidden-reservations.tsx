@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-import { describeReservationStatus } from "@/src/features/admin/utils/reservation-status.utils";
-
 import type { CalendarReservation } from "../../types/calendar.types";
 import type { DayPanelHandlers } from "./panel-handlers";
 import { ReservationCard } from "./reservation-card";
@@ -42,21 +40,14 @@ export function HiddenReservations({
 
       {isOpen &&
         reservations.map((reservation) => (
-          <div key={reservation.id}>
-            <span className="sr-only">
-              {describeReservationStatus(
-                reservation.status,
-                reservation.cancellationSource,
-              )}
-            </span>
-            <ReservationCard
-              reservation={reservation}
-              isSelected={reservation.id === selectedReservationId}
-              belongsToCombo={false}
-              onSelect={onSelectReservation}
-              {...handlers}
-            />
-          </div>
+          <ReservationCard
+            key={reservation.id}
+            reservation={reservation}
+            isSelected={reservation.id === selectedReservationId}
+            belongsToCombo={false}
+            onSelect={onSelectReservation}
+            {...handlers}
+          />
         ))}
     </section>
   );

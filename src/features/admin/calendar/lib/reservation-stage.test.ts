@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import type { CalendarReservation } from "../types/calendar.types";
-import { describeDeadline, describeStage } from "./reservation-stage";
+import {
+  canReschedule,
+  describeDeadline,
+  describeStage,
+  receivedDeposit,
+} from "./reservation-stage";
 
 const NOW = Date.parse("2026-11-27T17:00:00.000Z");
 const context = { todayKey: "2026-11-27", nowMs: NOW };
@@ -56,16 +61,14 @@ describe("siguiente paso de una cita", () => {
       },
     });
     expect(result.primary).toBe("assess");
-    expect(result.steps?.[0]).toEqual({
-      label: "Valoración",
-      state: "current",
-    });
+    expect(result.label).toBe("Falta valorar");
   });
 
   it("sin comprobante pide registrar el pago y avisa cuándo vence", () => {
     const result = stage({ depositExpiresAt: "2026-11-27T23:00:00.000Z" });
     expect(result.primary).toBe("register-payment");
-    expect(result.headline).toMatch(/^Falta el pago · vence hoy 6:00/);
+    expect(result.label).toBe("Falta el pago");
+    expect(result.next).toMatch(/Plazo: vence hoy 6:00/);
   });
 
   it("con comprobante por revisar pide aprobarlo", () => {
@@ -76,14 +79,14 @@ describe("siguiente paso de una cita", () => {
   it("confirmada: solo el día de la cita se registra la llegada", () => {
     expect(stage({ status: "CONFIRMADA", ...today }).primary).toBe("check-in");
     expect(stage({ status: "CONFIRMADA" }).primary).toBeNull();
-    expect(stage({ status: "CONFIRMADA" }).headline).toBe("Todo listo");
+    expect(stage({ status: "CONFIRMADA" }).next).toMatch(/^Nada por ahora/);
   });
 
   it("en curso se termina; terminada ya no pide nada", () => {
     expect(stage({ status: "CITA_EN_CURSO" }).primary).toBe("complete");
     const done = stage({ status: "COMPLETADA" });
     expect(done.primary).toBeNull();
-    expect(done.steps?.every((step) => step.state === "done")).toBe(true);
+    expect(done.next).toBe("No queda nada pendiente.");
   });
 
   it("solo se reactiva la cancelada por vencimiento que aún no pasa", () => {
@@ -93,7 +96,6 @@ describe("siguiente paso de una cita", () => {
     expect(
       stage({ ...expired, startsAt: "2026-11-20T19:00:00.000Z" }).primary,
     ).toBeNull();
-    expect(stage(expired).steps).toBeNull();
   });
 
   it("quien no llegó hoy todavía puede registrarse", () => {
@@ -106,7 +108,7 @@ describe("siguiente paso de una cita", () => {
 
 describe("otros casos", () => {
   it("avisa de un comprobante rechazado", () => {
-    expect(stage({ depositStatus: "RECHAZADO" }).headline).toBe(
+    expect(stage({ depositStatus: "RECHAZADO" }).label).toBe(
       "Comprobante rechazado",
     );
   });
@@ -118,11 +120,30 @@ describe("otros casos", () => {
       startsAt: "2026-11-20T19:00:00.000Z",
     });
     expect(past.primary).toBeNull();
-    expect(past.headline).toBe("No se registró la llegada");
+    expect(past.label).toBe("Sin registrar llegada");
   });
 
-  it("una reprogramada sale del recorrido", () => {
-    expect(stage({ status: "REPROGRAMADA" }).steps).toBeNull();
+  it("una reprogramada ya no pide nada", () => {
+    expect(stage({ status: "REPROGRAMADA" }).primary).toBeNull();
+  });
+});
+
+describe("anticipo y cambios de hora", () => {
+  it("muestra el anticipo solo cuando está confirmado", () => {
+    expect(
+      receivedDeposit(
+        reservation({ depositStatus: "CONFIRMADO", depositAmount: 50 }),
+      ),
+    ).toBe(50);
+    expect(receivedDeposit(reservation({ depositAmount: 50 }))).toBeNull();
+  });
+
+  it("solo ofrece mover lo que la API deja mover", () => {
+    expect(canReschedule(reservation({ status: "CONFIRMADA" }))).toBe(true);
+    expect(canReschedule(reservation({}))).toBe(true);
+    expect(
+      canReschedule(reservation({ status: "PENDIENTE_VALORACION" })),
+    ).toBe(false);
   });
 });
 

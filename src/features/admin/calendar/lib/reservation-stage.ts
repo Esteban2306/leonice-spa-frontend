@@ -18,16 +18,12 @@ export type StageAction =
 
 export type StageTone = "attention" | "ready" | "active" | "done" | "lost";
 
-export interface StageStep {
-  label: string;
-  state: "done" | "current" | "pending";
-}
-
 export interface ReservationStage {
-  headline: string;
+  /** Estado en una o dos palabras. */
+  label: string;
   tone: StageTone;
-  /** Recorrido de la cita; null cuando ya se salió de él. */
-  steps: StageStep[] | null;
+  /** Qué le toca hacer ahora a quien atiende, también cuando es nada. */
+  next: string;
   primary: StageAction | null;
 }
 
@@ -68,22 +64,6 @@ export function describeDeadline(iso: string, nowMs: number): string {
   return `vence ${shortDay.format(deadline)} ${time}`;
 }
 
-function journey(withAssessment: boolean, current: string): StageStep[] {
-  const labels = [
-    ...(withAssessment ? ["Valoración"] : []),
-    "Pago",
-    "Confirmada",
-    "En el spa",
-    "Terminada",
-  ];
-  const position = labels.indexOf(current);
-  return labels.map((label, index) => ({
-    label,
-    state:
-      index < position ? "done" : index === position ? "current" : "pending",
-  }));
-}
-
 export function needsAssessment(reservation: CalendarReservation): boolean {
   return reservation.assessment?.state === "PENDING";
 }
@@ -104,97 +84,132 @@ export function describeStage(
     status === "PENDIENTE_VALORACION" ||
     (waiting && needsAssessment(reservation))
   ) {
+    const canAssess = needsAssessment(reservation);
     return {
-      headline: "Hay que valorar el cabello",
+      label: "Falta valorar",
       tone: "attention",
-      steps: journey(true, "Valoración"),
-      primary: needsAssessment(reservation) ? "assess" : null,
+      next: canAssess
+        ? "Registra la valoración del cabello y revisa que el precio sea el correcto."
+        : "Falta confirmar el precio de la valoración.",
+      primary: canAssess ? "assess" : null,
     };
   }
 
   switch (status) {
     case "SOLICITUD_INICIADA":
       return {
-        headline: "La solicitud no se terminó",
+        label: "Sin terminar",
         tone: "attention",
-        steps: journey(false, "Pago"),
+        next: "La solicitud quedó a medias. Escríbele para completarla.",
         primary: null,
       };
     case "PENDIENTE_DEPOSITO": {
-      const steps = journey(false, "Pago");
       if (reservation.proofUrl && reservation.isProofUnderReview) {
         return {
-          headline: "Revisa el comprobante",
+          label: "Comprobante por revisar",
           tone: "attention",
-          steps,
+          next: "Mira la imagen y, si el dinero llegó, aprueba el pago.",
           primary: "approve-proof",
         };
       }
-      const deadline = reservation.depositExpiresAt
-        ? ` · ${describeDeadline(reservation.depositExpiresAt, nowMs)}`
-        : "";
-      const problem =
-        reservation.depositStatus === "RECHAZADO"
-          ? "Comprobante rechazado"
-          : "Falta el pago";
+      const due = reservation.depositExpiresAt
+        ? describeDeadline(reservation.depositExpiresAt, nowMs)
+        : null;
+      const deadline = !due
+        ? ""
+        : due === "el plazo venció"
+          ? " El plazo ya venció."
+          : ` Plazo: ${due}.`;
       return {
-        headline: `${problem}${deadline}`,
+        label:
+          reservation.depositStatus === "RECHAZADO"
+            ? "Comprobante rechazado"
+            : "Falta el pago",
         tone: "attention",
-        steps,
+        next: `Cuando pague, regístralo para confirmar la cita.${deadline}`,
         primary: "register-payment",
       };
     }
     case "CONFIRMADA": {
-      const past = !isToday && !isUpcoming;
+      if (isToday) {
+        return {
+          label: "Confirmada",
+          tone: "ready",
+          next: "Cuando llegue, toca «Ya llegó».",
+          primary: "check-in",
+        };
+      }
+      if (!isUpcoming) {
+        return {
+          label: "Sin registrar llegada",
+          tone: "attention",
+          next: "Pasó la fecha y no se marcó la llegada.",
+          primary: null,
+        };
+      }
       return {
-        headline: isToday
-          ? "Esperando que llegue"
-          : past
-            ? "No se registró la llegada"
-            : "Todo listo",
-        tone: past ? "attention" : "ready",
-        steps: journey(false, "Confirmada"),
-        primary: isToday ? "check-in" : null,
+        label: "Confirmada",
+        tone: "ready",
+        next: `Nada por ahora. El ${shortDay.format(new Date(reservation.startsAt))}, cuando llegue, aquí aparece «Ya llegó».`,
+        primary: null,
       };
     }
     case "CITA_EN_CURSO":
       return {
-        headline: "La están atendiendo",
+        label: "En el spa",
         tone: "active",
-        steps: journey(false, "En el spa"),
+        next: "Al finalizar, toca «Terminar cita» para registrar el cobro.",
         primary: "complete",
       };
     case "COMPLETADA":
       return {
-        headline: "Cita terminada",
+        label: "Terminada",
         tone: "done",
-        steps: journey(false, "Terminada").map((step) => ({
-          ...step,
-          state: "done",
-        })),
+        next: "No queda nada pendiente.",
         primary: null,
       };
     case "NO_SHOW":
       return {
-        headline: "No llegó",
+        label: "No llegó",
         tone: "lost",
-        steps: null,
+        next: isToday
+          ? "Si llegó tarde, todavía puedes registrarla."
+          : "Si quiere volver, agenda una cita nueva.",
         primary: isToday ? "check-in-late" : null,
       };
-    case "CANCELADA":
+    case "CANCELADA": {
+      const canRevive = cancellationSource === "TIMEOUT" && isUpcoming;
       return {
-        headline: describeReservationStatus(status, cancellationSource),
+        label: describeReservationStatus(status, cancellationSource),
         tone: "lost",
-        steps: null,
-        primary:
-          cancellationSource === "TIMEOUT" && isUpcoming ? "revive" : null,
+        next: canRevive
+          ? "Si todavía quiere venir, reactívala."
+          : "Si quiere volver, agenda una cita nueva.",
+        primary: canRevive ? "revive" : null,
       };
+    }
     case "REPROGRAMADA":
       return {
-        headline: "Se movió a otra fecha",
+        label: "Movida",
         tone: "lost",
-        steps: null,
+        next: "Se atiende en la nueva fecha.",
         primary: null,
       };
   }
+}
+
+/**
+ * Anticipo registrado en esta cita, en miles de COP. No se calcula cuánto falta:
+ * un mismo pago puede cubrir varias citas y el calendario no lo dice.
+ */
+export function receivedDeposit(
+  reservation: CalendarReservation,
+): number | null {
+  return reservation.depositStatus === "CONFIRMADO"
+    ? reservation.depositAmount
+    : null;
+}
+
+export function canReschedule({ status }: CalendarReservation): boolean {
+  return status === "PENDIENTE_DEPOSITO" || status === "CONFIRMADA";
 }
