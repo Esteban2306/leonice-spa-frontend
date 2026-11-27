@@ -10,6 +10,12 @@ describe("precio de la cita en una reserva manual", () => {
     ]);
   });
 
+  it("envía pesos enteros, no miles: la API hace la conversión", () => {
+    expect(toAgreedPrices({ a: "35.500" })).toEqual([
+      { treatmentId: "a", price: 35500 },
+    ]);
+  });
+
   it("descarta un precio por encima del límite", () => {
     expect(toAgreedPrices({ a: "99.999.999" })).toEqual([]);
   });
