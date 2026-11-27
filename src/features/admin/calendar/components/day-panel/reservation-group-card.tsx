@@ -44,7 +44,7 @@ export function ReservationGroupCard({
             </span>
           )}
         </span>
-        <span className="rounded-full bg-quaternary/40 px-3 py-1 font-sans text-[11px] text-secondary">
+        <span className="rounded-full bg-quaternary/40 px-3 py-1 font-sans text-xs text-secondary">
           Combo · {group.reservations.length} tratamientos
         </span>
       </header>

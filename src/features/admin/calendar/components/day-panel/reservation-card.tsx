@@ -1,13 +1,31 @@
-import { ChevronDown, Ellipsis } from "lucide-react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Ellipsis, MessageCircle } from "lucide-react";
 
 import { AssessmentCallout } from "@/src/features/admin/components/hair-assessment/assessment-callout";
-import { ReservationOptionsMenu } from "@/src/features/admin/components/reservation-actions/reservation-options-menu";
+import { HairAssessmentDialog } from "@/src/features/admin/components/hair-assessment/hair-assessment-dialog";
+import { ApproveDepositDialog } from "@/src/features/admin/components/reservation-actions/approve-deposit-dialog";
+import { CancelReservationDialog } from "@/src/features/admin/components/reservation-actions/cancel-reservation-dialog";
+import { CompleteReservationDialog } from "@/src/features/admin/components/reservation-actions/complete-reservation-dialog";
+import { DepositProofViewer } from "@/src/features/admin/components/reservation-actions/deposit-proof-viewer";
+import { RejectDepositDialog } from "@/src/features/admin/components/reservation-actions/reject-deposit-dialog";
+import { useClientActions } from "@/src/features/admin/hooks/use-client-actions";
 
+import {
+  STAGE_ACTION_LABELS,
+  describeStage,
+  needsAssessment,
+  type StageAction,
+} from "../../lib/reservation-stage";
 import type { CalendarReservation } from "../../types/calendar.types";
+import { PRIMARY_ACTION, SECONDARY_ACTION } from "./panel-buttons";
 import type { DayPanelHandlers } from "./panel-handlers";
-import { ReservationActions } from "./reservation-actions";
-import { ReservationDetails } from "./reservation-details";
-import { ReservationStatusBadge } from "./reservation-status-badge";
+import {
+  ReservationActionsSheet,
+  type ReservationDialog,
+} from "./reservation-actions-sheet";
+import { StageSummary } from "./stage-summary";
 
 interface ReservationCardProps extends DayPanelHandlers {
   reservation: CalendarReservation;
@@ -29,134 +47,188 @@ export function ReservationCard({
   onViewClient,
   onReschedule,
 }: ReservationCardProps) {
-  const isToday = reservation.dateKey === todayKey;
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [dialog, setDialog] = useState<ReservationDialog | null>(null);
+  const clientActions = useClientActions();
+  const cardRef = useRef<HTMLElement>(null);
+
+  const stage = describeStage(reservation, { todayKey, nowMs });
   const isUpcoming = new Date(reservation.startsAt).getTime() > nowMs;
-  const detailsId = `reservation-details-${reservation.id}`;
+  const isBusy = actions.busyReservationId === reservation.id;
+  // Si ya no es el siguiente paso, la valoración pendiente se avisa aparte.
+  const warnsAssessment =
+    needsAssessment(reservation) &&
+    (reservation.status === "CONFIRMADA" ||
+      reservation.status === "CITA_EN_CURSO");
+  const closeDialog = (open: boolean) => {
+    if (!open) setDialog(null);
+  };
+
+  // Un enlace a una cita concreta la deja a la vista.
+  useEffect(() => {
+    if (isSelected) cardRef.current?.scrollIntoView({ block: "nearest" });
+  }, [isSelected]);
+
+  const run: Record<StageAction, () => void> = {
+    assess: () => setDialog("assess"),
+    "register-payment": () => setDialog("approve"),
+    "approve-proof": () => setDialog("approve"),
+    "check-in": () => void actions.checkIn(reservation.id),
+    "check-in-late": () => void actions.checkIn(reservation.id),
+    complete: () => setDialog("complete"),
+    revive: () => void actions.revive(reservation.id),
+  };
 
   return (
     <article
-      className={`rounded-2xl border bg-[#FBF8F0] transition-colors ${
-        isSelected ? "border-secondary" : "border-secondary/15"
+      ref={cardRef}
+      aria-label={`Cita de las ${reservation.start}`}
+      className={`flex flex-col gap-3 rounded-2xl border bg-[#FBF8F0] p-4 ${
+        isSelected ? "border-2 border-secondary" : "border-secondary/20"
       }`}
     >
-      <div className="flex items-start gap-1 pr-2">
-        <button
-          type="button"
-          aria-expanded={isSelected}
-          aria-controls={detailsId}
-          onClick={() => onSelect(isSelected ? null : reservation.id)}
-          className="flex min-w-0 flex-1 cursor-pointer items-start justify-between gap-3 rounded-2xl p-4 pr-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
-        >
-          <span className="block min-w-0">
-            <span className="flex items-baseline gap-2">
-              <span className="font-sans text-xl text-secondary">
-                {reservation.start}
-              </span>
-              <span className="font-sans text-xs text-secondary/70">
-                — {reservation.end}
-              </span>
-            </span>
-
-            {showClientName && (
-              <span className="mt-3 block truncate font-sans text-base text-secondary">
-                {reservation.dependentName ?? reservation.clientName}
-                {reservation.dependentName && (
-                  <span className="ml-2 font-sans text-xs text-secondary/70">
-                    · contacto: {reservation.clientName}
-                  </span>
-                )}
+      <div>
+        <p className="whitespace-nowrap font-sans text-lg font-bold text-secondary">
+          {reservation.start} – {reservation.end}
+        </p>
+        {showClientName && (
+          <p className="break-words font-sans text-base text-secondary">
+            {reservation.dependentName ?? reservation.clientName}
+            {reservation.dependentName && (
+              <span className="block font-sans text-sm text-secondary/80">
+                Contacto: {reservation.clientName}
               </span>
             )}
-
-            <span
-              className={`block font-sans text-sm text-secondary/70 ${
-                showClientName ? "mt-1" : "mt-3"
-              }`}
-            >
-              {reservation.treatmentName}
-            </span>
-          </span>
-
-          <span className="flex shrink-0 flex-col items-end gap-2.5">
-            <ReservationStatusBadge
-              status={reservation.status}
-              cancellationSource={reservation.cancellationSource}
-            />
-            <span className="flex items-center gap-1.5 font-sans text-xs text-secondary/70">
-              {isSelected ? "Ocultar" : "Detalles"}
-              <span
-                aria-hidden="true"
-                className="grid size-7 place-items-center rounded-full bg-secondary/8"
-              >
-                <ChevronDown
-                  className={`size-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
-                    isSelected ? "rotate-180" : ""
-                  }`}
-                />
-              </span>
-            </span>
-          </span>
-        </button>
-
-        <ReservationOptionsMenu
-          target={{
-            reservationId: reservation.id,
-            status: reservation.status,
-            isUpcoming,
-            clientId: reservation.clientId,
-            clientName: reservation.clientName,
-            clientPhone: reservation.phone,
-            treatmentName: reservation.treatmentName,
-          }}
-          actions={actions}
-          onViewClient={onViewClient}
-          onReschedule={onReschedule}
-          trigger={
-            <button
-              type="button"
-              className="mt-3.5 grid size-8 shrink-0 cursor-pointer place-items-center rounded-full text-secondary/70 transition-colors hover:bg-secondary/5 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary"
-            >
-              <Ellipsis className="size-4" />
-            </button>
-          }
-        />
+          </p>
+        )}
+        <p className="font-sans text-sm text-secondary/80">
+          {reservation.treatmentName}
+        </p>
       </div>
 
-      {reservation.assessment?.state === "PENDING" && (
-        <div className="px-4 pb-4">
-          <AssessmentCallout
-            assessment={reservation.assessment}
-            clientId={reservation.clientId}
+      <StageSummary stage={stage} />
+
+      {warnsAssessment && (
+        <AssessmentCallout
+          assessment={reservation.assessment}
+          clientId={reservation.clientId}
+          clientName={reservation.clientName}
+          treatmentName={reservation.treatmentName}
+        />
+      )}
+
+      {reservation.status === "PENDIENTE_DEPOSITO" && reservation.proofUrl && (
+        <div className="flex items-center gap-3">
+          <DepositProofViewer
+            proofUrl={reservation.proofUrl}
             clientName={reservation.clientName}
-            treatmentName={reservation.treatmentName}
-            density="compact"
           />
+          <span className="font-sans text-sm text-secondary/80">
+            Toca la imagen para ver el comprobante.
+          </span>
         </div>
       )}
 
-      <div
-        id={detailsId}
-        inert={!isSelected}
-        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
-          isSelected ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-        }`}
-      >
-        <div className="min-h-0 overflow-hidden">
-          <div className="flex flex-col gap-4 border-t border-secondary/10 p-4">
-            <ReservationDetails reservation={reservation} />
+      {stage.primary && (
+        <button
+          type="button"
+          disabled={isBusy}
+          onClick={run[stage.primary]}
+          className={PRIMARY_ACTION}
+        >
+          {STAGE_ACTION_LABELS[stage.primary]}
+        </button>
+      )}
 
-            <ReservationActions
-              reservation={reservation}
-              isToday={isToday}
-              isUpcoming={isUpcoming}
-              belongsToCombo={belongsToCombo}
-              actions={actions}
-              onViewClient={onViewClient}
-              onReschedule={onReschedule}
-            />
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-2">
+        <a
+          href={`https://wa.me/${reservation.phone.replace(/\D/g, "")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={SECONDARY_ACTION}
+        >
+          <MessageCircle className="size-4" aria-hidden="true" />
+          WhatsApp
+        </a>
+        <button
+          type="button"
+          onClick={() => {
+            onSelect(reservation.id);
+            setIsSheetOpen(true);
+          }}
+          className={SECONDARY_ACTION}
+        >
+          <Ellipsis className="size-4" aria-hidden="true" />
+          Más acciones
+        </button>
       </div>
+
+      <ReservationActionsSheet
+        reservation={reservation}
+        open={isSheetOpen}
+        primary={warnsAssessment ? "assess" : stage.primary}
+        isUpcoming={isUpcoming}
+        isBusy={isBusy}
+        onOpenChange={setIsSheetOpen}
+        onDialog={setDialog}
+        onReschedule={() => onReschedule(reservation.id)}
+        onViewClient={() => onViewClient(reservation.clientId)}
+        onSendLink={() => void actions.sendCancellationLink(reservation.id)}
+        onCopyLink={() => void actions.copyCancellationLink(reservation.id)}
+      />
+
+      {dialog === "assess" && (
+        <HairAssessmentDialog
+          open
+          clientName={reservation.clientName}
+          context={reservation.treatmentName}
+          onOpenChange={closeDialog}
+          onSave={(data) =>
+            clientActions.setHairProfile(reservation.clientId, data)
+          }
+        />
+      )}
+      {dialog === "approve" && (
+        <ApproveDepositDialog
+          open
+          onOpenChange={closeDialog}
+          reservationId={reservation.id}
+          clientName={reservation.clientName}
+          priceThousands={reservation.price}
+          hasProof={reservation.proofUrl !== null}
+          belongsToGroup={belongsToCombo}
+          onApprove={actions.approveDeposit}
+        />
+      )}
+      {dialog === "reject" && (
+        <RejectDepositDialog
+          open
+          onOpenChange={closeDialog}
+          reservationId={reservation.id}
+          clientName={reservation.clientName}
+          onReject={actions.rejectDeposit}
+        />
+      )}
+      {dialog === "complete" && (
+        <CompleteReservationDialog
+          open
+          onOpenChange={closeDialog}
+          reservationId={reservation.id}
+          clientName={reservation.clientName}
+          treatmentName={reservation.treatmentName}
+          onComplete={actions.complete}
+        />
+      )}
+      {dialog === "cancel" && (
+        <CancelReservationDialog
+          open
+          onOpenChange={closeDialog}
+          reservationId={reservation.id}
+          clientName={reservation.clientName}
+          treatmentName={reservation.treatmentName}
+          onCancel={actions.cancel}
+        />
+      )}
     </article>
   );
 }

@@ -24,10 +24,10 @@ interface DetailFieldProps {
 function DetailField({ label, value, align = "left" }: DetailFieldProps) {
   return (
     <div className={align === "right" ? "text-right" : ""}>
-      <p className="font-sans text-[10px] uppercase tracking-wide text-secondary/40">
+      <p className="font-sans text-sm text-secondary/80">
         {label}
       </p>
-      <p className="mt-1 font-sans text-xs text-secondary">{value}</p>
+      <p className="font-sans text-base text-secondary">{value}</p>
     </div>
   );
 }

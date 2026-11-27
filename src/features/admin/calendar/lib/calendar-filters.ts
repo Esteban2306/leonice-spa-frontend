@@ -33,6 +33,10 @@ const HIDDEN_BY_DEFAULT: readonly ReservationStatus[] = [
   "REPROGRAMADA",
 ];
 
+export function isHiddenByDefault(status: ReservationStatus): boolean {
+  return HIDDEN_BY_DEFAULT.includes(status);
+}
+
 export const CALENDAR_FILTER_GROUPS: ReadonlyArray<{
   id: CalendarFilterGroup;
   label: string;

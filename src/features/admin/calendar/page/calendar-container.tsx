@@ -24,7 +24,11 @@ import {
   getVisibleRange,
   toDateKey,
 } from "../lib/calendar-dates";
-import { buildCalendarFilters, matchesFilters } from "../lib/calendar-filters";
+import {
+  buildCalendarFilters,
+  isHiddenByDefault,
+  matchesFilters,
+} from "../lib/calendar-filters";
 import { summarizeScheduleByDay } from "../lib/schedule-summary";
 import type {
   CalendarReservation,
@@ -158,6 +162,22 @@ export function CalendarContainer() {
   const selectedDayReservations =
     reservationsByDate[selectedKey] ?? NO_RESERVATIONS;
 
+  // Sin filtros de estado, canceladas y reprogramadas quedan aparte.
+  const selectedDayHidden = activeFilterIds.some((id) =>
+    id.startsWith("status:"),
+  )
+    ? NO_RESERVATIONS
+    : (calendarQuery.data ?? NO_RESERVATIONS).filter(
+        (reservation) =>
+          reservation.dateKey === selectedKey &&
+          isHiddenByDefault(reservation.status) &&
+          matchesFilters(
+            reservation,
+            [`status:${reservation.status}`, ...activeFilterIds],
+            searchQuery,
+          ),
+      );
+
   function selectDate(date: Date, reservationId: string | null = null) {
     setSelectedDate(date);
     setSelectedReservationId(reservationId);
@@ -172,7 +192,13 @@ export function CalendarContainer() {
       selectDate(date);
     }
 
-    if (viewMode === "month" && date.getMonth() !== cursor.getMonth()) {
+    // La tira semanal puede salir de lo que se está consultando.
+    const key = toDateKey(date);
+    const isOutside =
+      viewMode === "month"
+        ? date.getMonth() !== cursor.getMonth()
+        : key < range.from || key > range.to;
+    if (isOutside) {
       setCursor(date);
     }
   }
@@ -230,8 +256,11 @@ export function CalendarContainer() {
       scheduleByDate={scheduleByDate}
       isLoading={calendarQuery.isLoading || calendarQuery.isPlaceholderData}
       isError={calendarQuery.isError}
+      hasData={calendarQuery.data !== undefined}
+      onCollapseMonth={() => setCursor(selectedDate)}
       onRetry={() => void calendarQuery.refetch()}
       selectedDayReservations={selectedDayReservations}
+      selectedDayHidden={selectedDayHidden}
       selectedReservationId={selectedReservationId}
       todayKey={toDateKey(today)}
       nowMs={nowMs}
