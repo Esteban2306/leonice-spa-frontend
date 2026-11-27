@@ -116,7 +116,7 @@ export function DashboardContainer() {
   };
 
   const handleCreateReservation = () => {
-    router.push("/admin/calendar?new=true");
+    router.push("/admin/calendar/new");
   };
 
   const handleOpenInCalendar = (reservationId: string) => {

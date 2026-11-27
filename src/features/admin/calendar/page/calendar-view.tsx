@@ -14,7 +14,6 @@ import {
 } from "../components/schedule/weekly-schedule-dialog";
 import { CalendarToolbar } from "../components/toolbar/calendar-toolbar";
 import { BookingPanel } from "../components/booking/booking-panel";
-import { BookingSetupDialog } from "../components/booking/booking-setup-dialog";
 import type { CalendarBooking } from "./use-calendar-booking";
 import type {
   CalendarFilter,
@@ -65,6 +64,7 @@ interface CalendarViewProps {
   onViewClient: (clientId: string) => void;
   onReschedule: (reservationId: string) => void;
   booking: CalendarBooking;
+  onCreateReservation: () => void;
 }
 
 export function CalendarView({
@@ -104,6 +104,7 @@ export function CalendarView({
   onViewClient,
   onReschedule,
   booking,
+  onCreateReservation,
 }: CalendarViewProps) {
   const activeBooking = booking.booking;
 
@@ -122,8 +123,7 @@ export function CalendarView({
             searchQuery={searchQuery}
             booking={activeBooking}
             isBookingLoading={booking.isAvailabilityLoading}
-            onCreateReservation={booking.openSetup}
-            onChangeBookingServices={booking.openSetup}
+            onCreateReservation={onCreateReservation}
             onExitBooking={booking.exit}
             onToday={onToday}
             onPrevious={onPrevious}
@@ -166,10 +166,8 @@ export function CalendarView({
           date={selectedDate}
           day={booking.selectedDay}
           selectedSlotIso={booking.slotIso}
-          clientSearch={booking.clientSearch}
           isSubmitting={booking.isSubmitting}
           onSelectSlot={booking.selectSlot}
-          onCreate={(client, values) => void booking.create(client, values)}
           onReschedule={(notify) => void booking.reschedule(notify)}
         />
       ) : (
@@ -188,17 +186,6 @@ export function CalendarView({
           onRemoveDayOverride={scheduleActions.removeDayOverride}
           onViewClient={onViewClient}
           onReschedule={onReschedule}
-        />
-      )}
-
-      {booking.isSetupOpen && (
-        <BookingSetupDialog
-          categories={categories}
-          treatments={booking.treatments}
-          isLoadingCatalog={booking.isCatalogLoading}
-          client={booking.presetClient}
-          onClose={booking.closeSetup}
-          onConfirm={booking.startCreate}
         />
       )}
 

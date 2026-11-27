@@ -1,3 +1,4 @@
+import { formatCopFromThousands } from "@/src/lib/money/cop";
 import type {
   AvailabilityDay,
   AvailabilityDayReason,
@@ -23,6 +24,17 @@ export function treatmentDuration(treatment: Treatment): number {
     treatment.baseDurationMinMinutes ??
     DEFAULT_DURATION_MINUTES
   );
+}
+
+export function priceRangeLabel(treatment: Treatment): string | null {
+  const min = treatment.basePriceMin;
+  const max = treatment.basePriceMax;
+  const single = max || min;
+  if (!single) return null;
+  if (min && max && min !== max) {
+    return `${formatCopFromThousands(min)} – ${formatCopFromThousands(max)}`;
+  }
+  return formatCopFromThousands(single);
 }
 
 export function toBookingService(

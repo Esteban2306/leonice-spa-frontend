@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { getBogotaDayKey } from "@/src/lib/date/bogota";
@@ -65,11 +65,20 @@ export function CalendarContainer() {
   const [hasFocused, setHasFocused] = useState(false);
   const [scheduleDialog, setScheduleDialog] =
     useState<CalendarScheduleDialog | null>(null);
-  const [bookingParams] = useState(() => ({
-    initialSetupOpen: searchParams.get("new") === "true",
-    presetClientId: searchParams.get("clientId"),
-    rescheduleReservationId: searchParams.get("reschedule"),
-  }));
+  const [rescheduleReservationId] = useState(() =>
+    searchParams.get("reschedule"),
+  );
+
+  // Enlaces antiguos a `?new=true` siguen llevando al agendado.
+  const opensNewReservation = searchParams.get("new") === "true";
+  const presetClientId = searchParams.get("clientId");
+  useEffect(() => {
+    if (!opensNewReservation) return;
+    const query = presetClientId
+      ? `?${new URLSearchParams({ clientId: presetClientId })}`
+      : "";
+    router.replace(`/admin/calendar/new${query}`);
+  }, [opensNewReservation, presetClientId, router]);
 
   const range = getVisibleRange(cursor, viewMode);
   const selectedKey = toDateKey(selectedDate);
@@ -108,7 +117,7 @@ export function CalendarContainer() {
   }
 
   const booking = useCalendarBooking({
-    ...bookingParams,
+    rescheduleReservationId,
     range,
     selectedKey,
     reservations: calendarQuery.data ?? NO_RESERVATIONS,
@@ -244,6 +253,7 @@ export function CalendarContainer() {
       onSearchChange={setSearchQuery}
       onViewClient={(clientId) => router.push(`/admin/clients/${clientId}`)}
       booking={booking}
+      onCreateReservation={() => router.push("/admin/calendar/new")}
       onReschedule={(reservationId) => {
         booking.startReschedule(reservationId);
         setSelectedReservationId(null);
