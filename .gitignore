@@ -60,3 +60,10 @@ node_modules/
 .open-next
 .wrangler
 .dev.vars
+
+# Claude Code (solo local)
+CLAUDE.local.md
+.claude/settings.json
+.claude/settings.local.json
+*.bak-*
+claude/session-report-*.html

@@ -1,9 +1,12 @@
+import { useState } from "react";
+
 import type { ReservationActions } from "@/src/features/admin/hooks/use-reservation-actions";
 import type { ScheduleActions } from "@/src/features/admin/hooks/use-schedule-actions";
 import type { Category } from "@/src/features/admin/types/categories.types";
 import type { ScheduleDay } from "@/src/features/admin/types/schedule.types";
 
 import { CalendarSurface } from "../components/calendar-surface";
+import { DayStrip } from "../components/day-strip";
 import { DayDetailPanel } from "../components/day-panel/day-detail-panel";
 import { CalendarGrid } from "../components/grid/calendar-grid";
 import { ScheduleExceptionDialog } from "../components/schedule/schedule-exception-dialog";
@@ -14,7 +17,6 @@ import {
 } from "../components/schedule/weekly-schedule-dialog";
 import { CalendarToolbar } from "../components/toolbar/calendar-toolbar";
 import { BookingPanel } from "../components/booking/booking-panel";
-import { BookingSetupDialog } from "../components/booking/booking-setup-dialog";
 import type { CalendarBooking } from "./use-calendar-booking";
 import type {
   CalendarFilter,
@@ -40,9 +42,12 @@ interface CalendarViewProps {
   scheduleByDate: Readonly<Record<string, DayScheduleSummary>>;
   isLoading: boolean;
   isError: boolean;
+  hasData: boolean;
+  onCollapseMonth: () => void;
   onRetry: () => void;
 
   selectedDayReservations: readonly CalendarReservation[];
+  selectedDayHidden: readonly CalendarReservation[];
   selectedReservationId: string | null;
   scheduleDay: ScheduleDay | null;
   isScheduleDayLoading: boolean;
@@ -65,6 +70,7 @@ interface CalendarViewProps {
   onViewClient: (clientId: string) => void;
   onReschedule: (reservationId: string) => void;
   booking: CalendarBooking;
+  onCreateReservation: () => void;
 }
 
 export function CalendarView({
@@ -82,8 +88,11 @@ export function CalendarView({
   scheduleByDate,
   isLoading,
   isError,
+  hasData,
+  onCollapseMonth,
   onRetry,
   selectedDayReservations,
+  selectedDayHidden,
   selectedReservationId,
   scheduleDay,
   isScheduleDayLoading,
@@ -104,11 +113,37 @@ export function CalendarView({
   onViewClient,
   onReschedule,
   booking,
+  onCreateReservation,
 }: CalendarViewProps) {
   const activeBooking = booking.booking;
+  const [isMonthOpen, setIsMonthOpen] = useState(false);
+  // Al reagendar hace falta el mes para ver qué días tienen cupo.
+  const isSurfaceShown = isMonthOpen || activeBooking !== null;
 
   return (
-    <div className="grid h-auto min-h-0 grid-cols-1 gap-3 p-2 sm:p-4 md:h-full md:gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+    <div className="grid h-auto min-h-0 grid-cols-1 content-start gap-3 p-2 sm:p-4 md:gap-4 xl:h-full xl:grid-cols-[minmax(0,1fr)_380px] xl:content-stretch">
+      {!activeBooking && (
+        <DayStrip
+          selectedDate={selectedDate}
+          todayKey={todayKey}
+          reservationsByDate={reservationsByDate}
+          isMonthOpen={isMonthOpen}
+          onSelectDate={(date) => {
+            setIsMonthOpen(false);
+            onSelectDate(date);
+          }}
+          onToggleMonth={() => {
+            if (isMonthOpen) onCollapseMonth();
+            setIsMonthOpen(!isMonthOpen);
+          }}
+          isUnknown={!hasData}
+          hasFilters={activeFilterIds.length > 0 || searchQuery !== ""}
+          onClearFilters={onClearFilters}
+          onCreateReservation={onCreateReservation}
+        />
+      )}
+
+      <div className={isSurfaceShown ? "contents" : "hidden xl:contents"}>
       <CalendarSurface
         isLoading={isLoading}
         isError={isError}
@@ -122,8 +157,7 @@ export function CalendarView({
             searchQuery={searchQuery}
             booking={activeBooking}
             isBookingLoading={booking.isAvailabilityLoading}
-            onCreateReservation={booking.openSetup}
-            onChangeBookingServices={booking.openSetup}
+            onCreateReservation={onCreateReservation}
             onExitBooking={booking.exit}
             onToday={onToday}
             onPrevious={onPrevious}
@@ -155,9 +189,13 @@ export function CalendarView({
                 }
               : null
           }
-          onSelectDate={onSelectDate}
+          onSelectDate={(date) => {
+            setIsMonthOpen(false);
+            onSelectDate(date);
+          }}
         />
       </CalendarSurface>
+      </div>
 
       {activeBooking ? (
         <BookingPanel
@@ -166,10 +204,8 @@ export function CalendarView({
           date={selectedDate}
           day={booking.selectedDay}
           selectedSlotIso={booking.slotIso}
-          clientSearch={booking.clientSearch}
           isSubmitting={booking.isSubmitting}
           onSelectSlot={booking.selectSlot}
-          onCreate={(client, values) => void booking.create(client, values)}
           onReschedule={(notify) => void booking.reschedule(notify)}
         />
       ) : (
@@ -178,6 +214,11 @@ export function CalendarView({
           todayKey={todayKey}
           nowMs={nowMs}
           reservations={selectedDayReservations}
+          hiddenReservations={selectedDayHidden}
+          isError={isError && !hasData}
+          isOutdated={isError && hasData}
+          isLoading={isLoading}
+          onRetry={onRetry}
           selectedReservationId={selectedReservationId}
           scheduleDay={scheduleDay}
           isScheduleLoading={isScheduleDayLoading}
@@ -188,17 +229,6 @@ export function CalendarView({
           onRemoveDayOverride={scheduleActions.removeDayOverride}
           onViewClient={onViewClient}
           onReschedule={onReschedule}
-        />
-      )}
-
-      {booking.isSetupOpen && (
-        <BookingSetupDialog
-          categories={categories}
-          treatments={booking.treatments}
-          isLoadingCatalog={booking.isCatalogLoading}
-          client={booking.presetClient}
-          onClose={booking.closeSetup}
-          onConfirm={booking.startCreate}
         />
       )}
 

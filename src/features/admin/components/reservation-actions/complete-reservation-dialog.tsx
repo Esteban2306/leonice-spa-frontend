@@ -17,6 +17,8 @@ import { Field, INPUT_CLASS } from "./form-controls";
 
 interface CompleteReservationDialogProps {
   trigger?: ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   reservationId: string;
   clientName: string;
   treatmentName: string;
@@ -56,12 +58,19 @@ function MoneyInput({
 
 export function CompleteReservationDialog({
   trigger,
+  open: controlledOpen,
+  onOpenChange,
   reservationId,
   clientName,
   treatmentName,
   onComplete,
 }: CompleteReservationDialogProps) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = controlledOpen ?? uncontrolledOpen;
+  const setOpen = (next: boolean) => {
+    setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
   const [cashRaw, setCashRaw] = useState("");
   const [transferRaw, setTransferRaw] = useState("");
   const [advanceRaw, setAdvanceRaw] = useState("");

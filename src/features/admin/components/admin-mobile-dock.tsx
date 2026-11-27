@@ -103,6 +103,9 @@ export function AdminMobileDock() {
     });
   };
 
+  // El agendado paso a paso ocupa toda la pantalla.
+  if (pathname === "/admin/calendar/new") return null;
+
   return (
     <>
       <nav

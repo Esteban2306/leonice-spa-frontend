@@ -77,13 +77,12 @@ export interface BookingReservation {
   scheduledStart: string;
 }
 
-export type BookingMode = "create" | "reschedule";
+export type BookingMode = "reschedule";
 
 export interface BookingSetup {
   mode: BookingMode;
   services: BookingService[];
   reservation: BookingReservation | null;
-  client: BookingClient | null;
 }
 
 export interface ScheduleActionHandlers {

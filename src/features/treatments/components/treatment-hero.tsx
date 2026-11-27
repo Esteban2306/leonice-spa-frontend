@@ -95,14 +95,14 @@ export function TreatmentHero({ treatment }: { treatment: ShowcaseTreatmentDetai
             </div>
           </div>
 
-          <div className="bezel mx-auto w-full max-w-[34rem] desk:max-w-none">
+          <div className="bezel mx-auto w-full max-w-[22rem] sm:max-w-[26rem]">
             <TreatmentVideo
               videoUrl={treatment.videoUrl}
               posterUrl={treatment.posterUrl}
               title={treatment.name}
               mode="cover"
               stepTitles={treatment.steps.map((step) => step.title)}
-              className="bezel-core lit aspect-[4/5] w-full [--lift:22px]"
+              className="bezel-core lit aspect-[9/16] w-full [--lift:22px]"
             />
           </div>
         </div>

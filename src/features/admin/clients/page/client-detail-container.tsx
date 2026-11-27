@@ -212,7 +212,7 @@ export function ClientDetailContainer({ clientId }: { clientId: string }) {
       onUpdate={update}
       onCopy={(text, label) => void copy(text, label)}
       onNewReservation={() =>
-        router.push(`/admin/calendar?new=true&clientId=${clientId}`)
+        router.push(`/admin/calendar/new?clientId=${clientId}`)
       }
       onOpenInCalendar={(reservationId) =>
         router.push(`/admin/calendar?reservationId=${reservationId}`)

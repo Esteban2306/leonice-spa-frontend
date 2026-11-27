@@ -27,7 +27,6 @@ interface CalendarToolbarProps extends ScheduleActionHandlers {
   isBookingLoading: boolean;
 
   onCreateReservation: () => void;
-  onChangeBookingServices: () => void;
   onExitBooking: () => void;
   onToday: () => void;
   onPrevious: () => void;
@@ -47,7 +46,6 @@ export function CalendarToolbar({
   booking,
   isBookingLoading,
   onCreateReservation,
-  onChangeBookingServices,
   onExitBooking,
   onToday,
   onPrevious,
@@ -98,7 +96,6 @@ export function CalendarToolbar({
         <BookingBanner
           booking={booking}
           isLoading={isBookingLoading}
-          onChangeServices={onChangeBookingServices}
           onExit={onExitBooking}
         />
       ) : (
