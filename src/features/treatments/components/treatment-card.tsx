@@ -43,7 +43,7 @@ export function TreatmentCard({
       >
         <span
           className={`relative block overflow-hidden ${
-            wide ? "aspect-[4/5] desk:aspect-auto desk:w-[42%]" : "aspect-[4/5]"
+            wide ? "aspect-[9/16] mx-auto w-full max-w-[22rem] desk:mx-0 desk:w-[20.25rem] desk:max-w-none desk:shrink-0" : "aspect-[9/16]"
           }`}
         >
           <TreatmentVideo

@@ -64,7 +64,7 @@ describe("entrega de imágenes y videos con tope de 1280 px", () => {
 
   it("la portada es el final del video, aunque venga otra portada guardada", () => {
     const lastFrame =
-      "https://res.cloudinary.com/exyhq5ry/video/upload/so_99p,f_auto,q_auto,c_limit,w_1280/v17/leonice-spa/treatments/video-1.jpg";
+      "https://res.cloudinary.com/exyhq5ry/video/upload/so_89p,f_auto,q_auto,c_limit,w_1280/v17/leonice-spa/treatments/video-1.jpg";
     expect(videoPoster(VIDEO, null, 1280)).toBe(lastFrame);
     expect(videoPoster(VIDEO, `${BASE}/v1/p.jpg`, 1280)).toBe(lastFrame);
   });

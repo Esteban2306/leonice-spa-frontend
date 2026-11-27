@@ -19,6 +19,7 @@ interface TreatmentVideoProps {
 }
 
 const VISIBLE_RATIO = 0.55;
+const CARD_VISIBLE_RATIO = 0.6;
 
 function positioned(className: string) {
   return /(^|\s)(absolute|fixed)(\s|$)/.test(className) ? className : `relative ${className}`;
@@ -26,6 +27,19 @@ function positioned(className: string) {
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function canHover() {
+  return window.matchMedia("(hover: hover)").matches;
+}
+
+function stopAtCover(video: HTMLVideoElement) {
+  video.pause();
+  try {
+    video.currentTime = 0;
+  } catch {
+    // The video has no loaded data yet, so it is already at the start.
+  }
 }
 
 export function TreatmentVideo({
@@ -79,6 +93,7 @@ function VideoPlayer({
   const frameRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showsFrames, setShowsFrames] = useState(false);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
@@ -100,10 +115,30 @@ function VideoPlayer({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !delivery.src || mode !== "card" || playing === undefined) return;
-    if (playing && !prefersReducedMotion()) void video.play().catch(() => {});
-    else video.pause();
+    if (!video || !delivery.src || mode !== "card") return;
+    if (prefersReducedMotion() || !canHover()) return;
+    if (playing) void video.play().catch(() => {});
+    else stopAtCover(video);
   }, [mode, playing, delivery.src]);
+
+  // Touch screens have no hover: the video plays while the card is in view and returns to the cover when it leaves.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !delivery.src || mode !== "card") return;
+    if (prefersReducedMotion() || canHover()) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio >= CARD_VISIBLE_RATIO) void video.play().catch(() => {});
+        else stopAtCover(video);
+      },
+      { threshold: [0, CARD_VISIBLE_RATIO, 1] },
+    );
+    observer.observe(video);
+    return () => {
+      observer.disconnect();
+      stopAtCover(video);
+    };
+  }, [mode, delivery.src]);
 
   const toggle = () => {
     const video = videoRef.current;
@@ -141,13 +176,26 @@ function VideoPlayer({
         preload={mode === "card" ? "none" : "metadata"}
         aria-label={`Video del procedimiento: ${title}`}
         onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        onPlaying={() => setShowsFrames(true)}
+        onPause={() => {
+          setIsPlaying(false);
+          setShowsFrames(false);
+        }}
         onTimeUpdate={(event) => {
           const video = event.currentTarget;
           if (video.duration) setProgress(video.currentTime / video.duration);
         }}
         className="absolute inset-0 size-full object-cover"
       />
+      {mode === "card" && delivery.poster && (
+        <div
+          aria-hidden="true"
+          style={{ backgroundImage: `url("${delivery.poster}")` }}
+          className={`pointer-events-none absolute inset-0 bg-cover bg-center transition-opacity duration-300 ${
+            showsFrames ? "opacity-0" : "opacity-100"
+          }`}
+        />
+      )}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#062112]/70 to-transparent"
